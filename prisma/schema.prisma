@@ -1,0 +1,214 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth.js models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// User (Artist)
+model User {
+  id                   String               @id @default(cuid())
+  email                String               @unique
+  emailVerified        DateTime?
+  password             String?
+  name                 String?
+  image                String?
+  artistName           String?
+  genre                String?
+  careerStage          CareerStage?
+  location             String?
+  onboardingCompleted  Boolean              @default(false)
+  onboardingStep       Int                  @default(1)
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+
+  accounts             Account[]
+  sessions             Session[]
+  platformConnections  PlatformConnection[]
+  fans                 Fan[]
+}
+
+enum CareerStage {
+  EMERGING
+  GROWING
+  ESTABLISHED
+  VETERAN
+}
+
+// Platform Connection
+model PlatformConnection {
+  id           String           @id @default(cuid())
+  userId       String
+  platform     Platform
+  accessToken  String?          @db.Text
+  refreshToken String?          @db.Text
+  status       ConnectionStatus @default(CONNECTED)
+  lastSyncAt   DateTime?
+  fanCount     Int              @default(0)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, platform])
+}
+
+enum Platform {
+  SPOTIFY
+  INSTAGRAM
+  TIKTOK
+  YOUTUBE
+  TWITTER
+  EMAIL
+}
+
+enum ConnectionStatus {
+  CONNECTED
+  EXPIRED
+  ERROR
+  DISCONNECTED
+}
+
+// Fan
+model Fan {
+  id              String           @id @default(cuid())
+  userId          String
+  displayName     String
+  email           String?
+  avatarUrl       String?
+  location        String?
+  city            String?
+  country         String?
+  stanScore       Int              @default(0)
+  tier            FanTier          @default(CASUAL)
+  platformScore   Int              @default(0)
+  engagementScore Int              @default(0)
+  longevityScore  Int              @default(0)
+  recencyScore    Int              @default(0)
+  firstSeenAt     DateTime         @default(now())
+  lastActiveAt    DateTime         @default(now())
+  notes           String?          @db.Text
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platformLinks FanPlatformLink[]
+  events        FanEvent[]
+
+  @@index([userId, stanScore])
+  @@index([userId, tier])
+  @@index([userId, lastActiveAt])
+}
+
+enum FanTier {
+  CASUAL
+  ENGAGED
+  DEDICATED
+  SUPERFAN
+}
+
+// Fan Platform Link - platform-specific metrics
+model FanPlatformLink {
+  id            String   @id @default(cuid())
+  fanId         String
+  platform      Platform
+  platformFanId String?
+
+  // Spotify metrics
+  streams       Int?
+  playlistAdds  Int?
+  saves         Int?
+
+  // Social metrics (Instagram, TikTok, Twitter)
+  follows       Boolean?
+  likes         Int?
+  comments      Int?
+  shares        Int?
+
+  // YouTube metrics
+  subscribed    Boolean?
+  videoViews    Int?
+  watchTime     Int?
+
+  // Email metrics
+  emailOpens    Int?
+  emailClicks   Int?
+
+  firstSeenAt   DateTime @default(now())
+  lastActiveAt  DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  fan Fan @relation(fields: [fanId], references: [id], onDelete: Cascade)
+
+  @@unique([fanId, platform])
+}
+
+// Fan Event (Journey tracking)
+model FanEvent {
+  id          String    @id @default(cuid())
+  fanId       String
+  eventType   EventType
+  platform    Platform?
+  description String?
+  metadata    Json?
+  occurredAt  DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+
+  fan Fan @relation(fields: [fanId], references: [id], onDelete: Cascade)
+
+  @@index([fanId, occurredAt])
+}
+
+enum EventType {
+  FIRST_STREAM
+  FIRST_FOLLOW
+  FIRST_LIKE
+  FIRST_COMMENT
+  FIRST_SHARE
+  PLAYLIST_ADD
+  EMAIL_SUBSCRIBE
+  EMAIL_OPEN
+  TIER_UPGRADE
+  BECAME_SUPERFAN
+  MILESTONE_STREAMS
+  MILESTONE_ENGAGEMENT
+}
