@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Music, Loader2, Check, ExternalLink, Sparkles } from 'lucide-react'
+import { Loader2, Check, ExternalLink, Sparkles } from 'lucide-react'
+import { Logo } from '@/components/brand/Logo'
 
 export default function FanOnboardingPage() {
   const router = useRouter()
@@ -60,27 +61,25 @@ export default function FanOnboardingPage() {
     <div className="min-h-screen bg-vault-black flex items-center justify-center p-6">
       <div className="w-full max-w-lg">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center p-3 bg-gold/10 rounded-xl mb-4">
-            <Music className="w-10 h-10 text-gold" />
-          </div>
-          <h1 className="text-2xl font-bold text-warm-white">Connect Your Music</h1>
+        <div className="flex flex-col items-center mb-8">
+          <Logo size="md" />
+          <p className="font-display font-bold text-lg text-warm-white mt-6">Connect Your Music</p>
           <p className="text-vault-muted mt-1">
             Link Spotify to verify your listening history
           </p>
         </div>
 
         {/* Main Card */}
-        <div className="bg-vault-dark border border-vault-gray rounded-lg p-6">
+        <div className="bg-vault-dark border border-vault-gray/60 rounded-md p-6">
           {error && (
-            <div className="mb-6 p-3 bg-status-error/10 border border-status-error rounded-lg text-status-error text-sm">
+            <div className="mb-6 p-3 bg-status-error/10 border border-status-error rounded-md text-status-error text-sm">
               {error}
             </div>
           )}
 
           {/* Why Connect */}
-          <div className="mb-6 p-4 bg-vault-darker rounded-lg">
-            <h3 className="text-sm font-medium text-warm-white mb-3 flex items-center gap-2">
+          <div className="mb-6 p-4 bg-vault-darker rounded-md">
+            <h3 className="text-sm font-display font-bold uppercase tracking-wide text-warm-white mb-3 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-gold" />
               Why connect Spotify?
             </h3>
@@ -102,13 +101,13 @@ export default function FanOnboardingPage() {
 
           {/* Spotify Connection */}
           {spotifyConnected ? (
-            <div className="mb-6 p-4 bg-status-success/10 border border-status-success rounded-lg">
+            <div className="mb-6 p-4 bg-moss-light/10 border border-moss-light rounded-md">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-status-success/20 rounded-full">
-                  <Check className="w-5 h-5 text-status-success" />
+                <div className="p-2 bg-moss-light/20 rounded-full">
+                  <Check className="w-5 h-5 text-moss-light" />
                 </div>
                 <div>
-                  <p className="font-medium text-status-success">Spotify Connected</p>
+                  <p className="font-medium text-moss-light">Spotify Connected</p>
                   <p className="text-sm text-vault-muted">
                     Your listening history is now verifiable
                   </p>
@@ -119,7 +118,7 @@ export default function FanOnboardingPage() {
             <button
               onClick={handleConnectSpotify}
               disabled={isConnecting}
-              className="w-full mb-6 py-4 bg-[#1DB954] text-white font-semibold rounded-lg hover:bg-[#1ed760] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+              className="w-full mb-6 py-4 bg-[#1DB954] text-white font-semibold tracking-wide rounded-md hover:bg-[#1ed760] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
             >
               {isConnecting ? (
                 <>
@@ -148,9 +147,9 @@ export default function FanOnboardingPage() {
           <button
             onClick={handleComplete}
             disabled={isCompleting}
-            className={`w-full py-3 font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 ${
+            className={`w-full py-3 font-semibold tracking-wide rounded-md transition-colors flex items-center justify-center gap-2 ${
               spotifyConnected
-                ? 'bg-gold text-vault-black hover:bg-gold/90'
+                ? 'bg-gold text-vault-black hover:bg-gold-light'
                 : 'bg-vault-gray text-vault-muted hover:bg-vault-muted/20'
             }`}
           >

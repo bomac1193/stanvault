@@ -20,7 +20,7 @@ export function Badge({ className, variant = 'default', ...props }: BadgeProps) 
   return (
     <span
       className={cn(
-        'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+        'inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-display font-bold uppercase tracking-wide',
         variants[variant],
         className
       )}
@@ -47,9 +47,9 @@ export function TierBadge({ tier }: { tier: string }) {
 
 export function StanScoreBadge({ score }: { score: number }) {
   return (
-    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gold/10 border border-gold/20 rounded-lg">
+    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gold/10 border border-gold/20 rounded-md">
       <span className="text-gold font-mono font-semibold text-sm">{score}</span>
-      <span className="text-gold/60 text-xs">Stan Score</span>
+      <span className="text-gold/60 text-xs font-display uppercase tracking-wide">Stan Score</span>
     </div>
   )
 }

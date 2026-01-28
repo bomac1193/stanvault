@@ -4,20 +4,21 @@ import { forwardRef, ButtonHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'moss'
   size?: 'sm' | 'md' | 'lg'
   isLoading?: boolean
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', isLoading, children, disabled, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 rounded-lg focus-ring disabled:opacity-50 disabled:cursor-not-allowed'
+    const baseStyles = 'inline-flex items-center justify-center font-medium tracking-wide transition-all duration-200 rounded-md focus-ring disabled:opacity-50 disabled:cursor-not-allowed'
 
     const variants = {
       primary: 'bg-gold text-vault-black hover:bg-gold-light active:bg-gold-dark',
       secondary: 'bg-transparent border border-vault-gray text-warm-white hover:bg-vault-gray hover:border-vault-muted',
       ghost: 'bg-transparent text-warm-white hover:bg-vault-gray',
       danger: 'bg-status-error text-white hover:bg-red-600',
+      moss: 'bg-transparent border border-moss text-moss-light hover:bg-moss/20 hover:border-moss-light',
     }
 
     const sizes = {

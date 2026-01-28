@@ -35,10 +35,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             ref={ref}
             id={selectId}
             className={cn(
-              'w-full px-4 py-2.5 pr-10 bg-vault-darker border border-vault-gray rounded-lg',
+              'w-full px-4 py-2.5 pr-10 bg-vault-darker border border-vault-gray rounded-md',
               'text-warm-white appearance-none cursor-pointer',
               'transition-colors duration-200',
-              'focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent',
+              'focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent',
               'disabled:opacity-50 disabled:cursor-not-allowed',
               error && 'border-status-error focus:ring-status-error',
               className

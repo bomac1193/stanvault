@@ -195,18 +195,18 @@ export default function FanExportPage() {
   return (
     <div className="min-h-screen bg-vault-black">
       {/* Header */}
-      <header className="border-b border-vault-gray">
+      <header className="border-b border-vault-gray/60">
         <div className="max-w-3xl mx-auto px-6 py-4">
           <Link
             href="/fan/dashboard"
             className="inline-flex items-center gap-2 text-vault-muted hover:text-warm-white transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            <span className="nav-item">Back to Dashboard</span>
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-warm-white">Export Your Fan Identity</h1>
+              <h1 className="text-2xl font-display font-bold text-warm-white">Export Your Fan Identity</h1>
               <p className="text-vault-muted">
                 Take your fan data anywhere
               </p>
@@ -307,7 +307,7 @@ export default function FanExportPage() {
             </div>
 
             {/* What's Included */}
-            <div className="mb-8 p-4 bg-vault-dark border border-vault-gray rounded-lg">
+            <div className="mb-8 p-4 bg-vault-dark border border-vault-gray/60 rounded-md">
               <h3 className="font-medium text-warm-white mb-3">What&apos;s included in your export:</h3>
               <ul className="space-y-2 text-sm text-vault-muted">
                 <li className="flex items-center gap-2">
@@ -337,7 +337,7 @@ export default function FanExportPage() {
             <button
               onClick={handleExport}
               disabled={isExporting}
-              className="w-full py-4 bg-gold text-vault-black font-semibold rounded-lg hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-4 bg-gold text-vault-black font-semibold rounded-md hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isExporting ? (
                 <>
@@ -366,8 +366,8 @@ export default function FanExportPage() {
             </div>
 
             {/* Export Preview */}
-            <div className="mb-6 bg-vault-dark border border-vault-gray rounded-lg overflow-hidden">
-              <div className="px-4 py-3 border-b border-vault-gray flex items-center justify-between">
+            <div className="mb-6 bg-vault-dark border border-vault-gray/60 rounded-md overflow-hidden">
+              <div className="px-4 py-3 border-b border-vault-gray/60 flex items-center justify-between">
                 <span className="text-sm font-medium text-warm-white">
                   {exportResult.format === 'jwt'
                     ? 'Signed Token'
@@ -411,7 +411,7 @@ export default function FanExportPage() {
 
             {/* Verification Link */}
             {exportResult.verifyUrl && (
-              <div className="mb-6 p-4 bg-vault-dark border border-vault-gray rounded-lg">
+              <div className="mb-6 p-4 bg-vault-dark border border-vault-gray/60 rounded-md">
                 <p className="text-sm text-vault-muted mb-2">
                   Anyone can verify this export at:
                 </p>
@@ -441,7 +441,7 @@ export default function FanExportPage() {
               </button>
               <Link
                 href="/fan/dashboard"
-                className="flex-1 py-3 bg-gold text-vault-black font-medium rounded-lg hover:bg-gold/90 transition-colors text-center"
+                className="flex-1 py-3 bg-gold text-vault-black font-medium rounded-md hover:bg-gold-light transition-colors text-center"
               >
                 Back to Dashboard
               </Link>
@@ -453,8 +453,8 @@ export default function FanExportPage() {
       {/* History Modal */}
       {showHistory && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-vault-dark border border-vault-gray rounded-lg w-full max-w-md">
-            <div className="px-6 py-4 border-b border-vault-gray flex items-center justify-between">
+          <div className="bg-vault-dark border border-vault-gray/60 rounded-md w-full max-w-md">
+            <div className="px-6 py-4 border-b border-vault-gray/60 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-warm-white">Export History</h3>
               <button
                 onClick={() => setShowHistory(false)}
@@ -490,7 +490,7 @@ export default function FanExportPage() {
                 </div>
               )}
             </div>
-            <div className="px-6 py-4 border-t border-vault-gray">
+            <div className="px-6 py-4 border-t border-vault-gray/60">
               <button
                 onClick={() => setShowHistory(false)}
                 className="w-full py-2 text-vault-muted hover:text-warm-white transition-colors"

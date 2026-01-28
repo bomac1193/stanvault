@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Music, Loader2, Eye, EyeOff } from 'lucide-react'
+import { Loader2, Eye, EyeOff } from 'lucide-react'
+import { Logo } from '@/components/brand/Logo'
 
 export default function FanLoginPage() {
   const router = useRouter()
@@ -43,18 +44,18 @@ export default function FanLoginPage() {
     <div className="min-h-screen bg-vault-black flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center p-3 bg-gold/10 rounded-xl mb-4">
-            <Music className="w-10 h-10 text-gold" />
-          </div>
-          <h1 className="text-2xl font-bold text-warm-white">Fan Portal</h1>
+        <div className="flex flex-col items-center mb-8">
+          <Logo size="md" />
+          <p className="font-display font-medium text-sm uppercase tracking-brand text-vault-muted mt-4">
+            Fan Portal
+          </p>
           <p className="text-vault-muted mt-1">Sign in to your fan identity</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-vault-dark border border-vault-gray rounded-lg p-6">
+        <form onSubmit={handleSubmit} className="bg-vault-dark border border-vault-gray/60 rounded-md p-6">
           {error && (
-            <div className="mb-4 p-3 bg-status-error/10 border border-status-error rounded-lg text-status-error text-sm">
+            <div className="mb-4 p-3 bg-status-error/10 border border-status-error rounded-md text-status-error text-sm">
               {error}
             </div>
           )}
@@ -68,7 +69,7 @@ export default function FanLoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-lg text-warm-white placeholder:text-vault-muted focus:outline-none focus:border-gold"
+              className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent"
               placeholder="you@example.com"
             />
           </div>
@@ -83,7 +84,7 @@ export default function FanLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-lg text-warm-white placeholder:text-vault-muted focus:outline-none focus:border-gold pr-12"
+                className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent pr-12"
                 placeholder="••••••••"
               />
               <button
@@ -99,7 +100,7 @@ export default function FanLoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-gold text-vault-black font-semibold rounded-lg hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full py-3 bg-gold text-vault-black font-semibold tracking-wide rounded-md hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>

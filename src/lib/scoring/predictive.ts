@@ -260,7 +260,7 @@ function estimateDaysToConversion(pattern: BehaviorPattern, probability: number)
 
 function getRecommendedAction(pattern: BehaviorPattern, currentTier: FanTier): string {
   if (pattern.recentActivitySpike && !pattern.follower) {
-    return 'Engage now - they're active but not following. Send a personal message or exclusive content.'
+    return "Engage now - they're active but not following. Send a personal message or exclusive content."
   }
 
   if (pattern.playlistAdder && currentTier === 'ENGAGED') {

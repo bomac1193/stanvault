@@ -13,6 +13,7 @@ import {
   Settings,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
+import { LogoMark, Wordmark } from '@/components/brand/Logo'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -26,13 +27,12 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-vault-darker border-r border-vault-gray flex flex-col">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-vault-darker border-r border-vault-gray/60 flex flex-col">
       {/* Logo */}
-      <div className="p-6 border-b border-vault-gray">
-        <Link href="/dashboard">
-          <h1 className="font-display text-2xl font-bold text-warm-white">
-            Stan<span className="text-gold">vault</span>
-          </h1>
+      <div className="p-6 border-b border-vault-gray/60">
+        <Link href="/dashboard" className="flex items-center gap-3">
+          <LogoMark size="sm" />
+          <Wordmark size="sm" />
         </Link>
       </div>
 
@@ -47,34 +47,34 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200',
+                'flex items-center gap-3 px-4 py-3 rounded-md transition-all duration-200',
                 isActive
                   ? 'bg-gold/10 text-gold border border-gold/20'
                   : 'text-vault-muted hover:text-warm-white hover:bg-vault-gray'
               )}
             >
               <Icon className="w-5 h-5" />
-              <span className="font-medium">{item.label}</span>
+              <span className="nav-item">{item.label}</span>
             </Link>
           )
         })}
       </nav>
 
       {/* Bottom section */}
-      <div className="p-4 border-t border-vault-gray space-y-1">
+      <div className="p-4 border-t border-vault-gray/60 space-y-1">
         <Link
           href="/settings"
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-vault-muted hover:text-warm-white hover:bg-vault-gray transition-all duration-200"
+          className="flex items-center gap-3 px-4 py-3 rounded-md text-vault-muted hover:text-warm-white hover:bg-vault-gray transition-all duration-200"
         >
           <Settings className="w-5 h-5" />
-          <span className="font-medium">Settings</span>
+          <span className="nav-item">Settings</span>
         </Link>
         <button
           onClick={() => signOut({ callbackUrl: '/login' })}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-vault-muted hover:text-warm-white hover:bg-vault-gray transition-all duration-200"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-md text-vault-muted hover:text-warm-white hover:bg-vault-gray transition-all duration-200"
         >
           <LogOut className="w-5 h-5" />
-          <span className="font-medium">Sign Out</span>
+          <span className="nav-item">Sign Out</span>
         </button>
       </div>
     </aside>

@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Music, Loader2, Eye, EyeOff, Check } from 'lucide-react'
+import { Loader2, Eye, EyeOff, Check } from 'lucide-react'
+import { Logo } from '@/components/brand/Logo'
 
 export default function FanRegisterPage() {
   const router = useRouter()
@@ -56,17 +57,17 @@ export default function FanRegisterPage() {
     <div className="min-h-screen bg-vault-black flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center p-3 bg-gold/10 rounded-xl mb-4">
-            <Music className="w-10 h-10 text-gold" />
-          </div>
-          <h1 className="text-2xl font-bold text-warm-white">Create Fan Account</h1>
+        <div className="flex flex-col items-center mb-8">
+          <Logo size="md" />
+          <p className="font-display font-medium text-sm uppercase tracking-brand text-vault-muted mt-4">
+            Create Fan Account
+          </p>
           <p className="text-vault-muted mt-1">Own your fan identity</p>
         </div>
 
         {/* Value props */}
-        <div className="bg-vault-darker border border-vault-gray rounded-lg p-4 mb-6">
-          <p className="text-sm text-vault-muted mb-3">With a Stanvault fan account, you can:</p>
+        <div className="bg-vault-darker border border-vault-gray/60 rounded-md p-4 mb-6">
+          <p className="text-sm text-vault-muted mb-3 font-display uppercase tracking-wide">With Stanvault, you can:</p>
           <ul className="space-y-2 text-sm">
             <li className="flex items-center gap-2 text-warm-white">
               <Check className="w-4 h-4 text-gold" />
@@ -84,9 +85,9 @@ export default function FanRegisterPage() {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-vault-dark border border-vault-gray rounded-lg p-6">
+        <form onSubmit={handleSubmit} className="bg-vault-dark border border-vault-gray/60 rounded-md p-6">
           {error && (
-            <div className="mb-4 p-3 bg-status-error/10 border border-status-error rounded-lg text-status-error text-sm">
+            <div className="mb-4 p-3 bg-status-error/10 border border-status-error rounded-md text-status-error text-sm">
               {error}
             </div>
           )}
@@ -101,7 +102,7 @@ export default function FanRegisterPage() {
               onChange={(e) => setDisplayName(e.target.value)}
               required
               maxLength={50}
-              className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-lg text-warm-white placeholder:text-vault-muted focus:outline-none focus:border-gold"
+              className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent"
               placeholder="How artists will see you"
             />
           </div>
@@ -115,7 +116,7 @@ export default function FanRegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-lg text-warm-white placeholder:text-vault-muted focus:outline-none focus:border-gold"
+              className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent"
               placeholder="you@example.com"
             />
           </div>
@@ -130,7 +131,7 @@ export default function FanRegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-lg text-warm-white placeholder:text-vault-muted focus:outline-none focus:border-gold pr-12"
+                className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent pr-12"
                 placeholder="••••••••"
               />
               <button
@@ -152,7 +153,7 @@ export default function FanRegisterPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-lg text-warm-white placeholder:text-vault-muted focus:outline-none focus:border-gold"
+              className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent"
               placeholder="••••••••"
             />
           </div>
@@ -163,7 +164,7 @@ export default function FanRegisterPage() {
               <div
                 key={i}
                 className={`flex items-center gap-2 text-xs ${
-                  req.met ? 'text-status-success' : 'text-vault-muted'
+                  req.met ? 'text-moss-light' : 'text-vault-muted'
                 }`}
               >
                 <Check className={`w-3 h-3 ${req.met ? 'opacity-100' : 'opacity-30'}`} />
@@ -175,7 +176,7 @@ export default function FanRegisterPage() {
           <button
             type="submit"
             disabled={isLoading || !passwordRequirements.every(r => r.met)}
-            className="w-full py-3 bg-gold text-vault-black font-semibold rounded-lg hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full py-3 bg-gold text-vault-black font-semibold tracking-wide rounded-md hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>

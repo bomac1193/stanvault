@@ -1,12 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap');
+/*
+ * Stanvault Design System - Sovereign Rebel Rebrand
+ *
+ * Font Stack:
+ * - Display/Headings: Jost (Futura-inspired geometric sans)
+ * - Body: Inter (excellent readability)
+ * - Data/Stats: JetBrains Mono (tech-forward)
+ *
+ * To use self-hosted Futura instead of Jost:
+ * 1. Place FuturaBold.woff2 and FuturaMedium.woff2 in src/app/fonts/
+ * 2. Uncomment the @font-face declarations below
+ * 3. Update tailwind.config.ts fontFamily.display to use 'Futura' first
+ */
+
+/* Self-hosted Futura (uncomment when font files are available)
+@font-face {
+  font-family: 'Futura';
+  src: url('./fonts/FuturaBold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Futura';
+  src: url('./fonts/FuturaMedium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+/* Google Fonts: Jost (Futura-inspired), Inter, JetBrains Mono */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Jost:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #0D0D0D;
-  --foreground: #FAF9F7;
+  --background: #0A0A0A;
+  --foreground: #F5F0E8;
 }
 
 body {
@@ -23,7 +56,7 @@ body {
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display;
+    @apply font-display font-bold;
   }
 }
 
@@ -37,15 +70,25 @@ body {
   }
 
   .card-elevated {
-    @apply bg-vault-dark border border-vault-gray rounded-lg shadow-lg shadow-black/20;
+    @apply bg-vault-dark border border-vault-gray/60 rounded-md;
   }
 
   .card-outlined {
-    @apply bg-transparent border border-vault-gray rounded-lg;
+    @apply bg-transparent border border-vault-gray/60 rounded-md;
   }
 
   .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-vault-black;
+    @apply focus:outline-none focus:ring-2 focus:ring-moss-light focus:ring-offset-2 focus:ring-offset-vault-black;
+  }
+
+  /* Brand wordmark utility */
+  .wordmark {
+    @apply font-display font-bold uppercase tracking-brand;
+  }
+
+  /* Navigation item styling */
+  .nav-item {
+    @apply uppercase text-sm font-medium tracking-wide;
   }
 }
 
@@ -56,7 +99,7 @@ body {
 
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: #2A2A2A #0D0D0D;
+    scrollbar-color: #2A2A2A #0A0A0A;
   }
 
   .scrollbar-thin::-webkit-scrollbar {
@@ -64,7 +107,7 @@ body {
   }
 
   .scrollbar-thin::-webkit-scrollbar-track {
-    background: #0D0D0D;
+    background: #0A0A0A;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {

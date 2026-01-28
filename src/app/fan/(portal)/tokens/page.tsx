@@ -214,25 +214,25 @@ export default function FanTokensPage() {
   return (
     <div className="min-h-screen bg-vault-black">
       {/* Header */}
-      <header className="border-b border-vault-gray">
+      <header className="border-b border-vault-gray/60/60">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <Link
             href="/fan/dashboard"
-            className="inline-flex items-center gap-2 text-vault-muted hover:text-warm-white transition-colors mb-4"
+            className="inline-flex items-center gap-2 text-vault-muted hover:text-warm-white transition-colors mb-4 nav-item"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Dashboard
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-warm-white">Verification Tokens</h1>
+              <h1 className="text-2xl font-display font-bold text-warm-white">Verification Tokens</h1>
               <p className="text-vault-muted">
                 Prove your fan status to third parties
               </p>
             </div>
             <button
               onClick={() => setShowGenerateModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gold text-vault-black font-medium rounded-lg hover:bg-gold/90 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-gold text-vault-black font-medium tracking-wide rounded-md hover:bg-gold-light transition-colors"
             >
               <Plus className="w-4 h-4" />
               Generate Token
@@ -250,8 +250,8 @@ export default function FanTokensPage() {
         )}
 
         {/* Info Card */}
-        <div className="mb-8 p-4 bg-vault-dark border border-vault-gray rounded-lg">
-          <h3 className="font-medium text-warm-white mb-2">What are verification tokens?</h3>
+        <div className="mb-8 p-4 bg-vault-dark border border-vault-gray/60 rounded-md">
+          <h3 className="font-display font-bold text-warm-white mb-2">What are verification tokens?</h3>
           <p className="text-sm text-vault-muted">
             Verification tokens are cryptographic proofs of your fan relationship with an artist.
             Share them with ticket vendors, merch sites, or Discord bots to prove your superfan
@@ -262,7 +262,7 @@ export default function FanTokensPage() {
 
         {/* Tokens List */}
         {tokens.length === 0 ? (
-          <div className="bg-vault-dark border border-vault-gray rounded-lg p-12 text-center">
+          <div className="bg-vault-dark border border-vault-gray/60 rounded-md p-12 text-center">
             <Shield className="w-12 h-12 text-vault-muted mx-auto mb-4" />
             <p className="text-warm-white mb-2">No active tokens</p>
             <p className="text-sm text-vault-muted mb-4">
@@ -270,7 +270,7 @@ export default function FanTokensPage() {
             </p>
             <button
               onClick={() => setShowGenerateModal(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gold text-vault-black font-medium rounded-lg hover:bg-gold/90"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gold text-vault-black font-medium rounded-md hover:bg-gold-light"
             >
               <Plus className="w-4 h-4" />
               Generate Your First Token
@@ -281,7 +281,7 @@ export default function FanTokensPage() {
             {tokens.map((token) => (
               <div
                 key={token.id}
-                className="bg-vault-dark border border-vault-gray rounded-lg p-4"
+                className="bg-vault-dark border border-vault-gray/60 rounded-md p-4"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
@@ -355,8 +355,8 @@ export default function FanTokensPage() {
       {/* Generate Modal */}
       {showGenerateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-vault-dark border border-vault-gray rounded-lg w-full max-w-md">
-            <div className="px-6 py-4 border-b border-vault-gray">
+          <div className="bg-vault-dark border border-vault-gray/60 rounded-md w-full max-w-md">
+            <div className="px-6 py-4 border-b border-vault-gray/60">
               <h3 className="text-lg font-semibold text-warm-white">
                 {generatedToken ? 'Token Generated' : 'Generate Verification Token'}
               </h3>
@@ -381,7 +381,7 @@ export default function FanTokensPage() {
                     <textarea
                       readOnly
                       value={generatedToken}
-                      className="w-full h-32 p-3 bg-vault-darker border border-vault-gray rounded-lg text-warm-white text-xs font-mono resize-none"
+                      className="w-full h-32 p-3 bg-vault-darker border border-vault-gray/60 rounded-md text-warm-white text-xs font-mono resize-none"
                     />
                     <button
                       onClick={() => handleCopyToken(generatedToken, 'generated')}
@@ -408,7 +408,7 @@ export default function FanTokensPage() {
                     <select
                       value={selectedArtistId}
                       onChange={(e) => setSelectedArtistId(e.target.value)}
-                      className="w-full px-3 py-2 bg-vault-darker border border-vault-gray rounded-lg text-warm-white focus:outline-none focus:ring-2 focus:ring-gold/50"
+                      className="w-full px-3 py-2 bg-vault-darker border border-vault-gray/60 rounded-md text-warm-white focus:outline-none focus:ring-2 focus:ring-gold/50"
                     >
                       <option value="">Choose an artist...</option>
                       {relationships.map((rel) => (
@@ -428,7 +428,7 @@ export default function FanTokensPage() {
                       value={purpose}
                       onChange={(e) => setPurpose(e.target.value)}
                       placeholder="e.g., Concert presale, Discord verification"
-                      className="w-full px-3 py-2 bg-vault-darker border border-vault-gray rounded-lg text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-gold/50"
+                      className="w-full px-3 py-2 bg-vault-darker border border-vault-gray/60 rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-gold/50"
                     />
                   </div>
 
@@ -439,7 +439,7 @@ export default function FanTokensPage() {
                     <select
                       value={expiryDays}
                       onChange={(e) => setExpiryDays(Number(e.target.value))}
-                      className="w-full px-3 py-2 bg-vault-darker border border-vault-gray rounded-lg text-warm-white focus:outline-none focus:ring-2 focus:ring-gold/50"
+                      className="w-full px-3 py-2 bg-vault-darker border border-vault-gray/60 rounded-md text-warm-white focus:outline-none focus:ring-2 focus:ring-gold/50"
                     >
                       <option value={7}>7 days</option>
                       <option value={30}>30 days</option>
@@ -466,7 +466,7 @@ export default function FanTokensPage() {
               )}
             </div>
 
-            <div className="px-6 py-4 border-t border-vault-gray flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-vault-gray/60 flex justify-end gap-3">
               <button
                 onClick={closeModal}
                 className="px-4 py-2 text-vault-muted hover:text-warm-white transition-colors"
@@ -477,7 +477,7 @@ export default function FanTokensPage() {
                 <button
                   onClick={handleGenerateToken}
                   disabled={!selectedArtistId || isGenerating}
-                  className="flex items-center gap-2 px-4 py-2 bg-gold text-vault-black font-medium rounded-lg hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-4 py-2 bg-gold text-vault-black font-medium rounded-md hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isGenerating ? (
                     <>

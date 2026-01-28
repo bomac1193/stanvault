@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
-  Music,
   Star,
   Shield,
   Download,
@@ -14,7 +13,9 @@ import {
   CheckCircle,
   Users,
   TrendingUp,
+  Music,
 } from 'lucide-react'
+import { LogoMark, Wordmark } from '@/components/brand/Logo'
 
 interface ArtistRelationship {
   id: string
@@ -127,29 +128,27 @@ export default function FanDashboardPage() {
   return (
     <div className="min-h-screen bg-vault-black">
       {/* Header */}
-      <header className="border-b border-vault-gray">
+      <header className="border-b border-vault-gray/60">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gold/10 rounded-lg">
-              <Music className="w-6 h-6 text-gold" />
-            </div>
+            <LogoMark size="sm" />
             <div>
-              <h1 className="text-lg font-bold text-warm-white">Fan Portal</h1>
-              <p className="text-sm text-vault-muted">Your fan identity</p>
+              <Wordmark size="sm" />
+              <p className="text-xs text-vault-muted font-display uppercase tracking-wide">Fan Portal</p>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
             <Link
               href="/fan/export"
-              className="flex items-center gap-2 text-sm text-vault-muted hover:text-warm-white transition-colors"
+              className="flex items-center gap-2 text-sm text-vault-muted hover:text-warm-white transition-colors nav-item"
             >
               <Download className="w-4 h-4" />
               Export
             </Link>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 text-sm text-vault-muted hover:text-warm-white transition-colors"
+              className="flex items-center gap-2 text-sm text-vault-muted hover:text-warm-white transition-colors nav-item"
             >
               <LogOut className="w-4 h-4" />
               Logout
@@ -161,13 +160,13 @@ export default function FanDashboardPage() {
       <main className="max-w-6xl mx-auto px-6 py-8">
         {/* User Welcome */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-warm-white mb-1">
+          <h2 className="text-2xl font-display font-bold text-warm-white mb-1">
             Welcome, {data.user.displayName}
           </h2>
           <p className="text-vault-muted">
             {data.user.spotifyConnected ? (
               <span className="flex items-center gap-1">
-                <CheckCircle className="w-4 h-4 text-status-success" />
+                <CheckCircle className="w-4 h-4 text-moss-light" />
                 Spotify connected
               </span>
             ) : (
@@ -180,7 +179,7 @@ export default function FanDashboardPage() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-vault-dark border border-vault-gray rounded-lg p-4">
+          <div className="bg-vault-dark border border-vault-gray/60 rounded-md p-4">
             <div className="flex items-center gap-2 mb-2">
               <Users className="w-4 h-4 text-vault-muted" />
               <span className="text-sm text-vault-muted">Artists</span>
@@ -190,7 +189,7 @@ export default function FanDashboardPage() {
             </p>
           </div>
 
-          <div className="bg-vault-dark border border-vault-gray rounded-lg p-4">
+          <div className="bg-vault-dark border border-vault-gray/60 rounded-md p-4">
             <div className="flex items-center gap-2 mb-2">
               <Star className="w-4 h-4 text-gold" />
               <span className="text-sm text-vault-muted">Superfan Status</span>
@@ -200,7 +199,7 @@ export default function FanDashboardPage() {
             </p>
           </div>
 
-          <div className="bg-vault-dark border border-vault-gray rounded-lg p-4">
+          <div className="bg-vault-dark border border-vault-gray/60 rounded-md p-4">
             <div className="flex items-center gap-2 mb-2">
               <TrendingUp className="w-4 h-4 text-vault-muted" />
               <span className="text-sm text-vault-muted">Avg Score</span>
@@ -210,7 +209,7 @@ export default function FanDashboardPage() {
             </p>
           </div>
 
-          <div className="bg-vault-dark border border-vault-gray rounded-lg p-4">
+          <div className="bg-vault-dark border border-vault-gray/60 rounded-md p-4">
             <div className="flex items-center gap-2 mb-2">
               <Shield className="w-4 h-4 text-vault-muted" />
               <span className="text-sm text-vault-muted">Verified</span>
@@ -222,9 +221,9 @@ export default function FanDashboardPage() {
         </div>
 
         {/* Artist Relationships */}
-        <div className="bg-vault-dark border border-vault-gray rounded-lg">
-          <div className="px-6 py-4 border-b border-vault-gray">
-            <h3 className="text-lg font-semibold text-warm-white">
+        <div className="bg-vault-dark border border-vault-gray/60 rounded-md">
+          <div className="px-6 py-4 border-b border-vault-gray/60">
+            <h3 className="text-lg font-display font-bold text-warm-white">
               Your Artist Relationships
             </h3>
             <p className="text-sm text-vault-muted">
@@ -244,7 +243,7 @@ export default function FanDashboardPage() {
               {!data.user.spotifyConnected && (
                 <Link
                   href="/fan/onboarding"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-gold text-vault-black font-medium rounded-lg hover:bg-gold/90"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gold text-vault-black font-medium tracking-wide rounded-md hover:bg-gold-light"
                 >
                   Connect Spotify
                   <ExternalLink className="w-4 h-4" />
@@ -252,12 +251,12 @@ export default function FanDashboardPage() {
               )}
             </div>
           ) : (
-            <div className="divide-y divide-vault-gray">
+            <div className="divide-y divide-vault-gray/60">
               {data.relationships.map((rel) => (
                 <div key={rel.id} className="p-4 hover:bg-vault-darker/50 transition-colors">
                   <div className="flex items-center gap-4">
                     {/* Artist Avatar */}
-                    <div className="w-12 h-12 bg-vault-darker rounded-lg flex items-center justify-center overflow-hidden">
+                    <div className="w-12 h-12 bg-vault-darker rounded-md flex items-center justify-center overflow-hidden">
                       {rel.artist.image ? (
                         <img
                           src={rel.artist.image}
@@ -276,7 +275,7 @@ export default function FanDashboardPage() {
                           {rel.artist.name}
                         </h4>
                         {rel.verified && (
-                          <CheckCircle className="w-4 h-4 text-status-success flex-shrink-0" />
+                          <CheckCircle className="w-4 h-4 text-moss-light flex-shrink-0" />
                         )}
                       </div>
                       <p className="text-sm text-vault-muted">{rel.artist.genre || 'Artist'}</p>
@@ -287,12 +286,12 @@ export default function FanDashboardPage() {
                       <p className="text-lg font-mono font-bold text-warm-white">
                         {rel.stanScore}
                       </p>
-                      <p className="text-xs text-vault-muted">score</p>
+                      <p className="text-xs text-vault-muted font-display uppercase tracking-wide">score</p>
                     </div>
 
                     {/* Tier Badge */}
                     <span
-                      className={`px-3 py-1 rounded-full border text-sm font-medium ${getTierColor(
+                      className={`px-3 py-1 rounded-sm border text-sm font-display font-bold uppercase tracking-wide ${getTierColor(
                         rel.tier
                       )}`}
                     >
@@ -330,9 +329,12 @@ export default function FanDashboardPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-vault-gray mt-12">
-        <div className="max-w-6xl mx-auto px-6 py-6 text-center text-sm text-vault-muted">
-          <p>Stanvault Fan Portal • Own Your Fan Identity</p>
+      <footer className="border-t border-vault-gray/60 mt-12">
+        <div className="max-w-6xl mx-auto px-6 py-6 text-center">
+          <p className="font-display font-bold uppercase tracking-brand text-sm text-vault-muted">
+            STANVAULT
+          </p>
+          <p className="text-xs text-vault-muted mt-1">Own Your Fans. Own Your Future.</p>
         </div>
       </footer>
     </div>

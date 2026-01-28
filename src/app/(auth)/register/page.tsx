@@ -109,7 +109,7 @@ export default function RegisterPage() {
 
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-vault-gray" />
+            <div className="w-full border-t border-vault-gray/60" />
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="px-2 bg-vault-dark text-vault-muted">

@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Shield, CheckCircle, XCircle, Loader2, Music } from 'lucide-react'
+import { Shield, CheckCircle, XCircle, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Logo, LogoMark, Wordmark } from '@/components/brand/Logo'
 
 interface VerificationResult {
   valid: boolean
@@ -69,14 +70,12 @@ export default function VerifyPage() {
   return (
     <div className="min-h-screen bg-vault-black">
       {/* Header */}
-      <header className="border-b border-vault-gray">
+      <header className="border-b border-vault-gray/60">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center gap-3">
-          <div className="p-2 bg-gold/10 rounded-lg">
-            <Music className="w-6 h-6 text-gold" />
-          </div>
+          <LogoMark size="sm" />
           <div>
-            <h1 className="text-xl font-bold text-warm-white">Stanvault</h1>
-            <p className="text-sm text-vault-muted">Fan Verification</p>
+            <Wordmark size="sm" />
+            <p className="text-xs text-vault-muted font-display uppercase tracking-wide">Fan Verification</p>
           </div>
         </div>
       </header>
@@ -84,8 +83,8 @@ export default function VerifyPage() {
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-6 py-12">
         <div className="text-center mb-8">
-          <Shield className="w-16 h-16 text-gold mx-auto mb-4" />
-          <h2 className="text-3xl font-bold text-warm-white mb-2">
+          <LogoMark size="xl" className="mx-auto mb-4" />
+          <h2 className="text-3xl font-display font-bold text-warm-white mb-2">
             Verify Fan Status
           </h2>
           <p className="text-vault-muted">
@@ -94,7 +93,7 @@ export default function VerifyPage() {
         </div>
 
         {/* Verification Form */}
-        <div className="bg-vault-dark border border-vault-gray rounded-lg p-6 mb-8">
+        <div className="bg-vault-dark border border-vault-gray/60 rounded-md p-6 mb-8">
           <label className="block text-sm font-medium text-warm-white mb-2">
             Verification Token
           </label>
@@ -102,12 +101,12 @@ export default function VerifyPage() {
             value={token}
             onChange={(e) => setToken(e.target.value)}
             placeholder="Paste the verification token here..."
-            className="w-full h-24 px-4 py-3 bg-vault-darker border border-vault-gray rounded-lg text-warm-white placeholder:text-vault-muted focus:outline-none focus:border-gold font-mono text-sm resize-none"
+            className="w-full h-24 px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent font-mono text-sm resize-none"
           />
           <button
             onClick={handleVerify}
             disabled={isVerifying || !token.trim()}
-            className="w-full mt-4 px-6 py-3 bg-gold text-vault-black font-semibold rounded-lg hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full mt-4 px-6 py-3 bg-gold text-vault-black font-semibold tracking-wide rounded-md hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isVerifying ? (
               <>
@@ -127,15 +126,15 @@ export default function VerifyPage() {
         {result && (
           <div
             className={cn(
-              'border rounded-lg p-6',
+              'border rounded-md p-6',
               result.valid
-                ? 'bg-status-success/10 border-status-success'
+                ? 'bg-moss-light/10 border-moss-light'
                 : 'bg-status-error/10 border-status-error'
             )}
           >
             <div className="flex items-start gap-4">
               {result.valid ? (
-                <CheckCircle className="w-8 h-8 text-status-success flex-shrink-0" />
+                <CheckCircle className="w-8 h-8 text-moss-light flex-shrink-0" />
               ) : (
                 <XCircle className="w-8 h-8 text-status-error flex-shrink-0" />
               )}
@@ -143,8 +142,8 @@ export default function VerifyPage() {
               <div className="flex-1">
                 <h3
                   className={cn(
-                    'text-xl font-bold mb-2',
-                    result.valid ? 'text-status-success' : 'text-status-error'
+                    'text-xl font-display font-bold mb-2',
+                    result.valid ? 'text-moss-light' : 'text-status-error'
                   )}
                 >
                   {result.valid ? 'Verified Fan' : 'Verification Failed'}
@@ -165,7 +164,7 @@ export default function VerifyPage() {
                       <p className="text-sm text-vault-muted mb-1">Fan Tier</p>
                       <span
                         className={cn(
-                          'inline-block px-4 py-2 rounded-lg border font-bold text-lg',
+                          'inline-block px-4 py-2 rounded-sm border font-display font-bold text-lg uppercase tracking-wide',
                           getTierColor(result.tier || 'CASUAL')
                         )}
                       >
@@ -174,7 +173,7 @@ export default function VerifyPage() {
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-vault-gray">
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-vault-gray/60">
                       <div>
                         <p className="text-sm text-vault-muted">Stan Score</p>
                         <p className="text-2xl font-mono font-bold text-warm-white">
@@ -192,7 +191,7 @@ export default function VerifyPage() {
                     </div>
 
                     {/* Validity Period */}
-                    <div className="pt-4 border-t border-vault-gray text-sm text-vault-muted">
+                    <div className="pt-4 border-t border-vault-gray/60 text-sm text-vault-muted">
                       <p>
                         Token issued: {formatDate(result.issuedAt || '')}
                       </p>
@@ -217,7 +216,7 @@ export default function VerifyPage() {
 
         {/* Info Section */}
         <div className="mt-12 text-center">
-          <h3 className="text-lg font-semibold text-warm-white mb-3">
+          <h3 className="text-lg font-display font-bold text-warm-white mb-3">
             What is Fan Verification?
           </h3>
           <p className="text-vault-muted mb-6 max-w-lg mx-auto">
@@ -227,20 +226,20 @@ export default function VerifyPage() {
           </p>
           <div className="flex justify-center gap-8 text-sm">
             <div className="text-center">
-              <div className="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center mx-auto mb-2">
+              <div className="w-12 h-12 bg-gold/10 rounded-md flex items-center justify-center mx-auto mb-2">
                 <Shield className="w-6 h-6 text-gold" />
               </div>
               <p className="text-vault-muted">Tamper-proof</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center mx-auto mb-2">
+              <div className="w-12 h-12 bg-gold/10 rounded-md flex items-center justify-center mx-auto mb-2">
                 <CheckCircle className="w-6 h-6 text-gold" />
               </div>
               <p className="text-vault-muted">Instant Verification</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center mx-auto mb-2">
-                <Music className="w-6 h-6 text-gold" />
+              <div className="w-12 h-12 bg-gold/10 rounded-md flex items-center justify-center mx-auto mb-2">
+                <LogoMark size="sm" />
               </div>
               <p className="text-vault-muted">Artist Controlled</p>
             </div>
@@ -249,10 +248,12 @@ export default function VerifyPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-vault-gray mt-12">
-        <div className="max-w-4xl mx-auto px-6 py-6 text-center text-sm text-vault-muted">
-          <p>Stanvault • Fan Intelligence Platform</p>
-          <p className="mt-1">What Matters Stays</p>
+      <footer className="border-t border-vault-gray/60 mt-12">
+        <div className="max-w-4xl mx-auto px-6 py-6 text-center">
+          <p className="font-display font-bold uppercase tracking-brand text-sm text-vault-muted">
+            STANVAULT
+          </p>
+          <p className="text-xs text-vault-muted mt-1">Own Your Fans. Own Your Future.</p>
         </div>
       </footer>
     </div>
