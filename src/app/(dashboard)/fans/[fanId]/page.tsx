@@ -10,6 +10,7 @@ import {
   PlatformLinksList,
   JourneyTimeline,
   FanNotes,
+  VerificationSection,
 } from '@/components/fans'
 import { ArrowLeft } from 'lucide-react'
 
@@ -127,6 +128,15 @@ export default function FanProfilePage({ params }: FanPageProps) {
             onSave={saveNotesMutation.mutateAsync}
           />
         </div>
+      </div>
+
+      {/* Verification Section - Full Width */}
+      <div className="mt-6">
+        <VerificationSection
+          fanId={fanId}
+          fanName={fan.displayName}
+          tier={fan.tier}
+        />
       </div>
     </div>
   )

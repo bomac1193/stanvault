@@ -1,14 +1,15 @@
 'use client'
 
 import { PageHeader } from '@/components/layout'
-import { MetricCard, TierChart, SuperfanMoments } from '@/components/dashboard'
+import { MetricCard, TierChart, SuperfanMoments, SCRCard } from '@/components/dashboard'
 import { MetricCardSkeleton, Skeleton } from '@/components/ui'
-import { useDashboardMetrics, useSuperfanMoments } from '@/hooks/use-dashboard'
+import { useDashboardMetrics, useSuperfanMoments, useSCR } from '@/hooks/use-dashboard'
 import { Users, Star, TrendingUp, Target } from 'lucide-react'
 
 export default function DashboardPage() {
   const { data: metrics, isLoading: metricsLoading } = useDashboardMetrics()
   const { data: momentsData, isLoading: momentsLoading } = useSuperfanMoments()
+  const { data: scrData, isLoading: scrLoading } = useSCR()
 
   return (
     <div>
@@ -55,6 +56,32 @@ export default function DashboardPage() {
             />
           </>
         )}
+      </div>
+
+      {/* SCR Card - Full Width */}
+      <div className="mb-8">
+        {scrLoading ? (
+          <div className="bg-vault-dark border border-vault-gray rounded-lg p-6">
+            <Skeleton className="h-6 w-48 mb-6" />
+            <Skeleton className="h-16 w-32 mb-4" />
+            <Skeleton className="h-4 w-full mb-6" />
+            <div className="grid grid-cols-2 gap-4">
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-24 w-full" />
+            </div>
+          </div>
+        ) : scrData ? (
+          <SCRCard
+            scr={scrData.scr}
+            components={scrData.components}
+            interpretation={scrData.interpretation}
+            trend={scrData.trend}
+            trendPercent={scrData.trendPercent}
+            history={scrData.history}
+          />
+        ) : null}
       </div>
 
       {/* Charts and Moments */}

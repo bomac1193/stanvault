@@ -52,3 +52,38 @@ export function useSuperfanMoments() {
     },
   })
 }
+
+interface SCRComponents {
+  holdRate: number
+  holdRate30Day: number
+  depthVelocity: number
+  platformIndependence: number
+  churnRate: number
+}
+
+interface SCRHistoryPoint {
+  date: string
+  scr: number | null
+  holdRate: number | null
+  churnRate: number | null
+}
+
+interface SCRData {
+  scr: number
+  components: SCRComponents
+  interpretation: string
+  trend: 'up' | 'down' | 'stable'
+  trendPercent: number
+  history: SCRHistoryPoint[]
+}
+
+export function useSCR() {
+  return useQuery<SCRData>({
+    queryKey: ['dashboard', 'scr'],
+    queryFn: async () => {
+      const res = await fetch('/api/dashboard/scr')
+      if (!res.ok) throw new Error('Failed to fetch SCR')
+      return res.json()
+    },
+  })
+}
