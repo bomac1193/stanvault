@@ -1,13 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Loader2, Eye, EyeOff } from 'lucide-react'
 import { LogoMark } from '@/components/brand/Logo'
 
 export default function FanLoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('redirect') || '/fan/dashboard'
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -32,7 +35,8 @@ export default function FanLoginPage() {
         throw new Error(data.error || 'Login failed')
       }
 
-      router.push(data.redirectTo)
+      // Use redirect param if provided, otherwise use API response
+      router.push(redirectTo !== '/fan/dashboard' ? redirectTo : data.redirectTo)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
     } finally {
