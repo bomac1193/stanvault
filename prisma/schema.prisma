@@ -55,6 +55,8 @@ model User {
   genre                String?
   careerStage          CareerStage?
   location             String?
+  spotifyArtistId      String?              // Artist's Spotify ID for matching listeners
+  spotifyArtistUri     String?              // Spotify URI
   onboardingCompleted  Boolean              @default(false)
   onboardingStep       Int                  @default(1)
   createdAt            DateTime             @default(now())
@@ -64,6 +66,7 @@ model User {
   sessions             Session[]
   platformConnections  PlatformConnection[]
   fans                 Fan[]
+  metricsHistory       ArtistMetricsHistory[]
 }
 
 enum CareerStage {
@@ -75,16 +78,20 @@ enum CareerStage {
 
 // Platform Connection
 model PlatformConnection {
-  id           String           @id @default(cuid())
-  userId       String
-  platform     Platform
-  accessToken  String?          @db.Text
-  refreshToken String?          @db.Text
-  status       ConnectionStatus @default(CONNECTED)
-  lastSyncAt   DateTime?
-  fanCount     Int              @default(0)
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  id              String           @id @default(cuid())
+  userId          String
+  platform        Platform
+  accessToken     String?          @db.Text
+  refreshToken    String?          @db.Text
+  tokenExpiresAt  DateTime?        // When access token expires
+  platformUserId  String?          // User's ID on the platform
+  platformScope   String?          // Granted OAuth scopes
+  status          ConnectionStatus @default(CONNECTED)
+  lastSyncAt      DateTime?
+  fanCount        Int              @default(0)
+  syncError       String?          // Last sync error message
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -132,10 +139,13 @@ model Fan {
   user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   platformLinks FanPlatformLink[]
   events        FanEvent[]
+  snapshots     FanSnapshot[]
+  listeningEvents ListeningEvent[]
 
   @@index([userId, stanScore])
   @@index([userId, tier])
   @@index([userId, lastActiveAt])
+  @@index([userId, firstSeenAt])
 }
 
 enum FanTier {
@@ -208,7 +218,112 @@ enum EventType {
   EMAIL_SUBSCRIBE
   EMAIL_OPEN
   TIER_UPGRADE
+  TIER_DOWNGRADE
   BECAME_SUPERFAN
+  WENT_DORMANT
+  REACTIVATED
   MILESTONE_STREAMS
   MILESTONE_ENGAGEMENT
+}
+
+// Fan Snapshot - Daily snapshots for hold rate calculation
+model FanSnapshot {
+  id        String   @id @default(cuid())
+  fanId     String
+  date      DateTime @db.Date
+  stanScore Int
+  tier      FanTier
+  isActive  Boolean  @default(true)  // Was fan active when snapshot taken?
+  createdAt DateTime @default(now())
+
+  fan Fan @relation(fields: [fanId], references: [id], onDelete: Cascade)
+
+  @@unique([fanId, date])
+  @@index([fanId, date])
+  @@index([date])
+}
+
+// Artist Metrics History - SCR and other metrics over time
+model ArtistMetricsHistory {
+  id                    String   @id @default(cuid())
+  userId                String
+  date                  DateTime @db.Date
+
+  // Fan counts
+  totalFans             Int
+  casualCount           Int
+  engagedCount          Int
+  dedicatedCount        Int
+  superfanCount         Int
+
+  // SCR Components
+  holdRate90Day         Float?   // % retained after 90 days
+  holdRate30Day         Float?   // % retained after 30 days
+  depthVelocity         Float?   // Normalized time to superfan (0-1)
+  platformIndependence  Float?   // 1 - HHI (0-1)
+  churnRate             Float?   // % regressed or dormant
+
+  // Calculated SCR
+  scr                   Float?   // Stan Conversion Rate
+
+  // Additional metrics
+  avgStanScore          Float?
+  newFansCount          Int?     // New fans this period
+  churnedFansCount      Int?     // Fans lost this period
+  upgradedFansCount     Int?     // Fans who upgraded tier
+
+  createdAt             DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+// Listening Event - Detailed streaming history from Spotify
+model ListeningEvent {
+  id           String   @id @default(cuid())
+  fanId        String
+  trackId      String   // Spotify track ID
+  trackName    String
+  artistId     String   // Artist's Spotify ID
+  artistName   String
+  albumId      String?
+  albumName    String?
+  playedAt     DateTime
+  durationMs   Int      // How long they listened
+  contextType  String?  // album, playlist, artist, etc.
+  contextUri   String?  // URI of the context
+  createdAt    DateTime @default(now())
+
+  fan Fan @relation(fields: [fanId], references: [id], onDelete: Cascade)
+
+  @@index([fanId, playedAt])
+  @@index([artistId, playedAt])
+  @@index([trackId])
+}
+
+// Fan Verification Token - For the verification protocol
+model FanVerificationToken {
+  id              String    @id @default(cuid())
+  fanId           String
+  artistId        String    // The artist this verification is for
+  token           String    @unique
+  tier            FanTier
+  stanScore       Int
+  relationshipMonths Int
+  issuedAt        DateTime  @default(now())
+  expiresAt       DateTime
+  revokedAt       DateTime?
+  usageCount      Int       @default(0)
+  lastUsedAt      DateTime?
+
+  // Metadata
+  issuedFor       String?   // Purpose/recipient of the token
+
+  createdAt       DateTime  @default(now())
+
+  @@index([fanId])
+  @@index([token])
+  @@index([expiresAt])
 }
