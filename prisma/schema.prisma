@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -14,12 +14,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -83,8 +83,8 @@ model PlatformConnection {
   id              String           @id @default(cuid())
   userId          String
   platform        Platform
-  accessToken     String?          @db.Text
-  refreshToken    String?          @db.Text
+  accessToken     String?
+  refreshToken    String?
   tokenExpiresAt  DateTime?        // When access token expires
   platformUserId  String?          // User's ID on the platform
   platformScope   String?          // Granted OAuth scopes
@@ -134,7 +134,7 @@ model Fan {
   recencyScore    Int              @default(0)
   firstSeenAt     DateTime         @default(now())
   lastActiveAt    DateTime         @default(now())
-  notes           String?          @db.Text
+  notes           String?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
@@ -233,7 +233,7 @@ enum EventType {
 model FanSnapshot {
   id        String   @id @default(cuid())
   fanId     String
-  date      DateTime @db.Date
+  date      DateTime
   stanScore Int
   tier      FanTier
   isActive  Boolean  @default(true)  // Was fan active when snapshot taken?
@@ -250,7 +250,7 @@ model FanSnapshot {
 model ArtistMetricsHistory {
   id                    String   @id @default(cuid())
   userId                String
-  date                  DateTime @db.Date
+  date                  DateTime
 
   // Fan counts
   totalFans             Int
@@ -345,8 +345,8 @@ model FanUser {
 
   // Spotify connection for verification
   spotifyUserId         String?   @unique
-  spotifyAccessToken    String?   @db.Text
-  spotifyRefreshToken   String?   @db.Text
+  spotifyAccessToken    String?
+  spotifyRefreshToken   String?
   spotifyTokenExpiresAt DateTime?
 
   // Profile data
