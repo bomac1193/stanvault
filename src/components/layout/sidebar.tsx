@@ -11,6 +11,7 @@ import {
   Download,
   LogOut,
   Settings,
+  Gift,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { LogoMark } from '@/components/brand/Logo'
@@ -18,6 +19,7 @@ import { LogoMark } from '@/components/brand/Logo'
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/fans', label: 'Fans', icon: Users },
+  { href: '/drops', label: 'Drops', icon: Gift },
   { href: '/connections', label: 'Connect', icon: Link2 },
   { href: '/insights', label: 'Insights', icon: Lightbulb },
   { href: '/export', label: 'Export', icon: Download },

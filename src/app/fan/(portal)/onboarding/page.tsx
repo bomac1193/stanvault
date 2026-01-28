@@ -19,6 +19,15 @@ export default function FanOnboardingPage() {
 
     if (spotify === 'connected') {
       setSpotifyConnected(true)
+      // Trigger sync to verify artist relationships
+      fetch('/api/fan/sync', { method: 'POST' })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log('Synced relationships:', data.synced)
+        })
+        .catch((err) => {
+          console.error('Sync failed:', err)
+        })
     } else if (errorParam) {
       setError(`Connection failed: ${errorParam}`)
     }

@@ -69,6 +69,7 @@ model User {
   fans                 Fan[]
   metricsHistory       ArtistMetricsHistory[]
   fanUserLinks         FanUserArtistLink[]  // Fan portal users who are fans of this artist
+  drops                Drop[]               // Gated drops created by this artist
 }
 
 enum CareerStage {
@@ -363,6 +364,7 @@ model FanUser {
   artistRelationships   FanUserArtistLink[]
   verificationTokens    FanUserVerificationToken[]
   sessions              FanUserSession[]
+  dropClaims            DropClaim[]
 
   @@index([email])
   @@index([spotifyUserId])
@@ -464,5 +466,74 @@ model FanIdentityExport {
   artistCount Int
   totalScore  Int      // Sum of all stan scores
 
+  @@index([fanUserId])
+}
+
+// ============================================
+// GATED DROPS - Verification-gated content
+// ============================================
+
+// Drop - Exclusive content gated behind fan verification
+model Drop {
+  id          String    @id @default(cuid())
+  userId      String    // Artist who created it
+  slug        String    @unique // URL-friendly identifier
+
+  // Content
+  title       String
+  description String?
+  contentType DropContentType
+  contentUrl  String?   // File URL, media URL, etc.
+
+  // Gating rules
+  minTier     FanTier?  // Require at least this tier (NULL = any verified fan)
+  minScore    Int?      // Require minimum stan score
+  minMonths   Int?      // Require minimum relationship duration
+
+  // Time windows
+  startsAt    DateTime? // When drop becomes accessible
+  endsAt      DateTime? // When drop expires
+
+  // Inventory
+  maxClaims   Int?      // NULL = unlimited
+
+  // Status
+  isActive    Boolean   @default(true)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  claims      DropClaim[]
+
+  @@index([userId])
+  @@index([slug])
+  @@index([isActive, startsAt])
+}
+
+enum DropContentType {
+  DOWNLOAD    // File download (MP3, ZIP, etc.)
+  LINK        // External link
+  MESSAGE     // Text/markdown content
+  PRESALE     // Ticket presale code
+}
+
+// DropClaim - Record of a fan claiming a drop
+model DropClaim {
+  id        String   @id @default(cuid())
+  dropId    String
+  fanUserId String
+
+  // Verification used
+  tier      FanTier
+  stanScore Int
+
+  claimedAt DateTime @default(now())
+
+  drop      Drop     @relation(fields: [dropId], references: [id], onDelete: Cascade)
+  fanUser   FanUser  @relation(fields: [fanUserId], references: [id], onDelete: Cascade)
+
+  @@unique([dropId, fanUserId]) // One claim per fan per drop
+  @@index([dropId])
   @@index([fanUserId])
 }
