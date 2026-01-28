@@ -8,6 +8,7 @@ declare module 'next-auth' {
       name?: string | null
       image?: string | null
       artistName?: string
+      spotifyArtistId?: string
       onboardingCompleted: boolean
       onboardingStep: number
     }
@@ -19,6 +20,7 @@ declare module 'next-auth' {
     name?: string | null
     image?: string | null
     artistName?: string
+    spotifyArtistId?: string
     onboardingCompleted?: boolean
     onboardingStep?: number
   }
@@ -28,6 +30,7 @@ declare module 'next-auth/jwt' {
   interface JWT {
     id: string
     artistName?: string
+    spotifyArtistId?: string
     onboardingCompleted?: boolean
     onboardingStep?: number
   }

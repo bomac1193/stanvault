@@ -13,6 +13,7 @@ export const authConfig: NextAuthConfig = {
       const isOnboardingPage = nextUrl.pathname.startsWith('/onboarding')
       const isProtectedPage = nextUrl.pathname.startsWith('/dashboard') ||
         nextUrl.pathname.startsWith('/fans') ||
+        nextUrl.pathname.startsWith('/drops') ||
         nextUrl.pathname.startsWith('/connections') ||
         nextUrl.pathname.startsWith('/insights') ||
         nextUrl.pathname.startsWith('/export') ||

@@ -67,12 +67,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { id: token.id as string },
           select: {
             artistName: true,
+            spotifyArtistId: true,
             onboardingCompleted: true,
             onboardingStep: true,
           },
         })
         if (dbUser) {
           token.artistName = dbUser.artistName
+          token.spotifyArtistId = dbUser.spotifyArtistId
           token.onboardingCompleted = dbUser.onboardingCompleted
           token.onboardingStep = dbUser.onboardingStep
         }
@@ -84,6 +86,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token) {
         session.user.id = token.id as string
         session.user.artistName = token.artistName as string | undefined
+        session.user.spotifyArtistId = token.spotifyArtistId as string | undefined
         session.user.onboardingCompleted = token.onboardingCompleted as boolean
         session.user.onboardingStep = token.onboardingStep as number
       }
