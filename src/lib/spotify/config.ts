@@ -39,7 +39,7 @@ export function getSpotifyCredentials() {
   return {
     clientId,
     clientSecret,
-    redirectUri: `${appUrl}/api/auth/spotify/callback`,
+    redirectUri: process.env.SPOTIFY_REDIRECT_URI || `${appUrl}/api/fan/auth/spotify/callback`,
   }
 }
 

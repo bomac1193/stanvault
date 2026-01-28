@@ -19,8 +19,7 @@ export async function GET() {
     }
 
     const { clientId } = getSpotifyCredentials()
-    const appUrl = process.env.APP_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000'
-    const redirectUri = `${appUrl}/api/fan/auth/spotify/callback`
+    const redirectUri = process.env.SPOTIFY_REDIRECT_URI || 'http://127.0.0.1:3000/api/fan/auth/spotify/callback'
 
     // Generate state with fan user ID
     const state = Buffer.from(

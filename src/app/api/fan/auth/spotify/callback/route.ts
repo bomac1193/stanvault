@@ -43,8 +43,7 @@ export async function GET(request: NextRequest) {
 
     const fanUserId = stateData.fanUserId
     const { clientId, clientSecret } = getSpotifyCredentials()
-    const appUrl = process.env.APP_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000'
-    const redirectUri = `${appUrl}/api/fan/auth/spotify/callback`
+    const redirectUri = process.env.SPOTIFY_REDIRECT_URI || 'http://127.0.0.1:3000/api/fan/auth/spotify/callback'
 
     // Exchange code for tokens
     const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
