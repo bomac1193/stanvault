@@ -59,6 +59,7 @@ model User {
   spotifyArtistUri     String?              // Spotify URI
   onboardingCompleted  Boolean              @default(false)
   onboardingStep       Int                  @default(1)
+  isPublicProfile      Boolean              @default(false)  // Opt-in for public SCR profile
   createdAt            DateTime             @default(now())
   updatedAt            DateTime             @updatedAt
 
@@ -67,6 +68,7 @@ model User {
   platformConnections  PlatformConnection[]
   fans                 Fan[]
   metricsHistory       ArtistMetricsHistory[]
+  fanUserLinks         FanUserArtistLink[]  // Fan portal users who are fans of this artist
 }
 
 enum CareerStage {
@@ -141,6 +143,7 @@ model Fan {
   events        FanEvent[]
   snapshots     FanSnapshot[]
   listeningEvents ListeningEvent[]
+  fanUserLink   FanUserArtistLink?  // Link to fan portal user if claimed
 
   @@index([userId, stanScore])
   @@index([userId, tier])
@@ -303,7 +306,7 @@ model ListeningEvent {
   @@index([trackId])
 }
 
-// Fan Verification Token - For the verification protocol
+// Fan Verification Token - For the verification protocol (artist-issued)
 model FanVerificationToken {
   id              String    @id @default(cuid())
   fanId           String
@@ -326,4 +329,140 @@ model FanVerificationToken {
   @@index([fanId])
   @@index([token])
   @@index([expiresAt])
+}
+
+// ============================================
+// FAN PORTAL - Two-sided marketplace models
+// ============================================
+
+// FanUser - A fan with their own account (the other side of the marketplace)
+model FanUser {
+  id                    String    @id @default(cuid())
+  email                 String    @unique
+  password              String?
+  displayName           String
+  avatarUrl             String?
+
+  // Spotify connection for verification
+  spotifyUserId         String?   @unique
+  spotifyAccessToken    String?   @db.Text
+  spotifyRefreshToken   String?   @db.Text
+  spotifyTokenExpiresAt DateTime?
+
+  // Profile data
+  country               String?
+
+  // Onboarding
+  onboardingCompleted   Boolean   @default(false)
+  onboardingStep        Int       @default(1)
+
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  // Relations
+  artistRelationships   FanUserArtistLink[]
+  verificationTokens    FanUserVerificationToken[]
+  sessions              FanUserSession[]
+
+  @@index([email])
+  @@index([spotifyUserId])
+}
+
+// FanUserSession - Separate session management for fan portal
+model FanUserSession {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  fanUserId    String
+  expires      DateTime
+
+  fanUser FanUser @relation(fields: [fanUserId], references: [id], onDelete: Cascade)
+
+  @@index([fanUserId])
+}
+
+// FanUserArtistLink - The relationship between a fan and an artist
+// This is the core of the two-sided marketplace
+model FanUserArtistLink {
+  id            String    @id @default(cuid())
+  fanUserId     String
+  artistId      String    // User.id (the artist)
+  fanRecordId   String?   @unique  // Link to existing Fan record if matched
+
+  // Cached relationship data (computed from listening history)
+  tier          FanTier   @default(CASUAL)
+  stanScore     Int       @default(0)
+  totalStreams  Int       @default(0)
+  savedTracks   Int       @default(0)
+  playlistAdds  Int       @default(0)
+  isFollowing   Boolean   @default(false)
+
+  firstSeenAt   DateTime  @default(now())
+  lastActiveAt  DateTime  @default(now())
+
+  // Verification status
+  verified      Boolean   @default(false)  // Has this relationship been verified via Spotify?
+  verifiedAt    DateTime?
+  verifiedVia   String?   // "spotify", "manual", etc.
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  fanUser       FanUser   @relation(fields: [fanUserId], references: [id], onDelete: Cascade)
+  artist        User      @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  fanRecord     Fan?      @relation(fields: [fanRecordId], references: [id])
+
+  @@unique([fanUserId, artistId])
+  @@index([fanUserId])
+  @@index([artistId])
+  @@index([tier])
+}
+
+// FanUserVerificationToken - Fan-initiated verification tokens
+// Different from FanVerificationToken (artist-issued) - this is self-service
+model FanUserVerificationToken {
+  id                 String    @id @default(cuid())
+  fanUserId          String
+  artistId           String    // Which artist relationship this proves
+  token              String    @unique
+
+  // Snapshot of status at time of issuance
+  tier               FanTier
+  stanScore          Int
+  relationshipMonths Int
+
+  // Token lifecycle
+  issuedAt           DateTime  @default(now())
+  expiresAt          DateTime
+  revokedAt          DateTime?
+
+  // Usage tracking
+  usageCount         Int       @default(0)
+  lastUsedAt         DateTime?
+
+  // What the fan is using it for (optional)
+  purpose            String?
+
+  createdAt          DateTime  @default(now())
+
+  fanUser FanUser @relation(fields: [fanUserId], references: [id], onDelete: Cascade)
+
+  @@index([fanUserId])
+  @@index([artistId])
+  @@index([token])
+  @@index([expiresAt])
+}
+
+// FanIdentityExport - Track when fans export their portable identity
+model FanIdentityExport {
+  id          String   @id @default(cuid())
+  fanUserId   String
+  format      String   // "json", "signed_json"
+  signature   String?  // Cryptographic signature for authenticity
+  exportedAt  DateTime @default(now())
+
+  // Snapshot of what was exported
+  artistCount Int
+  totalScore  Int      // Sum of all stan scores
+
+  @@index([fanUserId])
 }
