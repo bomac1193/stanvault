@@ -16,11 +16,18 @@ const config: Config = {
         black: "#000000",
         white: "#FFFFFF",
 
-        // The rebel accent - electric, alive, unapologetic
+        // The rebel satisfies - electric, alive, unapologetic
         accent: {
-          DEFAULT: "#FF4D00",  // Safety orange - Virgil energy
-          dim: "#FF4D0033",
-          bright: "#FF6B2B",
+          DEFAULT: "#FF2D92",  // Hot pink - Balenciaga energy
+          dim: "#FF2D9233",
+          bright: "#FF5AAB",
+        },
+
+        // Secondary accent - luxury, creative
+        purple: {
+          DEFAULT: "#8B5CF6",
+          dim: "#8B5CF633",
+          bright: "#A78BFA",
         },
 
         // Grayscale - intentionally limited
@@ -66,10 +73,10 @@ const config: Config = {
           gray: "#E5E5E5",
         },
         gold: {
-          DEFAULT: "#FF4D00",
-          light: "#FF6B2B",
-          dark: "#CC3D00",
-          muted: "#FF4D0033",
+          DEFAULT: "#FF2D92",
+          light: "#FF5AAB",
+          dark: "#CC2476",
+          muted: "#FF2D9233",
         },
         moss: {
           DEFAULT: "#00FF88",
