@@ -4,27 +4,31 @@ import { forwardRef, ButtonHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'moss'
+  variant?: 'primary' | 'accent' | 'ghost' | 'outline' | 'danger'
   size?: 'sm' | 'md' | 'lg'
   isLoading?: boolean
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', isLoading, children, disabled, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-medium tracking-wide transition-all duration-200 rounded-md focus-ring disabled:opacity-50 disabled:cursor-not-allowed'
+    const baseStyles = cn(
+      'inline-flex items-center justify-center font-medium transition-all duration-200',
+      'disabled:opacity-40 disabled:cursor-not-allowed',
+      'focus:outline-none focus:ring-1 focus:ring-accent focus:ring-offset-1 focus:ring-offset-black'
+    )
 
     const variants = {
-      primary: 'bg-gold text-vault-black hover:bg-gold-light active:bg-gold-dark',
-      secondary: 'bg-transparent border border-vault-gray text-warm-white hover:bg-vault-gray hover:border-vault-muted',
-      ghost: 'bg-transparent text-warm-white hover:bg-vault-gray',
-      danger: 'bg-status-error text-white hover:bg-red-600',
-      moss: 'bg-transparent border border-moss text-moss-light hover:bg-moss/20 hover:border-moss-light',
+      primary: 'bg-white text-black hover:bg-gray-200 active:bg-gray-300',
+      accent: 'bg-accent text-black hover:brightness-110 active:brightness-90',
+      ghost: 'bg-transparent text-white hover:text-accent',
+      outline: 'bg-transparent border border-gray-700 text-white hover:border-white hover:bg-white/5',
+      danger: 'bg-status-error text-white hover:brightness-110',
     }
 
     const sizes = {
-      sm: 'px-3 py-1.5 text-sm',
-      md: 'px-4 py-2 text-sm',
-      lg: 'px-6 py-3 text-base',
+      sm: 'px-3 py-1.5 text-caption tracking-wide',
+      md: 'px-5 py-2.5 text-body-sm',
+      lg: 'px-8 py-4 text-body',
     }
 
     return (
@@ -35,9 +39,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading ? (
-          <>
+          <span className="flex items-center gap-2">
             <svg
-              className="animate-spin -ml-1 mr-2 h-4 w-4"
+              className="animate-spin h-4 w-4"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -56,8 +60,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               />
             </svg>
-            Loading...
-          </>
+            <span>Loading</span>
+          </span>
         ) : (
           children
         )}

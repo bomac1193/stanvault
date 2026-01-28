@@ -14,18 +14,36 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   error?: string
   options: SelectOption[]
   placeholder?: string
+  variant?: 'underline' | 'boxed'
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ className, label, error, options, placeholder, id, ...props }, ref) => {
+  ({ className, label, error, options, placeholder, id, variant = 'boxed', ...props }, ref) => {
     const selectId = id || label?.toLowerCase().replace(/\s+/g, '-')
 
+    const variants = {
+      underline: cn(
+        'w-full bg-transparent border-b border-gray-700 py-3 pr-10 text-white font-light',
+        'appearance-none cursor-pointer',
+        'focus:outline-none focus:border-accent transition-colors',
+        'disabled:opacity-40 disabled:cursor-not-allowed',
+        error && 'border-status-error focus:border-status-error'
+      ),
+      boxed: cn(
+        'w-full bg-gray-900 border border-gray-800 px-4 py-3 pr-10 text-white font-light',
+        'appearance-none cursor-pointer',
+        'focus:outline-none focus:border-accent transition-colors',
+        'disabled:opacity-40 disabled:cursor-not-allowed',
+        error && 'border-status-error focus:border-status-error'
+      ),
+    }
+
     return (
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         {label && (
           <label
             htmlFor={selectId}
-            className="block text-sm font-medium text-warm-white"
+            className="block text-caption uppercase tracking-widest text-gray-400"
           >
             {label}
           </label>
@@ -34,15 +52,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <select
             ref={ref}
             id={selectId}
-            className={cn(
-              'w-full px-4 py-2.5 pr-10 bg-vault-darker border border-vault-gray rounded-md',
-              'text-warm-white appearance-none cursor-pointer',
-              'transition-colors duration-200',
-              'focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent',
-              'disabled:opacity-50 disabled:cursor-not-allowed',
-              error && 'border-status-error focus:ring-status-error',
-              className
-            )}
+            className={cn(variants[variant], className)}
             {...props}
           >
             {placeholder && (
@@ -51,15 +61,15 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
               </option>
             )}
             {options.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option key={option.value} value={option.value} className="bg-gray-900">
                 {option.label}
               </option>
             ))}
           </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-vault-muted pointer-events-none" />
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
         </div>
         {error && (
-          <p className="text-sm text-status-error">{error}</p>
+          <p className="text-caption text-status-error">{error}</p>
         )}
       </div>
     )

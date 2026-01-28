@@ -5,18 +5,36 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
   error?: string
   hint?: string
+  variant?: 'underline' | 'boxed'
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, hint, id, ...props }, ref) => {
+  ({ className, label, error, hint, id, variant = 'underline', ...props }, ref) => {
     const inputId = id || label?.toLowerCase().replace(/\s+/g, '-')
 
+    const variants = {
+      underline: cn(
+        'w-full bg-transparent border-b border-gray-700 py-3 text-white font-light',
+        'placeholder:text-gray-600',
+        'focus:outline-none focus:border-accent transition-colors',
+        'disabled:opacity-40 disabled:cursor-not-allowed',
+        error && 'border-status-error focus:border-status-error'
+      ),
+      boxed: cn(
+        'w-full bg-gray-900 border border-gray-800 px-4 py-3 text-white font-light',
+        'placeholder:text-gray-600',
+        'focus:outline-none focus:border-accent transition-colors',
+        'disabled:opacity-40 disabled:cursor-not-allowed',
+        error && 'border-status-error focus:border-status-error'
+      ),
+    }
+
     return (
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-warm-white"
+            className="block text-caption uppercase tracking-widest text-gray-400"
           >
             {label}
           </label>
@@ -24,22 +42,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           id={inputId}
-          className={cn(
-            'w-full px-4 py-2.5 bg-vault-darker border border-vault-gray rounded-md',
-            'text-warm-white placeholder:text-vault-muted',
-            'transition-colors duration-200',
-            'focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent',
-            'disabled:opacity-50 disabled:cursor-not-allowed',
-            error && 'border-status-error focus:ring-status-error',
-            className
-          )}
+          className={cn(variants[variant], className)}
           {...props}
         />
         {error && (
-          <p className="text-sm text-status-error">{error}</p>
+          <p className="text-caption text-status-error">{error}</p>
         )}
         {hint && !error && (
-          <p className="text-sm text-vault-muted">{hint}</p>
+          <p className="text-caption text-gray-600">{hint}</p>
         )}
       </div>
     )

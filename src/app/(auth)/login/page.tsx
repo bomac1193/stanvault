@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Button, Input, Card, CardContent } from '@/components/ui'
-import { Mail } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -27,7 +27,7 @@ export default function LoginPage() {
       })
 
       if (result?.error) {
-        setError('Invalid email or password')
+        setError('Invalid credentials')
       } else {
         router.push('/dashboard')
         router.refresh()
@@ -44,75 +44,74 @@ export default function LoginPage() {
   }
 
   return (
-    <Card variant="elevated">
-      <CardContent className="p-6">
-        <h2 className="text-xl font-semibold text-warm-white mb-6">
-          Welcome back
-        </h2>
+    <div>
+      <div className="mb-10">
+        <h1 className="text-display-sm font-bold text-white">Sign in</h1>
+        <p className="text-body-sm text-gray-500 font-light mt-2">
+          Access your artist portal
+        </p>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            required
-          />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Input
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+          required
+        />
 
-          <Input
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            required
-          />
+        <Input
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="••••••••"
+          required
+        />
 
-          {error && (
-            <p className="text-sm text-status-error">{error}</p>
-          )}
-
-          <Button
-            type="submit"
-            className="w-full"
-            isLoading={isLoading}
-          >
-            Sign In
-          </Button>
-        </form>
-
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-vault-gray/60" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-vault-dark text-vault-muted">
-              Or continue with
-            </span>
-          </div>
-        </div>
+        {error && (
+          <p className="text-caption text-status-error">{error}</p>
+        )}
 
         <Button
-          type="button"
-          variant="secondary"
+          type="submit"
           className="w-full"
-          onClick={handleGoogleSignIn}
+          size="lg"
+          isLoading={isLoading}
         >
-          <Mail className="w-4 h-4 mr-2" />
-          Google
+          Continue
         </Button>
+      </form>
 
-        <p className="mt-6 text-center text-sm text-vault-muted">
-          Don&apos;t have an account?{' '}
-          <Link
-            href="/register"
-            className="text-gold hover:text-gold-light transition-colors"
-          >
-            Sign up
-          </Link>
-        </p>
-      </CardContent>
-    </Card>
+      <div className="relative my-8">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-800" />
+        </div>
+        <div className="relative flex justify-center">
+          <span className="px-4 bg-black text-caption text-gray-600 uppercase tracking-wider">
+            or
+          </span>
+        </div>
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        size="lg"
+        onClick={handleGoogleSignIn}
+      >
+        Continue with Google
+      </Button>
+
+      <p className="mt-8 text-center text-body-sm text-gray-500">
+        No account?{' '}
+        <Link href="/register" className="text-white hover:text-accent transition-colors">
+          Create one
+        </Link>
+      </p>
+    </div>
   )
 }

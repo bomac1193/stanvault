@@ -4,106 +4,177 @@ import { cn } from "@/lib/utils"
 
 interface LogoProps {
   size?: "sm" | "md" | "lg" | "xl"
+  variant?: "full" | "mark" | "wordmark"
   className?: string
-  variant?: "full" | "mark"
+  inverted?: boolean
 }
 
 const sizes = {
-  sm: { mark: 24, wordmark: "text-sm" },
-  md: { mark: 32, wordmark: "text-base" },
-  lg: { mark: 48, wordmark: "text-xl" },
-  xl: { mark: 64, wordmark: "text-2xl" },
+  sm: { mark: "text-lg", wordmark: "text-sm", gap: "gap-1.5" },
+  md: { mark: "text-2xl", wordmark: "text-base", gap: "gap-2" },
+  lg: { mark: "text-4xl", wordmark: "text-xl", gap: "gap-3" },
+  xl: { mark: "text-6xl", wordmark: "text-2xl", gap: "gap-4" },
 }
 
 /**
- * Stanvault Logo Mark
- * A stylized "SV" monogram inside a vault-door / shield shape.
- * Geometric lines (Ruler), organic rounded corners (Caregiver), bold weight (Rebel).
+ * STANVAULT Logo Mark
+ *
+ * Deconstructed "SV" - Virgil energy
+ * The brackets represent: [contained] yet open
+ * Typography as identity
  */
-export function LogoMark({ size = "md", className }: { size?: LogoProps["size"]; className?: string }) {
-  const dimension = sizes[size].mark
-
-  return (
-    <svg
-      width={dimension}
-      height={dimension}
-      viewBox="0 0 64 64"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={cn("flex-shrink-0", className)}
-      aria-label="Stanvault logo"
-    >
-      {/* Shield/Vault door shape with organic rounded corners */}
-      <path
-        d="M32 4L56 14V32C56 46.36 45.64 58.08 32 60C18.36 58.08 8 46.36 8 32V14L32 4Z"
-        fill="currentColor"
-        className="text-gold"
-      />
-      {/* Inner vault circle */}
-      <circle
-        cx="32"
-        cy="34"
-        r="20"
-        fill="currentColor"
-        className="text-vault-black"
-      />
-      {/* SV Monogram */}
-      <text
-        x="32"
-        y="42"
-        textAnchor="middle"
-        className="font-display font-bold text-gold"
-        fill="currentColor"
-        style={{
-          fontSize: "22px",
-          fontFamily: "Futura, Jost, system-ui, sans-serif",
-          fontWeight: 700,
-          letterSpacing: "0.05em"
-        }}
-      >
-        SV
-      </text>
-      {/* Vault door details - horizontal lines */}
-      <line x1="18" y1="26" x2="24" y2="26" stroke="currentColor" strokeWidth="1.5" className="text-gold/40" />
-      <line x1="40" y1="26" x2="46" y2="26" stroke="currentColor" strokeWidth="1.5" className="text-gold/40" />
-      <line x1="18" y1="42" x2="24" y2="42" stroke="currentColor" strokeWidth="1.5" className="text-gold/40" />
-      <line x1="40" y1="42" x2="46" y2="42" stroke="currentColor" strokeWidth="1.5" className="text-gold/40" />
-    </svg>
-  )
-}
-
-/**
- * Stanvault Wordmark
- * "STANVAULT" in Futura Bold, tracked out
- */
-export function Wordmark({ size = "md", className }: { size?: LogoProps["size"]; className?: string }) {
+export function LogoMark({
+  size = "md",
+  className,
+  inverted = false,
+}: {
+  size?: LogoProps["size"]
+  className?: string
+  inverted?: boolean
+}) {
   return (
     <span
       className={cn(
-        "wordmark text-warm-white",
-        sizes[size].wordmark,
+        "font-bold tracking-tighter select-none",
+        sizes[size].mark,
+        inverted ? "text-black" : "text-white",
         className
       )}
     >
-      STANVAULT
+      <span className="text-accent">[</span>
+      SV
+      <span className="text-accent">]</span>
     </span>
   )
 }
 
 /**
- * Full Logo Component
- * Combines LogoMark + Wordmark
+ * STANVAULT Wordmark
+ *
+ * All caps, tracked, brutal
+ * "STANVAULT" or "STAN VAULT" depending on context
  */
-export function Logo({ size = "md", variant = "full", className }: LogoProps) {
+export function Wordmark({
+  size = "md",
+  className,
+  inverted = false,
+  split = false,
+}: {
+  size?: LogoProps["size"]
+  className?: string
+  inverted?: boolean
+  split?: boolean
+}) {
+  return (
+    <span
+      className={cn(
+        "font-bold uppercase tracking-tight select-none",
+        sizes[size].wordmark,
+        inverted ? "text-black" : "text-white",
+        className
+      )}
+    >
+      {split ? (
+        <>
+          STAN<span className="text-accent">VAULT</span>
+        </>
+      ) : (
+        "STANVAULT"
+      )}
+    </span>
+  )
+}
+
+/**
+ * Full Logo
+ *
+ * Mark + Wordmark combined
+ */
+export function Logo({
+  size = "md",
+  variant = "full",
+  className,
+  inverted = false,
+}: LogoProps) {
   if (variant === "mark") {
-    return <LogoMark size={size} className={className} />
+    return <LogoMark size={size} className={className} inverted={inverted} />
+  }
+
+  if (variant === "wordmark") {
+    return <Wordmark size={size} className={className} inverted={inverted} />
   }
 
   return (
-    <div className={cn("flex items-center gap-3", className)}>
-      <LogoMark size={size} />
-      <Wordmark size={size} />
+    <div className={cn("flex items-center", sizes[size].gap, className)}>
+      <LogoMark size={size} inverted={inverted} />
+      <span className={cn(
+        "text-gray-600 font-light",
+        size === "sm" ? "text-xs" : "text-sm"
+      )}>
+        /
+      </span>
+      <Wordmark size={size} inverted={inverted} />
     </div>
+  )
+}
+
+/**
+ * Statement Logo
+ *
+ * For hero sections - massive, brutal
+ */
+export function StatementLogo({ className }: { className?: string }) {
+  return (
+    <div className={cn("select-none", className)}>
+      <div className="text-display-xl font-black tracking-tighter leading-none">
+        <span className="text-accent">[</span>
+        STAN
+      </div>
+      <div className="text-display-xl font-black tracking-tighter leading-none">
+        VAULT
+        <span className="text-accent">]</span>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Tagline
+ *
+ * The manifesto, not a slogan
+ */
+export function Tagline({
+  variant = "default",
+  className,
+}: {
+  variant?: "default" | "full" | "minimal"
+  className?: string
+}) {
+  if (variant === "minimal") {
+    return (
+      <p className={cn("text-caption text-gray-500 uppercase tracking-widest", className)}>
+        Own your "fans"
+      </p>
+    )
+  }
+
+  if (variant === "full") {
+    return (
+      <div className={cn("space-y-1", className)}>
+        <p className="text-body font-light text-gray-400">
+          The platform for artists who refuse to be algorithms.
+        </p>
+        <p className="text-caption text-gray-600 uppercase tracking-wider">
+          Know your <span className="text-accent">"fans"</span> — Own your future
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <p className={cn("text-body-sm text-gray-500 font-light", className)}>
+      Own your <span className="quoted text-white">fans</span>
+    </p>
   )
 }
 

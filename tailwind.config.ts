@@ -9,65 +9,123 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Stanvault Design System - Sovereign Rebel Rebrand
+        // STANVAULT - Bourgeois Rebel Design System
+        // "Balenciaga meets Apple meets Napster"
+
+        // Core: Pure black & white - no compromise
+        black: "#000000",
+        white: "#FFFFFF",
+
+        // The rebel accent - electric, alive, unapologetic
+        accent: {
+          DEFAULT: "#FF4D00",  // Safety orange - Virgil energy
+          dim: "#FF4D0033",
+          bright: "#FF6B2B",
+        },
+
+        // Grayscale - intentionally limited
+        gray: {
+          100: "#F5F5F5",
+          200: "#E5E5E5",
+          300: "#D4D4D4",
+          400: "#A3A3A3",
+          500: "#737373",
+          600: "#525252",
+          700: "#404040",
+          800: "#262626",
+          900: "#171717",
+        },
+
+        // Status - muted, not screaming
+        status: {
+          success: "#00FF88",
+          warning: "#FFD600",
+          error: "#FF0040",
+          info: "#0066FF",
+        },
+
+        // Tier colors - monochrome hierarchy
+        tier: {
+          casual: "#737373",
+          engaged: "#A3A3A3",
+          dedicated: "#D4D4D4",
+          superfan: "#FFFFFF",
+        },
+
+        // Legacy aliases for compatibility
         vault: {
-          black: "#0A0A0A",      // Slightly deeper
-          darker: "#141413",     // Warm undertone
-          dark: "#1A1A1A",
-          gray: "#2A2A2A",
-          muted: "#6B6B6B",
+          black: "#000000",
+          darker: "#0A0A0A",
+          dark: "#171717",
+          gray: "#262626",
+          muted: "#737373",
         },
         warm: {
-          white: "#F5F0E8",      // Warmer, more organic cream
-          cream: "#F5F3EF",
-          gray: "#E8E6E3",
+          white: "#FFFFFF",
+          cream: "#F5F5F5",
+          gray: "#E5E5E5",
         },
         gold: {
-          DEFAULT: "#B8860B",    // Dark goldenrod - more organic
-          light: "#C49B0C",      // Warmer hover
-          dark: "#8B6914",       // Deeper press
-          muted: "#B8860B33",
+          DEFAULT: "#FF4D00",
+          light: "#FF6B2B",
+          dark: "#CC3D00",
+          muted: "#FF4D0033",
         },
         moss: {
-          DEFAULT: "#2D4A3E",    // Secondary accent (activated)
-          light: "#3D6352",      // Verified/success states
-          dark: "#1F352C",
+          DEFAULT: "#00FF88",
+          light: "#33FF9F",
+          dark: "#00CC6A",
         },
-        // New organic additions
-        earth: "#3D2B1F",        // Deep brown for subtle organic accents
-        sand: "#C2B280",         // Muted warm neutral
-        status: {
-          success: "#22C55E",
-          warning: "#F59E0B",
-          error: "#EF4444",
-          info: "#3B82F6",
-        },
-        tier: {
-          casual: "#6B7280",
-          engaged: "#3B82F6",
-          dedicated: "#8B5CF6",
-          superfan: "#B8860B",   // Updated to new gold
-        },
+
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["Jost", "Futura", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "Menlo", "monospace"],
+        // Grotesk stack - brutal, clean, Virgil-approved
+        sans: ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        display: ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        mono: ["SF Mono", "Consolas", "monospace"],
       },
-      borderRadius: {
-        DEFAULT: "0.375rem",    // Slightly tighter (md)
+      fontSize: {
+        // Brutal scale - make statements
+        'display-xl': ['8rem', { lineHeight: '0.85', letterSpacing: '-0.04em' }],
+        'display-lg': ['5rem', { lineHeight: '0.9', letterSpacing: '-0.03em' }],
+        'display-md': ['3rem', { lineHeight: '0.95', letterSpacing: '-0.02em' }],
+        'display-sm': ['2rem', { lineHeight: '1', letterSpacing: '-0.01em' }],
+        'body-lg': ['1.25rem', { lineHeight: '1.5' }],
+        'body': ['1rem', { lineHeight: '1.5' }],
+        'body-sm': ['0.875rem', { lineHeight: '1.5' }],
+        'caption': ['0.75rem', { lineHeight: '1.4', letterSpacing: '0.02em' }],
+        'overline': ['0.625rem', { lineHeight: '1.2', letterSpacing: '0.1em' }],
+      },
+      fontWeight: {
+        light: '300',
+        normal: '400',
+        medium: '500',
+        bold: '700',
+        black: '900',
       },
       letterSpacing: {
-        brand: "0.15em",        // For wordmark and tracked text
+        tighter: '-0.04em',
+        tight: '-0.02em',
+        normal: '0',
+        wide: '0.02em',
+        wider: '0.05em',
+        widest: '0.1em',
+      },
+      borderRadius: {
+        none: '0',
+        sm: '2px',
+        DEFAULT: '0',
+        md: '0',
+        lg: '0',
+        full: '9999px',
       },
       animation: {
-        "fade-in": "fadeIn 0.3s ease-in-out",
-        "slide-up": "slideUp 0.3s ease-out",
-        "slide-down": "slideDown 0.3s ease-out",
-        "scale-in": "scaleIn 0.2s ease-out",
-        "pulse-gold": "pulseGold 2s infinite",
+        "fade-in": "fadeIn 0.5s ease-out",
+        "slide-up": "slideUp 0.5s ease-out",
+        "pulse-accent": "pulseAccent 2s infinite",
+        "glitch": "glitch 0.3s ease-in-out",
       },
       keyframes: {
         fadeIn: {
@@ -75,20 +133,19 @@ const config: Config = {
           "100%": { opacity: "1" },
         },
         slideUp: {
-          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "0%": { opacity: "0", transform: "translateY(20px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
-        slideDown: {
-          "0%": { opacity: "0", transform: "translateY(-10px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+        pulseAccent: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.5" },
         },
-        scaleIn: {
-          "0%": { opacity: "0", transform: "scale(0.95)" },
-          "100%": { opacity: "1", transform: "scale(1)" },
-        },
-        pulseGold: {
-          "0%, 100%": { boxShadow: "0 0 0 0 rgba(184, 134, 11, 0.4)" },
-          "50%": { boxShadow: "0 0 0 8px rgba(184, 134, 11, 0)" },
+        glitch: {
+          "0%, 100%": { transform: "translate(0)" },
+          "20%": { transform: "translate(-2px, 2px)" },
+          "40%": { transform: "translate(-2px, -2px)" },
+          "60%": { transform: "translate(2px, 2px)" },
+          "80%": { transform: "translate(2px, -2px)" },
         },
       },
     },

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Shield, CheckCircle, XCircle, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Logo, LogoMark, Wordmark } from '@/components/brand/Logo'
+import { LogoMark } from '@/components/brand/Logo'
 
 interface VerificationResult {
   valid: boolean
@@ -54,68 +54,65 @@ export default function VerifyPage() {
     })
   }
 
-  const getTierColor = (tier: string) => {
+  const getTierStyle = (tier: string) => {
     switch (tier) {
       case 'SUPERFAN':
-        return 'text-gold bg-gold/20 border-gold'
+        return 'bg-white text-black'
       case 'DEDICATED':
-        return 'text-tier-dedicated bg-tier-dedicated/20 border-tier-dedicated'
+        return 'bg-gray-300 text-black'
       case 'ENGAGED':
-        return 'text-tier-engaged bg-tier-engaged/20 border-tier-engaged'
+        return 'bg-gray-500 text-white'
       default:
-        return 'text-tier-casual bg-tier-casual/20 border-tier-casual'
+        return 'bg-gray-700 text-gray-300'
     }
   }
 
   return (
-    <div className="min-h-screen bg-vault-black">
+    <div className="min-h-screen bg-black">
       {/* Header */}
-      <header className="border-b border-vault-gray/60">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center gap-3">
-          <LogoMark size="sm" />
-          <div>
-            <Wordmark size="sm" />
-            <p className="text-xs text-vault-muted font-display uppercase tracking-wide">Fan Verification</p>
-          </div>
+      <header className="border-b border-gray-800">
+        <div className="max-w-4xl mx-auto px-6 py-4">
+          <LogoMark size="md" />
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-2xl mx-auto px-6 py-12">
-        <div className="text-center mb-8">
-          <LogoMark size="xl" className="mx-auto mb-4" />
-          <h2 className="text-3xl font-display font-bold text-warm-white mb-2">
-            Verify Fan Status
-          </h2>
-          <p className="text-vault-muted">
-            Enter a verification token to confirm a fan's relationship with an artist
+      {/* Main */}
+      <main className="max-w-2xl mx-auto px-6 py-16">
+        <div className="mb-12">
+          <p className="text-caption text-gray-600 uppercase tracking-widest mb-2">Public Verification</p>
+          <h1 className="text-display-md font-bold text-white">
+            Verify <span className="text-accent">"Fan"</span> Status
+          </h1>
+          <p className="text-body text-gray-500 font-light mt-4">
+            Paste a verification token to confirm a fan's relationship with an artist.
+            Cryptographically signed. Tamper-proof.
           </p>
         </div>
 
-        {/* Verification Form */}
-        <div className="bg-vault-dark border border-vault-gray/60 rounded-md p-6 mb-8">
-          <label className="block text-sm font-medium text-warm-white mb-2">
-            Verification Token
+        {/* Input */}
+        <div className="mb-8">
+          <label className="block text-caption uppercase tracking-widest text-gray-400 mb-2">
+            Token
           </label>
           <textarea
             value={token}
             onChange={(e) => setToken(e.target.value)}
-            placeholder="Paste the verification token here..."
-            className="w-full h-24 px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent font-mono text-sm resize-none"
+            placeholder="Paste token here..."
+            className="w-full h-32 bg-gray-900 border border-gray-800 p-4 text-white font-mono text-body-sm placeholder:text-gray-700 focus:outline-none focus:border-accent transition-colors resize-none"
           />
           <button
             onClick={handleVerify}
             disabled={isVerifying || !token.trim()}
-            className="w-full mt-4 px-6 py-3 bg-gold text-vault-black font-semibold tracking-wide rounded-md hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full mt-4 py-4 bg-white text-black font-medium hover:bg-gray-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isVerifying ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Verifying...
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Verifying
               </>
             ) : (
               <>
-                <Shield className="w-5 h-5" />
+                <Shield className="w-4 h-4" />
                 Verify Token
               </>
             )}
@@ -126,87 +123,74 @@ export default function VerifyPage() {
         {result && (
           <div
             className={cn(
-              'border rounded-md p-6',
+              'border-l-2 p-6',
               result.valid
-                ? 'bg-moss-light/10 border-moss-light'
-                : 'bg-status-error/10 border-status-error'
+                ? 'border-l-status-success bg-status-success/5'
+                : 'border-l-status-error bg-status-error/5'
             )}
           >
             <div className="flex items-start gap-4">
               {result.valid ? (
-                <CheckCircle className="w-8 h-8 text-moss-light flex-shrink-0" />
+                <CheckCircle className="w-6 h-6 text-status-success flex-shrink-0" />
               ) : (
-                <XCircle className="w-8 h-8 text-status-error flex-shrink-0" />
+                <XCircle className="w-6 h-6 text-status-error flex-shrink-0" />
               )}
 
               <div className="flex-1">
                 <h3
                   className={cn(
-                    'text-xl font-display font-bold mb-2',
-                    result.valid ? 'text-moss-light' : 'text-status-error'
+                    'text-body-lg font-medium mb-1',
+                    result.valid ? 'text-status-success' : 'text-status-error'
                   )}
                 >
-                  {result.valid ? 'Verified Fan' : 'Verification Failed'}
+                  {result.valid ? 'Verified' : 'Failed'}
                 </h3>
 
                 {result.valid ? (
                   <div className="space-y-4">
                     {/* Artist */}
                     <div>
-                      <p className="text-sm text-vault-muted mb-1">Artist</p>
-                      <p className="text-lg font-semibold text-warm-white">
-                        {result.artistName}
-                      </p>
+                      <p className="text-caption text-gray-500 uppercase tracking-wider">Artist</p>
+                      <p className="text-body-lg text-white">{result.artistName}</p>
                     </div>
 
-                    {/* Tier Badge */}
+                    {/* Tier */}
                     <div>
-                      <p className="text-sm text-vault-muted mb-1">Fan Tier</p>
-                      <span
-                        className={cn(
-                          'inline-block px-4 py-2 rounded-sm border font-display font-bold text-lg uppercase tracking-wide',
-                          getTierColor(result.tier || 'CASUAL')
-                        )}
-                      >
+                      <p className="text-caption text-gray-500 uppercase tracking-wider mb-1">Tier</p>
+                      <span className={`inline-block px-4 py-2 text-body-sm font-medium uppercase tracking-wide ${getTierStyle(result.tier || 'CASUAL')}`}>
                         {result.tier}
                       </span>
                     </div>
 
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-vault-gray/60">
+                    {/* Stats */}
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-800">
                       <div>
-                        <p className="text-sm text-vault-muted">Stan Score</p>
-                        <p className="text-2xl font-mono font-bold text-warm-white">
-                          {result.stanScore}
-                          <span className="text-sm text-vault-muted">/100</span>
+                        <p className="text-caption text-gray-500 uppercase tracking-wider">Score</p>
+                        <p className="text-display-sm font-bold font-mono text-white">
+                          {result.stanScore}<span className="text-gray-600">/100</span>
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-vault-muted">Fan For</p>
-                        <p className="text-2xl font-mono font-bold text-warm-white">
-                          {result.relationshipMonths}
-                          <span className="text-sm text-vault-muted"> months</span>
+                        <p className="text-caption text-gray-500 uppercase tracking-wider">Duration</p>
+                        <p className="text-display-sm font-bold font-mono text-white">
+                          {result.relationshipMonths}<span className="text-gray-600">mo</span>
                         </p>
                       </div>
                     </div>
 
-                    {/* Validity Period */}
-                    <div className="pt-4 border-t border-vault-gray/60 text-sm text-vault-muted">
-                      <p>
-                        Token issued: {formatDate(result.issuedAt || '')}
-                      </p>
-                      <p>
-                        Valid until: {formatDate(result.expiresAt || '')}
-                      </p>
+                    {/* Validity */}
+                    <div className="pt-4 border-t border-gray-800 text-caption text-gray-500">
+                      <p>Issued: {formatDate(result.issuedAt || '')}</p>
+                      <p>Expires: {formatDate(result.expiresAt || '')}</p>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-vault-muted">
+                  <p className="text-body-sm text-gray-400">
                     {result.expired
-                      ? 'This token has expired.'
+                      ? 'Token expired'
                       : result.revoked
-                        ? 'This token has been revoked.'
-                        : result.error || 'Invalid or malformed token.'}
+                        ? 'Token revoked'
+                        : result.error || 'Invalid token'}
                   </p>
                 )}
               </div>
@@ -214,46 +198,23 @@ export default function VerifyPage() {
           </div>
         )}
 
-        {/* Info Section */}
-        <div className="mt-12 text-center">
-          <h3 className="text-lg font-display font-bold text-warm-white mb-3">
-            What is Fan Verification?
-          </h3>
-          <p className="text-vault-muted mb-6 max-w-lg mx-auto">
-            Stanvault verification tokens allow fans to cryptographically prove
-            their relationship with an artist. This can be used for presale
-            access, exclusive content, loyalty rewards, and more.
+        {/* Info */}
+        <div className="mt-16 pt-8 border-t border-gray-800">
+          <h3 className="text-body font-medium text-white mb-4">What is this?</h3>
+          <p className="text-body-sm text-gray-500 font-light">
+            Stanvault verification tokens are cryptographic proofs of fan relationships.
+            Artists control who gets verified. Fans own their identity.
+            Use tokens for presale access, exclusive content, or any service that needs to verify fandom.
           </p>
-          <div className="flex justify-center gap-8 text-sm">
-            <div className="text-center">
-              <div className="w-12 h-12 bg-gold/10 rounded-md flex items-center justify-center mx-auto mb-2">
-                <Shield className="w-6 h-6 text-gold" />
-              </div>
-              <p className="text-vault-muted">Tamper-proof</p>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-gold/10 rounded-md flex items-center justify-center mx-auto mb-2">
-                <CheckCircle className="w-6 h-6 text-gold" />
-              </div>
-              <p className="text-vault-muted">Instant Verification</p>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-gold/10 rounded-md flex items-center justify-center mx-auto mb-2">
-                <LogoMark size="sm" />
-              </div>
-              <p className="text-vault-muted">Artist Controlled</p>
-            </div>
-          </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-vault-gray/60 mt-12">
-        <div className="max-w-4xl mx-auto px-6 py-6 text-center">
-          <p className="font-display font-bold uppercase tracking-brand text-sm text-vault-muted">
-            STANVAULT
+      <footer className="border-t border-gray-800">
+        <div className="max-w-4xl mx-auto px-6 py-8">
+          <p className="text-caption text-gray-700 uppercase tracking-widest">
+            <span className="text-accent">[</span>SV<span className="text-accent">]</span> — The anti-algorithm platform
           </p>
-          <p className="text-xs text-vault-muted mt-1">Own Your Fans. Own Your Future.</p>
         </div>
       </footer>
     </div>

@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Button, Input, Card, CardContent } from '@/components/ui'
-import { Mail } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -21,7 +21,6 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
-      // Register user
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -35,7 +34,6 @@ export default function RegisterPage() {
         return
       }
 
-      // Sign in after registration
       const result = await signIn('credentials', {
         email,
         password,
@@ -43,7 +41,7 @@ export default function RegisterPage() {
       })
 
       if (result?.error) {
-        setError('Account created but sign in failed. Please try logging in.')
+        setError('Account created. Please sign in.')
       } else {
         router.push('/onboarding')
         router.refresh()
@@ -60,84 +58,83 @@ export default function RegisterPage() {
   }
 
   return (
-    <Card variant="elevated">
-      <CardContent className="p-6">
-        <h2 className="text-xl font-semibold text-warm-white mb-6">
-          Create your account
-        </h2>
+    <div>
+      <div className="mb-10">
+        <h1 className="text-display-sm font-bold text-white">Create account</h1>
+        <p className="text-body-sm text-gray-500 font-light mt-2">
+          Join the platform that puts artists first
+        </p>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="Name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Your name"
-            required
-          />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Input
+          label="Name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your name"
+          required
+        />
 
-          <Input
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            required
-          />
+        <Input
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+          required
+        />
 
-          <Input
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="At least 6 characters"
-            required
-          />
+        <Input
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="At least 6 characters"
+          required
+        />
 
-          {error && (
-            <p className="text-sm text-status-error">{error}</p>
-          )}
-
-          <Button
-            type="submit"
-            className="w-full"
-            isLoading={isLoading}
-          >
-            Create Account
-          </Button>
-        </form>
-
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-vault-gray/60" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-vault-dark text-vault-muted">
-              Or continue with
-            </span>
-          </div>
-        </div>
+        {error && (
+          <p className="text-caption text-status-error">{error}</p>
+        )}
 
         <Button
-          type="button"
-          variant="secondary"
+          type="submit"
           className="w-full"
-          onClick={handleGoogleSignIn}
+          size="lg"
+          isLoading={isLoading}
         >
-          <Mail className="w-4 h-4 mr-2" />
-          Google
+          Create Account
         </Button>
+      </form>
 
-        <p className="mt-6 text-center text-sm text-vault-muted">
-          Already have an account?{' '}
-          <Link
-            href="/login"
-            className="text-gold hover:text-gold-light transition-colors"
-          >
-            Sign in
-          </Link>
-        </p>
-      </CardContent>
-    </Card>
+      <div className="relative my-8">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-800" />
+        </div>
+        <div className="relative flex justify-center">
+          <span className="px-4 bg-black text-caption text-gray-600 uppercase tracking-wider">
+            or
+          </span>
+        </div>
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        size="lg"
+        onClick={handleGoogleSignIn}
+      >
+        Continue with Google
+      </Button>
+
+      <p className="mt-8 text-center text-body-sm text-gray-500">
+        Already have an account?{' '}
+        <Link href="/login" className="text-white hover:text-accent transition-colors">
+          Sign in
+        </Link>
+      </p>
+    </div>
   )
 }

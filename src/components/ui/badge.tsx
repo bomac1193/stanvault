@@ -2,25 +2,27 @@ import { HTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
-  variant?: 'default' | 'casual' | 'engaged' | 'dedicated' | 'superfan' | 'success' | 'warning' | 'error'
+  variant?: 'default' | 'accent' | 'white' | 'casual' | 'engaged' | 'dedicated' | 'superfan' | 'success' | 'warning' | 'error'
 }
 
 export function Badge({ className, variant = 'default', ...props }: BadgeProps) {
   const variants = {
-    default: 'bg-vault-gray text-warm-white',
-    casual: 'bg-tier-casual/20 text-tier-casual border border-tier-casual/30',
-    engaged: 'bg-tier-engaged/20 text-tier-engaged border border-tier-engaged/30',
-    dedicated: 'bg-tier-dedicated/20 text-tier-dedicated border border-tier-dedicated/30',
-    superfan: 'bg-gold/20 text-gold border border-gold/30',
-    success: 'bg-status-success/20 text-status-success border border-status-success/30',
-    warning: 'bg-status-warning/20 text-status-warning border border-status-warning/30',
-    error: 'bg-status-error/20 text-status-error border border-status-error/30',
+    default: 'bg-gray-800 text-gray-300',
+    accent: 'bg-accent/20 text-accent border border-accent/30',
+    white: 'bg-white text-black',
+    casual: 'bg-gray-800 text-gray-400',
+    engaged: 'bg-gray-700 text-gray-300',
+    dedicated: 'bg-gray-600 text-gray-200',
+    superfan: 'bg-white text-black',
+    success: 'bg-status-success/20 text-status-success',
+    warning: 'bg-status-warning/20 text-status-warning',
+    error: 'bg-status-error/20 text-status-error',
   }
 
   return (
     <span
       className={cn(
-        'inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-display font-bold uppercase tracking-wide',
+        'inline-flex items-center px-2 py-0.5 text-caption font-medium uppercase tracking-wider',
         variants[variant],
         className
       )}
@@ -47,9 +49,9 @@ export function TierBadge({ tier }: { tier: string }) {
 
 export function StanScoreBadge({ score }: { score: number }) {
   return (
-    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gold/10 border border-gold/20 rounded-md">
-      <span className="text-gold font-mono font-semibold text-sm">{score}</span>
-      <span className="text-gold/60 text-xs font-display uppercase tracking-wide">Stan Score</span>
+    <div className="inline-flex items-center gap-2">
+      <span className="text-body-lg font-bold text-white font-mono">{score}</span>
+      <span className="text-caption text-gray-500 uppercase tracking-wider">Score</span>
     </div>
   )
 }

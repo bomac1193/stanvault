@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Loader2, Eye, EyeOff, Check } from 'lucide-react'
-import { Logo } from '@/components/brand/Logo'
+import { LogoMark } from '@/components/brand/Logo'
 
 export default function FanRegisterPage() {
   const router = useRouter()
@@ -17,7 +17,7 @@ export default function FanRegisterPage() {
   const [error, setError] = useState<string | null>(null)
 
   const passwordRequirements = [
-    { met: password.length >= 6, text: 'At least 6 characters' },
+    { met: password.length >= 6, text: '6+ characters' },
     { met: password === confirmPassword && password.length > 0, text: 'Passwords match' },
   ]
 
@@ -54,46 +54,44 @@ export default function FanRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-vault-black flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-black flex items-center justify-center p-6">
+      <div className="w-full max-w-sm">
         {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
-          <Logo size="md" />
-          <p className="font-display font-medium text-sm uppercase tracking-brand text-vault-muted mt-4">
-            Create Fan Account
+        <div className="text-center mb-12">
+          <LogoMark size="lg" />
+          <p className="text-caption text-gray-600 uppercase tracking-widest mt-3">
+            Fan Portal
           </p>
-          <p className="text-vault-muted mt-1">Own your fan identity</p>
         </div>
 
-        {/* Value props */}
-        <div className="bg-vault-darker border border-vault-gray/60 rounded-md p-4 mb-6">
-          <p className="text-sm text-vault-muted mb-3 font-display uppercase tracking-wide">With Stanvault, you can:</p>
-          <ul className="space-y-2 text-sm">
-            <li className="flex items-center gap-2 text-warm-white">
-              <Check className="w-4 h-4 text-gold" />
-              Prove your fandom to get presale access & perks
-            </li>
-            <li className="flex items-center gap-2 text-warm-white">
-              <Check className="w-4 h-4 text-gold" />
-              See your status with all your favorite artists
-            </li>
-            <li className="flex items-center gap-2 text-warm-white">
-              <Check className="w-4 h-4 text-gold" />
-              Own your fan data - portable and verifiable
-            </li>
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-display-sm font-bold text-white">Create account</h1>
+          <p className="text-body-sm text-gray-500 font-light mt-2">
+            Own your <span className="text-accent">"fan"</span> identity
+          </p>
+        </div>
+
+        {/* Value prop */}
+        <div className="mb-8 p-4 border-l-2 border-l-accent bg-gray-900/30">
+          <p className="text-caption text-gray-400 uppercase tracking-wider mb-2">Why join</p>
+          <ul className="space-y-1 text-body-sm text-gray-300 font-light">
+            <li>• Prove fandom for presales & perks</li>
+            <li>• Portable, verifiable data you own</li>
+            <li>• Direct connection to artists</li>
           </ul>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-vault-dark border border-vault-gray/60 rounded-md p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="mb-4 p-3 bg-status-error/10 border border-status-error rounded-md text-status-error text-sm">
+            <div className="p-3 border-l-2 border-l-status-error bg-status-error/10 text-status-error text-caption">
               {error}
             </div>
           )}
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-warm-white mb-2">
+          <div className="space-y-2">
+            <label className="block text-caption uppercase tracking-widest text-gray-400">
               Display Name
             </label>
             <input
@@ -102,13 +100,13 @@ export default function FanRegisterPage() {
               onChange={(e) => setDisplayName(e.target.value)}
               required
               maxLength={50}
-              className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent"
-              placeholder="How artists will see you"
+              className="w-full bg-transparent border-b border-gray-700 py-3 text-white font-light placeholder:text-gray-600 focus:outline-none focus:border-accent transition-colors"
+              placeholder="How artists see you"
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-warm-white mb-2">
+          <div className="space-y-2">
+            <label className="block text-caption uppercase tracking-widest text-gray-400">
               Email
             </label>
             <input
@@ -116,13 +114,13 @@ export default function FanRegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent"
+              className="w-full bg-transparent border-b border-gray-700 py-3 text-white font-light placeholder:text-gray-600 focus:outline-none focus:border-accent transition-colors"
               placeholder="you@example.com"
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-warm-white mb-2">
+          <div className="space-y-2">
+            <label className="block text-caption uppercase tracking-widest text-gray-400">
               Password
             </label>
             <div className="relative">
@@ -131,21 +129,21 @@ export default function FanRegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent pr-12"
+                className="w-full bg-transparent border-b border-gray-700 py-3 pr-10 text-white font-light placeholder:text-gray-600 focus:outline-none focus:border-accent transition-colors"
                 placeholder="••••••••"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-vault-muted hover:text-warm-white"
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-warm-white mb-2">
+          <div className="space-y-2">
+            <label className="block text-caption uppercase tracking-widest text-gray-400">
               Confirm Password
             </label>
             <input
@@ -153,35 +151,35 @@ export default function FanRegisterPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent"
+              className="w-full bg-transparent border-b border-gray-700 py-3 text-white font-light placeholder:text-gray-600 focus:outline-none focus:border-accent transition-colors"
               placeholder="••••••••"
             />
           </div>
 
-          {/* Password requirements */}
-          <div className="mb-6 space-y-1">
+          {/* Requirements */}
+          <div className="flex gap-4">
             {passwordRequirements.map((req, i) => (
-              <div
+              <span
                 key={i}
-                className={`flex items-center gap-2 text-xs ${
-                  req.met ? 'text-moss-light' : 'text-vault-muted'
+                className={`text-caption flex items-center gap-1 ${
+                  req.met ? 'text-status-success' : 'text-gray-600'
                 }`}
               >
-                <Check className={`w-3 h-3 ${req.met ? 'opacity-100' : 'opacity-30'}`} />
+                <Check className={`w-3 h-3 ${req.met ? '' : 'opacity-30'}`} />
                 {req.text}
-              </div>
+              </span>
             ))}
           </div>
 
           <button
             type="submit"
             disabled={isLoading || !passwordRequirements.every(r => r.met)}
-            className="w-full py-3 bg-gold text-vault-black font-semibold tracking-wide rounded-md hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full py-4 bg-white text-black font-medium hover:bg-gray-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Creating account...
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Creating</span>
               </>
             ) : (
               'Create Account'
@@ -189,10 +187,10 @@ export default function FanRegisterPage() {
           </button>
         </form>
 
-        {/* Login link */}
-        <p className="text-center text-vault-muted mt-6">
-          Already have an account?{' '}
-          <Link href="/fan/login" className="text-gold hover:underline">
+        {/* Link */}
+        <p className="mt-8 text-center text-body-sm text-gray-500">
+          Have an account?{' '}
+          <Link href="/fan/login" className="text-white hover:text-accent transition-colors">
             Sign in
           </Link>
         </p>

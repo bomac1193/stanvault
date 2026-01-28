@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Loader2, Eye, EyeOff } from 'lucide-react'
-import { Logo } from '@/components/brand/Logo'
+import { LogoMark } from '@/components/brand/Logo'
 
 export default function FanLoginPage() {
   const router = useRouter()
@@ -41,27 +41,33 @@ export default function FanLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-vault-black flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-black flex items-center justify-center p-6">
+      <div className="w-full max-w-sm">
         {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
-          <Logo size="md" />
-          <p className="font-display font-medium text-sm uppercase tracking-brand text-vault-muted mt-4">
+        <div className="text-center mb-12">
+          <LogoMark size="lg" />
+          <p className="text-caption text-gray-600 uppercase tracking-widest mt-3">
             Fan Portal
           </p>
-          <p className="text-vault-muted mt-1">Sign in to your fan identity</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-vault-dark border border-vault-gray/60 rounded-md p-6">
+        <div className="mb-8">
+          <h1 className="text-display-sm font-bold text-white">Sign in</h1>
+          <p className="text-body-sm text-gray-500 font-light mt-2">
+            Access your fan identity
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="mb-4 p-3 bg-status-error/10 border border-status-error rounded-md text-status-error text-sm">
+            <div className="p-3 border-l-2 border-l-status-error bg-status-error/10 text-status-error text-caption">
               {error}
             </div>
           )}
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-warm-white mb-2">
+          <div className="space-y-2">
+            <label className="block text-caption uppercase tracking-widest text-gray-400">
               Email
             </label>
             <input
@@ -69,13 +75,13 @@ export default function FanLoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent"
+              className="w-full bg-transparent border-b border-gray-700 py-3 text-white font-light placeholder:text-gray-600 focus:outline-none focus:border-accent transition-colors"
               placeholder="you@example.com"
             />
           </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-warm-white mb-2">
+          <div className="space-y-2">
+            <label className="block text-caption uppercase tracking-widest text-gray-400">
               Password
             </label>
             <div className="relative">
@@ -84,15 +90,15 @@ export default function FanLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-vault-darker border border-vault-gray rounded-md text-warm-white placeholder:text-vault-muted focus:outline-none focus:ring-2 focus:ring-moss-light focus:border-transparent pr-12"
+                className="w-full bg-transparent border-b border-gray-700 py-3 pr-10 text-white font-light placeholder:text-gray-600 focus:outline-none focus:border-accent transition-colors"
                 placeholder="••••••••"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-vault-muted hover:text-warm-white"
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>
@@ -100,34 +106,34 @@ export default function FanLoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-gold text-vault-black font-semibold tracking-wide rounded-md hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full py-4 bg-white text-black font-medium hover:bg-gray-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Signing in...
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Loading</span>
               </>
             ) : (
-              'Sign In'
+              'Continue'
             )}
           </button>
         </form>
 
-        {/* Register link */}
-        <p className="text-center text-vault-muted mt-6">
-          Don't have an account?{' '}
-          <Link href="/fan/register" className="text-gold hover:underline">
-            Create one
-          </Link>
-        </p>
-
-        {/* Artist link */}
-        <p className="text-center text-vault-muted mt-4 text-sm">
-          Are you an artist?{' '}
-          <Link href="/login" className="text-gold hover:underline">
-            Artist login
-          </Link>
-        </p>
+        {/* Links */}
+        <div className="mt-8 space-y-4 text-center">
+          <p className="text-body-sm text-gray-500">
+            No account?{' '}
+            <Link href="/fan/register" className="text-white hover:text-accent transition-colors">
+              Create one
+            </Link>
+          </p>
+          <p className="text-caption text-gray-600">
+            Artist?{' '}
+            <Link href="/login" className="text-gray-400 hover:text-white transition-colors">
+              Artist login →
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )
