@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { PageHeader } from '@/components/layout'
-import { Card, CardHeader, CardTitle, CardContent, Input, Button } from '@/components/ui'
+import { Card, CardHeader, CardTitle, CardContent, Input, Button, Select } from '@/components/ui'
 import { User, Lock, Bell, Palette, Music, Check, Loader2, ExternalLink } from 'lucide-react'
 
 export default function SettingsPage() {
@@ -11,6 +11,8 @@ export default function SettingsPage() {
 
   const [artistName, setArtistName] = useState('')
   const [spotifyArtistId, setSpotifyArtistId] = useState('')
+  const [pricingTier, setPricingTier] = useState('PRIVATE_CIRCLE')
+  const [canOverrideTier, setCanOverrideTier] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
@@ -21,6 +23,22 @@ export default function SettingsPage() {
     }
   }, [session])
 
+  useEffect(() => {
+    const loadProfileSettings = async () => {
+      try {
+        const res = await fetch('/api/settings/profile', { cache: 'no-store' })
+        const data = await res.json()
+        if (res.ok) {
+          setPricingTier(data?.user?.pricingTier || 'PRIVATE_CIRCLE')
+          setCanOverrideTier(Boolean(data?.controls?.canOverrideTier))
+        }
+      } catch (err) {
+        console.error('Failed to load settings profile:', err)
+      }
+    }
+    loadProfileSettings()
+  }, [])
+
   const handleSaveProfile = async () => {
     setSaving(true)
     setSaved(false)
@@ -29,12 +47,20 @@ export default function SettingsPage() {
       const res = await fetch('/api/settings/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ artistName, spotifyArtistId }),
+        body: JSON.stringify({
+          artistName,
+          spotifyArtistId,
+          ...(canOverrideTier ? { pricingTier } : {}),
+        }),
       })
 
       if (res.ok) {
         setSaved(true)
         await update() // Refresh session
+        const data = await res.json()
+        if (data?.user?.pricingTier) {
+          setPricingTier(data.user.pricingTier)
+        }
         setTimeout(() => setSaved(false), 3000)
       }
     } catch (err) {
@@ -150,6 +176,54 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Pricing Tier (Admin/Test Control) */}
+        {canOverrideTier && (
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <Music className="w-5 h-5 text-accent" />
+                <CardTitle>Pricing Tier Control</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-body-sm text-gray-500 font-light">
+                Admin control for testing entitlements and campaign gating behavior.
+              </p>
+              <Select
+                label="Current Pricing Tier"
+                value={pricingTier}
+                onChange={(e) => setPricingTier(e.target.value)}
+                variant="boxed"
+                options={[
+                  { value: 'STARTER', label: 'Starter' },
+                  { value: 'PRIVATE_CIRCLE', label: 'Private Circle' },
+                  { value: 'PATRON_GROWTH', label: 'Patron Growth' },
+                  { value: 'SOVEREIGN', label: 'Sovereign' },
+                ]}
+              />
+              <Button
+                variant="outline"
+                onClick={handleSaveProfile}
+                disabled={saving}
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    Saving...
+                  </>
+                ) : saved ? (
+                  <>
+                    <Check className="w-4 h-4 mr-2" />
+                    Saved
+                  </>
+                ) : (
+                  'Save Tier'
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Security Section */}
         <Card>

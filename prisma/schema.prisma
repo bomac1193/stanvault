@@ -54,6 +54,7 @@ model User {
   artistName           String?
   genre                String?
   careerStage          CareerStage?
+  pricingTier          PricingTier          @default(STARTER)
   location             String?
   spotifyArtistId      String?              // Artist's Spotify ID for matching listeners
   spotifyArtistUri     String?              // Spotify URI
@@ -70,6 +71,10 @@ model User {
   metricsHistory       ArtistMetricsHistory[]
   fanUserLinks         FanUserArtistLink[]  // Fan portal users who are fans of this artist
   drops                Drop[]               // Gated drops created by this artist
+  campaignRuns         CampaignRun[]        // Echoniq campaign run history
+  campaignVariablePresets CampaignVariablePreset[] // Saved campaign variable presets
+  savedVoiceModels     SavedVoiceModel[]
+  ctaCompletions       CtaActionCompletion[]
 }
 
 enum CareerStage {
@@ -77,6 +82,13 @@ enum CareerStage {
   GROWING
   ESTABLISHED
   VETERAN
+}
+
+enum PricingTier {
+  STARTER
+  PRIVATE_CIRCLE
+  PATRON_GROWTH
+  SOVEREIGN
 }
 
 // Platform Connection
@@ -108,6 +120,11 @@ enum Platform {
   YOUTUBE
   TWITTER
   EMAIL
+  DASHAM
+  BANDCAMP
+  KOFI
+  PATREON
+  MERCH
 }
 
 enum ConnectionStatus {
@@ -129,6 +146,7 @@ model Fan {
   country         String?
   stanScore       Int              @default(0)
   tier            FanTier          @default(CASUAL)
+  convictionScore Int              @default(0)
   platformScore   Int              @default(0)
   engagementScore Int              @default(0)
   longevityScore  Int              @default(0)
@@ -186,6 +204,18 @@ model FanPlatformLink {
   emailOpens    Int?
   emailClicks   Int?
 
+  // Dasham conviction metrics (tip = highest signal)
+  tipCount      Int?       // Total tips sent
+  tipAmountUsd  Float?     // Total tip amount in USD (normalized)
+  tipFrequency  Int?       // Unique months with tips
+  momentSaves   Int?       // Moments saved/engaged with
+  cityAffiliation String?  // Primary city (LAGOS, JOBURG, NAIROBI)
+
+  // Generic conviction signals (purchases, subscriptions)
+  purchaseCount     Int?       // Total purchases made (Bandcamp, merch, Ko-fi, etc.)
+  purchaseAmountUsd Float?     // Total purchase amount in USD
+  subscriptionMonths Int?      // Months of active subscription (Ko-fi, Patreon)
+
   firstSeenAt   DateTime @default(now())
   lastActiveAt  DateTime @default(now())
   createdAt     DateTime @default(now())
@@ -228,6 +258,8 @@ enum EventType {
   REACTIVATED
   MILESTONE_STREAMS
   MILESTONE_ENGAGEMENT
+  FIRST_TIP
+  MILESTONE_TIPS
 }
 
 // Fan Snapshot - Daily snapshots for hold rate calculation
@@ -467,6 +499,98 @@ model FanIdentityExport {
   totalScore  Int      // Sum of all stan scores
 
   @@index([fanUserId])
+}
+
+// CampaignRun - Stanvault-side history of Echoniq campaign sends/previews
+model CampaignRun {
+  id                 String   @id @default(cuid())
+  userId             String
+  externalCampaignId String?
+  status             String
+  dispatchMode       String?
+  provider           String?
+  subject            String?
+  messageTemplate    String
+  minTier            FanTier?
+  minStanScore       Int?
+  recipientLimit     Int?
+  dryRun             Boolean  @default(true)
+
+  segmentCount       Int      @default(0)
+  queuedRecipients   Int      @default(0)
+  skippedNoEmail     Int      @default(0)
+  sentCount          Int      @default(0)
+  failedCount        Int      @default(0)
+  previewOnlyCount   Int      @default(0)
+  voiceSentCount     Int      @default(0)
+
+  requestPayload     Json?
+  responsePayload    Json?
+  errorMessage       String?
+  createdAt          DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ctaCompletions CtaActionCompletion[]
+
+  @@index([userId, createdAt])
+}
+
+// SavedVoiceModel - Artist-linked Echoniq voice models for quick campaign selection
+model SavedVoiceModel {
+  id           String   @id @default(cuid())
+  userId       String
+  externalId   String
+  provider     String
+  name         String
+  previewUrl   String?
+  isActive     Boolean  @default(false)
+  source       String?  // "stanvault_clone", "manual_import"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isActive])
+  @@unique([userId, externalId])
+}
+
+// CtaActionCompletion - Proof-first completion artifacts for post-vanity CTA execution
+model CtaActionCompletion {
+  id            String   @id @default(cuid())
+  userId        String
+  fanId         String?
+  fanEmail      String?
+  campaignRunId String?
+  ctaKey        String
+  ctaLabel      String
+  proofUrl      String?
+  proofNote     String?
+  status        String   @default("submitted") // submitted, verified, rejected
+  submittedAt   DateTime @default(now())
+  reviewedAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaignRun CampaignRun? @relation(fields: [campaignRunId], references: [id], onDelete: SetNull)
+
+  @@index([userId, submittedAt])
+  @@index([userId, ctaKey])
+  @@index([campaignRunId])
+}
+
+// CampaignVariablePreset - Reusable template variable sets per artist
+model CampaignVariablePreset {
+  id              String   @id @default(cuid())
+  userId          String
+  name            String
+  fanClubName     String?
+  customVariables Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name])
+  @@index([userId, createdAt])
 }
 
 // ============================================
