@@ -61,6 +61,10 @@ model User {
   onboardingCompleted  Boolean              @default(false)
   onboardingStep       Int                  @default(1)
   isPublicProfile      Boolean              @default(false)  // Opt-in for public SCR profile
+  betaCohort           BetaCohort?          // Beta segment assignment
+  acquisitionChannel   AcquisitionChannel?  // How they were acquired
+  betaInviteCode       String?              // Invite code used to register
+  betaJoinedAt         DateTime?            // When they joined the beta
   createdAt            DateTime             @default(now())
   updatedAt            DateTime             @updatedAt
 
@@ -89,6 +93,37 @@ enum PricingTier {
   PRIVATE_CIRCLE
   PATRON_GROWTH
   SOVEREIGN
+}
+
+// Beta cohort segments (artist-side)
+enum BetaCohort {
+  CORE_AFROBEATS        // 30 artists: 5K-80K listeners, Lagos/Nairobi/Joburg/Accra
+  DIASPORA              // 15 artists: London/Atlanta/Toronto/NYC
+  MANAGER               // 10 managers: managing 2-5 artists each
+  DIRECT_TO_FAN_INDIE   // 10 artists: Bandcamp/Ko-fi/Patreon active
+  EXPERIMENTAL_NICHE    // 5 artists: multi-genre, experimental
+  PRODUCER_DJ           // 5 artists: release tracks + DJ
+  INDIE_HIPHOP_RNB      // 5 artists: US indie without African ecosystem
+}
+
+// Beta cohort segments (fan-side)
+enum FanBetaCohort {
+  DEEP_AFRICAN          // 35 fans: Lagos/Nairobi/Joburg, stream daily, tip on Dasham
+  DIASPORA_SUPERFAN     // 25 fans: London/Atlanta/Toronto/NYC, heavy streamers
+  BANDCAMP_KOFI_SUPPORTER // 20 fans: buy albums, subscribe on Ko-fi/Patreon
+  STREET_TEAM_LEADER    // 15 fans: obsessive, share everything
+  CASUAL_CURIOUS        // 15 fans: saw a drop link, browsing
+  COLD_SIGNUP           // 10 fans: no prior artist connection
+}
+
+enum AcquisitionChannel {
+  ORYX_PALMLION         // Internal ecosystem referral
+  MUSIC_TWITTER         // Targeted DMs on X
+  BANDCAMP_OUTREACH     // Direct outreach to Bandcamp sellers
+  MANAGER_NETWORK       // Personal intros
+  DISCORD_COMMUNITY     // Music Discord servers
+  PERSONAL_NETWORK      // Sphinxy's creative circles
+  COLD_SIGNUP           // Organic from pricing page / social
 }
 
 // Platform Connection
@@ -389,6 +424,12 @@ model FanUser {
   onboardingCompleted   Boolean   @default(false)
   onboardingStep        Int       @default(1)
 
+  // Beta tracking
+  betaCohort            FanBetaCohort?       // Beta segment assignment
+  acquisitionChannel    AcquisitionChannel?  // How they were acquired
+  betaInviteCode        String?              // Invite code used to register
+  betaJoinedAt          DateTime?            // When they joined the beta
+
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
@@ -660,4 +701,38 @@ model DropClaim {
   @@unique([dropId, fanUserId]) // One claim per fan per drop
   @@index([dropId])
   @@index([fanUserId])
+}
+
+// ============================================
+// BETA INFRASTRUCTURE - 200-user beta program
+// ============================================
+
+// BetaInvite - Invite codes for gated beta access
+model BetaInvite {
+  id                String              @id @default(cuid())
+  code              String              @unique // e.g., "SV-AFRO-001", "SV-DIASPORA-042"
+  description       String?             // Human-readable note about this invite
+
+  // Targeting
+  artistCohort      BetaCohort?         // For artist invites
+  fanCohort         FanBetaCohort?      // For fan invites
+  targetTier        PricingTier?        // Tier to assign on registration (artists only)
+  channel           AcquisitionChannel  // Which acquisition channel
+
+  // Usage limits
+  maxUses           Int                 @default(1) // How many times this code can be used
+  usedCount         Int                 @default(0) // Current usage
+  expiresAt         DateTime?           // Optional expiration
+
+  // Beta wave (phased rollout)
+  wave              Int                 @default(1) // 1 = weeks 1-2, 2 = weeks 3-4, 3 = weeks 5-6
+
+  // Lifecycle
+  isActive          Boolean             @default(true)
+  createdAt         DateTime            @default(now())
+
+  @@index([code])
+  @@index([wave, isActive])
+  @@index([artistCohort])
+  @@index([fanCohort])
 }

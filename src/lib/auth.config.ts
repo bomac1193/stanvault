@@ -14,6 +14,7 @@ export const authConfig: NextAuthConfig = {
       const isProtectedPage = nextUrl.pathname.startsWith('/dashboard') ||
         nextUrl.pathname.startsWith('/fans') ||
         nextUrl.pathname.startsWith('/drops') ||
+        nextUrl.pathname.startsWith('/campaigns') ||
         nextUrl.pathname.startsWith('/connections') ||
         nextUrl.pathname.startsWith('/insights') ||
         nextUrl.pathname.startsWith('/export') ||

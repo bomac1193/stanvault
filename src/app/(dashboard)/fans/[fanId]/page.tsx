@@ -103,6 +103,7 @@ export default function FanProfilePage({ params }: FanPageProps) {
         {/* Left column - Score breakdown */}
         <div>
           <StanScoreBreakdown
+            convictionScore={fan.convictionScore}
             platformScore={fan.platformScore}
             engagementScore={fan.engagementScore}
             longevityScore={fan.longevityScore}

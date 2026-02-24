@@ -27,7 +27,8 @@
     "recharts": "^3.6.0",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.3.5",
-    "zustand": "^5.0.10"
+    "zustand": "^5.0.10",
+    "market-core": "file:../market-core"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

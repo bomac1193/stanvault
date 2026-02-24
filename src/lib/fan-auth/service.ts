@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
 import { FAN_AUTH_CONFIG } from './config'
+import { FanBetaCohort, AcquisitionChannel } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { randomBytes, createHmac } from 'crypto'
 
@@ -21,7 +22,12 @@ interface FanUserSession {
 export async function createFanUser(
   email: string,
   password: string,
-  displayName: string
+  displayName: string,
+  betaData?: {
+    betaCohort?: FanBetaCohort
+    acquisitionChannel?: AcquisitionChannel
+    betaInviteCode?: string
+  }
 ): Promise<{ success: boolean; userId?: string; error?: string }> {
   try {
     // Check if email already exists
@@ -42,6 +48,10 @@ export async function createFanUser(
         email,
         password: hashedPassword,
         displayName,
+        ...(betaData?.betaCohort ? { betaCohort: betaData.betaCohort } : {}),
+        ...(betaData?.acquisitionChannel ? { acquisitionChannel: betaData.acquisitionChannel } : {}),
+        ...(betaData?.betaInviteCode ? { betaInviteCode: betaData.betaInviteCode } : {}),
+        ...(betaData?.betaCohort ? { betaJoinedAt: new Date() } : {}),
       },
     })
 
