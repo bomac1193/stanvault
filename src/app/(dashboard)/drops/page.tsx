@@ -96,10 +96,9 @@ export default function DropsPage() {
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
 
   return (
-    <div className="p-6 lg:p-8">
+    <div>
       <PageHeader
         title="Drops"
-        description="Create verification-gated content for your fans"
         actions={
           <button
             onClick={() => setShowCreate(true)}
@@ -113,7 +112,7 @@ export default function DropsPage() {
 
       {/* Create Form */}
       {showCreate && (
-        <div className="mb-8 p-6 border border-[#1a1a1a] bg-[#0a0a0a]">
+        <div className="mb-8 p-6 border border-[#1a1a1a]">
           <h2 className="text-sm font-medium text-gray-400 mb-6">Create Drop</h2>
           <form onSubmit={createDrop} className="space-y-6">
             <div>

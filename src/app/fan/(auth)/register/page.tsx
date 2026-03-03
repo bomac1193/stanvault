@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Loader2, Eye, EyeOff, Check } from 'lucide-react'
-import { LogoMark } from '@/components/brand/Logo'
 
 export default function FanRegisterPage() {
   const router = useRouter()
@@ -58,9 +57,8 @@ export default function FanRegisterPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-12">
-          <LogoMark size="lg" />
-          <p className="text-caption text-gray-600 uppercase tracking-widest mt-3">
-            Fan Portal
+          <p className="text-2xl text-white" style={{ fontFamily: 'Canela, serif' }}>
+            Imprint
           </p>
         </div>
 
@@ -184,7 +182,7 @@ export default function FanRegisterPage() {
         </form>
 
         {/* Links */}
-        <div className="mt-8 space-y-4 text-center">
+        <div className="mt-10 space-y-6 text-center">
           <p className="text-body-sm text-gray-500">
             Have an account?{' '}
             <Link href="/fan/login" className="text-white hover:text-accent transition-colors">

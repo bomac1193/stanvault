@@ -30,10 +30,7 @@ export default function FanPrintPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Imprints"
-        description="Revenue intelligence from your fan data"
-      />
+      <PageHeader title="Imprints" description="Where conviction turns into revenue." />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Fan Heatmap - full width, above city intelligence */}

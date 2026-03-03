@@ -674,10 +674,7 @@ export default function CampaignsPage() {
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Campaigns"
-        description="Compose and send fan-targeted campaigns via Emissar."
-      />
+      <PageHeader title="Campaigns" />
 
       {/* ── Compose Card ──────────────────────────────────────────────── */}
       <Card>

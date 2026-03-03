@@ -13,7 +13,7 @@ interface ConversionFunnelProps {
   funnel: FunnelStage[]
 }
 
-const stageColors = ['#737373', '#A3A3A3', '#D4D4D4', '#FF2D92']
+const stageColors = ['#737373', '#A3A3A3', '#D4D4D4', '#D45068']
 
 export function ConversionFunnel({ funnel }: ConversionFunnelProps) {
   const maxCount = Math.max(...funnel.map((s) => s.count))

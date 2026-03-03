@@ -146,10 +146,7 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Settings"
-        description="Manage your account and preferences"
-      />
+      <PageHeader title="Settings" />
 
       <div className="max-w-2xl space-y-6">
         {/* Profile Section */}

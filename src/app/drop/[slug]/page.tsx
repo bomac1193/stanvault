@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Loader2, Lock, Check, Download, ExternalLink, AlertCircle } from 'lucide-react'
-import { LogoMark } from '@/components/brand/Logo'
 
 interface Drop {
   id: string
@@ -111,7 +110,7 @@ export default function DropPage() {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-6">
         <div className="text-center">
-          <LogoMark size="lg" className="mb-8" />
+          <p className="text-2xl text-white mb-8" style={{ fontFamily: 'Canela, serif' }}>Imprint</p>
           <h1 className="text-2xl font-medium text-white mb-4" style={{ fontFamily: 'Canela, serif' }}>Drop Not Found</h1>
           <p className="text-gray-500">{error || 'This drop does not exist.'}</p>
         </div>
@@ -126,7 +125,7 @@ export default function DropPage() {
       {/* Header */}
       <header className="border-b border-gray-800 p-4">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <LogoMark size="sm" />
+          <p className="text-lg text-white" style={{ fontFamily: 'Canela, serif' }}>Imprint</p>
           <span className="text-caption text-gray-600 uppercase tracking-widest">Verified Drop</span>
         </div>
       </header>

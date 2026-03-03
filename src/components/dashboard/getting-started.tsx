@@ -115,12 +115,12 @@ export function GettingStarted() {
                 <div
                   className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
                     step.done
-                      ? 'bg-status-success/20'
+                      ? 'bg-accent/20'
                       : 'border border-[#333]'
                   }`}
                 >
                   {step.done && (
-                    <Check className="w-3 h-3 text-status-success" />
+                    <Check className="w-3 h-3 text-accent" />
                   )}
                 </div>
                 <div className="min-w-0">

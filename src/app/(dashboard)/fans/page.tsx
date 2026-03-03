@@ -33,10 +33,7 @@ export default function FansPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-0">
-        <PageHeader
-          title="Fans"
-          description="Manage and explore your fanbase"
-        />
+        <PageHeader title="Fans" />
         <button
           onClick={() => setShowImport(true)}
           className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-[#1a1a1a] text-gray-300 hover:text-white hover:border-[#333] transition-colors"

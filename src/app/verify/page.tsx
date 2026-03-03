@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Shield, CheckCircle, XCircle, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { LogoMark } from '@/components/brand/Logo'
 
 interface VerificationResult {
   valid: boolean
@@ -72,7 +71,7 @@ export default function VerifyPage() {
       {/* Header */}
       <header className="border-b border-gray-800">
         <div className="max-w-4xl mx-auto px-6 py-4">
-          <LogoMark size="md" />
+          <p className="text-xl text-white" style={{ fontFamily: 'Canela, serif' }}>Imprint</p>
         </div>
       </header>
 

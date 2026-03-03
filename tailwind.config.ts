@@ -16,11 +16,11 @@ const config: Config = {
         black: "#000000",
         white: "#FFFFFF",
 
-        // The rebel satisfies - electric, alive, unapologetic
+        // Conviction — passionate enough for fans, earned enough for creators
         accent: {
-          DEFAULT: "#FF2D92",  // Hot pink - Balenciaga energy
-          dim: "#FF2D9233",
-          bright: "#FF5AAB",
+          DEFAULT: "#D45068",  // Deep rose — devotion that aged
+          dim: "#D4506833",
+          bright: "#E8687E",
         },
 
         // Secondary accent - luxury, creative
@@ -73,10 +73,10 @@ const config: Config = {
           gray: "#E5E5E5",
         },
         gold: {
-          DEFAULT: "#FF2D92",
-          light: "#FF5AAB",
-          dark: "#CC2476",
-          muted: "#FF2D9233",
+          DEFAULT: "#D45068",
+          light: "#E8687E",
+          dark: "#B84058",
+          muted: "#D4506833",
         },
         moss: {
           DEFAULT: "#00FF88",

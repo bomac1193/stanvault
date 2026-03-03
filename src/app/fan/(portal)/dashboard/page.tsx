@@ -12,7 +12,6 @@ import {
   CheckCircle,
   Music,
 } from 'lucide-react'
-import { LogoMark } from '@/components/brand/Logo'
 import ProfilePhotoUpload from '@/components/profile/ProfilePhotoUpload'
 
 interface ArtistRelationship {
@@ -128,12 +127,9 @@ export default function FanDashboardPage() {
       {/* Header */}
       <header className="border-b border-gray-800">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <LogoMark size="md" />
-            <div>
-              <p className="text-caption text-gray-600 uppercase tracking-widest">Fan Portal</p>
-            </div>
-          </div>
+          <p className="text-xl text-white" style={{ fontFamily: 'Canela, serif' }}>
+            Imprint
+          </p>
 
           <nav className="flex items-center gap-6">
             <Link
@@ -298,8 +294,8 @@ export default function FanDashboardPage() {
       {/* Footer */}
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-8">
-          <p className="text-caption text-gray-700 uppercase tracking-widest">
-            <span className="text-accent">[</span>IM<span className="text-accent">]</span> — Own your fans
+          <p className="text-caption text-gray-700" style={{ fontFamily: 'Canela, serif' }}>
+            Imprint
           </p>
         </div>
       </footer>

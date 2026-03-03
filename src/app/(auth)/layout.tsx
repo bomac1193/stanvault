@@ -1,5 +1,3 @@
-import { LogoMark } from '@/components/brand/Logo'
-
 export default function AuthLayout({
   children,
 }: {
@@ -13,13 +11,12 @@ export default function AuthLayout({
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[600px] h-[500px] bg-accent/[0.03] rounded-full blur-[120px] pointer-events-none" />
 
         <div className="relative">
-          <LogoMark size="lg" />
-          <p className="text-caption uppercase tracking-[0.3em] text-gray-500 mt-3">
+          <p className="text-2xl text-white" style={{ fontFamily: 'Canela, serif' }}>
             Imprint
           </p>
         </div>
         <div className="relative max-w-sm">
-          <p className="text-body font-light text-gray-400 leading-relaxed">
+          <p className="text-2xl font-light text-gray-400 leading-relaxed" style={{ fontFamily: 'Canela, serif' }}>
             Not all fans are equal.
           </p>
         </div>
@@ -33,7 +30,7 @@ export default function AuthLayout({
         <div className="w-full max-w-sm">
           {/* Mobile header */}
           <div className="lg:hidden mb-12">
-            <p className="text-caption uppercase tracking-[0.3em] text-gray-400 font-medium">
+            <p className="text-2xl text-white" style={{ fontFamily: 'Canela, serif' }}>
               Imprint
             </p>
           </div>

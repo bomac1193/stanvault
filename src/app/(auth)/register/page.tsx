@@ -59,14 +59,11 @@ export default function RegisterPage() {
   return (
     <div>
       <div className="mb-10">
-        <p className="text-caption uppercase tracking-widest text-gray-500 mb-4">
-          Artists & Managers
-        </p>
         <h1 className="text-2xl font-medium text-white" style={{ fontFamily: 'Canela, serif' }}>
           See who&apos;s real.
         </h1>
         <p className="text-body-sm text-gray-500 font-light mt-2">
-          Conviction over vanity. Create your account to begin.
+          Conviction over vanity.
         </p>
       </div>
 
@@ -130,16 +127,19 @@ export default function RegisterPage() {
         Continue with Google
       </button>
 
-      <div className="mt-10 flex items-center justify-between">
-        <p className="text-body-sm text-gray-500">
-          Already in?{' '}
-          <Link href="/login" className="text-white hover:text-accent transition-colors duration-300">
+      <div className="mt-12 space-y-8 text-center">
+        <div>
+          <p className="text-caption text-gray-600 mb-2">Already in?</p>
+          <Link href="/login" className="text-body-sm text-white hover:text-accent transition-colors duration-300">
             Sign in
           </Link>
-        </p>
-        <Link href="/fan/register" className="text-body-sm text-gray-600 hover:text-accent transition-colors duration-300">
-          Fan Portal
-        </Link>
+        </div>
+        <div>
+          <p className="text-caption text-gray-600 mb-2">Are you a fan?</p>
+          <Link href="/fan/register" className="text-body-sm text-gray-400 hover:text-white transition-colors duration-300">
+            Fan registration →
+          </Link>
+        </div>
       </div>
     </div>
   )

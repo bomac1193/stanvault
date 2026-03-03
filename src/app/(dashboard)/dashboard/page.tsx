@@ -12,10 +12,7 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Overview"
-        description="Your fan intelligence at a glance"
-      />
+      <PageHeader title="Overview" />
 
       <GettingStarted />
 

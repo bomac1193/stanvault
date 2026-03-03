@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Loader2, Check, ExternalLink } from 'lucide-react'
-import { LogoMark } from '@/components/brand/Logo'
 
 export default function FanOnboardingPage() {
   const router = useRouter()
@@ -69,7 +68,7 @@ export default function FanOnboardingPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-12">
-          <LogoMark size="lg" />
+          <p className="text-2xl text-white" style={{ fontFamily: 'Canela, serif' }}>Imprint</p>
         </div>
 
         {/* Header */}

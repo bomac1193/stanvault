@@ -158,10 +158,7 @@ export default function ConnectionsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Connections"
-        description="Manage platform integrations."
-      />
+      <PageHeader title="Connections" />
 
       {notification && (
         <div className={`p-3 text-caption ${

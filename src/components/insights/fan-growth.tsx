@@ -81,7 +81,7 @@ export function FanGrowth({ data }: FanGrowthProps) {
               <Bar
                 yAxisId="delta"
                 dataKey="newFansCount"
-                fill="#FF2D92"
+                fill="#D45068"
                 opacity={0.6}
                 name="New"
               />

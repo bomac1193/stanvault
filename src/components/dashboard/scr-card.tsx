@@ -48,8 +48,8 @@ export function SCRCard({
   const getSCRRating = (value: number) => {
     if (value >= 3) return { label: 'Exceptional', color: 'text-status-success' }
     if (value >= 1.5) return { label: 'Strong', color: 'text-accent' }
-    if (value >= 0.5) return { label: 'Average', color: 'text-gray-500' }
-    if (value >= 0.2) return { label: 'Below Average', color: 'text-orange-400' }
+    if (value >= 0.5) return { label: 'Average', color: 'text-gray-400' }
+    if (value >= 0.2) return { label: 'Below Average', color: 'text-gray-500' }
     return { label: 'Low', color: 'text-status-error' }
   }
 
@@ -139,9 +139,7 @@ export function SCRCard({
                   className={cn(
                     'text-lg font-mono font-medium',
                     item.isNegative
-                      ? item.value > 0.2
-                        ? 'text-status-error'
-                        : 'text-gray-300'
+                      ? 'text-gray-400'
                       : item.value >= 0.6
                         ? 'text-white'
                         : item.value >= 0.3
@@ -186,10 +184,10 @@ export function SCRCard({
                 <Line
                   type="monotone"
                   dataKey="scr"
-                  stroke="#FF2D92"
+                  stroke="#D45068"
                   strokeWidth={2}
                   dot={false}
-                  activeDot={{ r: 4, fill: '#FF2D92' }}
+                  activeDot={{ r: 4, fill: '#D45068' }}
                 />
               </LineChart>
             </ResponsiveContainer>

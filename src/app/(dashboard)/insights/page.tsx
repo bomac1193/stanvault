@@ -34,7 +34,6 @@ export default function TrendsPage() {
     <div>
       <PageHeader
         title="Shifts"
-        description="Your fanbase shifts"
         actions={<Tabs tabs={periodTabs} value={period} onChange={setPeriod} />}
       />
 
