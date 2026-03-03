@@ -17,18 +17,18 @@ interface JourneyTimelineProps {
 }
 
 const eventConfig: Record<string, { icon: typeof Star; color: string }> = {
-  BECAME_SUPERFAN: { icon: Star, color: '#C9A227' },
-  TIER_UPGRADE: { icon: TrendingUp, color: '#8B5CF6' },
-  FIRST_STREAM: { icon: Music, color: '#1DB954' },
-  FIRST_FOLLOW: { icon: Heart, color: '#E4405F' },
-  FIRST_LIKE: { icon: Heart, color: '#E4405F' },
-  FIRST_COMMENT: { icon: MessageCircle, color: '#3B82F6' },
-  FIRST_SHARE: { icon: Share2, color: '#22C55E' },
-  PLAYLIST_ADD: { icon: Music, color: '#1DB954' },
-  EMAIL_SUBSCRIBE: { icon: Mail, color: '#C9A227' },
-  EMAIL_OPEN: { icon: Mail, color: '#C9A227' },
-  MILESTONE_STREAMS: { icon: Zap, color: '#F59E0B' },
-  MILESTONE_ENGAGEMENT: { icon: Zap, color: '#F59E0B' },
+  BECAME_SUPERFAN: { icon: Star, color: '#FFFFFF' },
+  TIER_UPGRADE: { icon: TrendingUp, color: '#A3A3A3' },
+  FIRST_STREAM: { icon: Music, color: '#737373' },
+  FIRST_FOLLOW: { icon: Heart, color: '#737373' },
+  FIRST_LIKE: { icon: Heart, color: '#737373' },
+  FIRST_COMMENT: { icon: MessageCircle, color: '#737373' },
+  FIRST_SHARE: { icon: Share2, color: '#737373' },
+  PLAYLIST_ADD: { icon: Music, color: '#A3A3A3' },
+  EMAIL_SUBSCRIBE: { icon: Mail, color: '#737373' },
+  EMAIL_OPEN: { icon: Mail, color: '#737373' },
+  MILESTONE_STREAMS: { icon: Zap, color: '#D4D4D4' },
+  MILESTONE_ENGAGEMENT: { icon: Zap, color: '#D4D4D4' },
 }
 
 export function JourneyTimeline({ events }: JourneyTimelineProps) {

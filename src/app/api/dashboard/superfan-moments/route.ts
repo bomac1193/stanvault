@@ -9,13 +9,19 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get recent notable events
+    // Single query: Core fans + fans becoming Core + Strong fans approaching Core
     const events = await prisma.fanEvent.findMany({
       where: {
         fan: { userId: session.user.id },
-        eventType: {
-          in: ['BECAME_SUPERFAN', 'TIER_UPGRADE', 'MILESTONE_STREAMS', 'MILESTONE_ENGAGEMENT'],
-        },
+        OR: [
+          { eventType: 'BECAME_SUPERFAN' },
+          {
+            fan: { tier: { in: ['SUPERFAN', 'DEDICATED'] } },
+            eventType: {
+              in: ['TIER_UPGRADE', 'MILESTONE_STREAMS', 'MILESTONE_ENGAGEMENT'],
+            },
+          },
+        ],
       },
       include: {
         fan: {

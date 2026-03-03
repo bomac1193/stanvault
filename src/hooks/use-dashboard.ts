@@ -39,6 +39,7 @@ export function useDashboardMetrics() {
       if (!res.ok) throw new Error('Failed to fetch metrics')
       return res.json()
     },
+    staleTime: 5 * 60 * 1000,   // 5 min
   })
 }
 
@@ -50,6 +51,7 @@ export function useSuperfanMoments() {
       if (!res.ok) throw new Error('Failed to fetch moments')
       return res.json()
     },
+    staleTime: 10 * 60 * 1000,  // 10 min — moments don't change fast
   })
 }
 
@@ -85,5 +87,6 @@ export function useSCR() {
       if (!res.ok) throw new Error('Failed to fetch SCR')
       return res.json()
     },
+    staleTime: 15 * 60 * 1000, // 15 min — daily metric, no need to recalculate
   })
 }

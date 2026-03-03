@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Plus, Copy, Check, ExternalLink, Trash2, Loader2 } from 'lucide-react'
 import { PageHeader } from '@/components/layout/page-header'
 
@@ -23,8 +24,17 @@ interface Drop {
 }
 
 export default function DropsPage() {
-  const [drops, setDrops] = useState<Drop[]>([])
-  const [loading, setLoading] = useState(true)
+  const { data: dropsData, isLoading: loading, refetch: refetchDrops } = useQuery<{ drops: Drop[] }>({
+    queryKey: ['drops'],
+    queryFn: async () => {
+      const res = await fetch('/api/drops')
+      if (!res.ok) throw new Error('Failed to fetch drops')
+      return res.json()
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+  const drops = dropsData?.drops || []
+
   const [showCreate, setShowCreate] = useState(false)
   const [creating, setCreating] = useState(false)
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null)
@@ -37,22 +47,6 @@ export default function DropsPage() {
   const [minTier, setMinTier] = useState('')
   const [minScore, setMinScore] = useState('')
   const [maxClaims, setMaxClaims] = useState('')
-
-  useEffect(() => {
-    fetchDrops()
-  }, [])
-
-  async function fetchDrops() {
-    try {
-      const res = await fetch('/api/drops')
-      const data = await res.json()
-      setDrops(data.drops || [])
-    } catch {
-      console.error('Failed to fetch drops')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   async function createDrop(e: React.FormEvent) {
     e.preventDefault()
@@ -83,7 +77,7 @@ export default function DropsPage() {
         setMinScore('')
         setMaxClaims('')
         setShowCreate(false)
-        fetchDrops()
+        refetchDrops()
       }
     } catch {
       console.error('Failed to create drop')

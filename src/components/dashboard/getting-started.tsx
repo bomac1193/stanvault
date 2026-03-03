@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui'
-import { Check, Link2, Users, Gift, Send, X } from 'lucide-react'
+import { Check, X } from 'lucide-react'
 
 interface ChecklistState {
   platformConnected: boolean
@@ -39,7 +39,6 @@ export function GettingStarted() {
       description: 'Import fans from Spotify, email, or another source',
       done: state.platformConnected,
       href: '/connections',
-      icon: Link2,
     },
     {
       key: 'fans',
@@ -47,7 +46,6 @@ export function GettingStarted() {
       description: 'View your fan table and Pulse scores',
       done: state.hasFans,
       href: '/fans',
-      icon: Users,
     },
     {
       key: 'drop',
@@ -55,7 +53,6 @@ export function GettingStarted() {
       description: 'Gate exclusive content by fan tier',
       done: state.hasDrops,
       href: '/drops',
-      icon: Gift,
     },
     {
       key: 'campaign',
@@ -63,7 +60,6 @@ export function GettingStarted() {
       description: 'Reach your fans with targeted messaging',
       done: state.hasCampaigns,
       href: '/campaigns',
-      icon: Send,
     },
   ]
 
@@ -106,9 +102,7 @@ export function GettingStarted() {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {steps.map((step) => {
-            const Icon = step.icon
-            return (
+          {steps.map((step) => (
               <Link
                 key={step.key}
                 href={step.href}
@@ -119,16 +113,14 @@ export function GettingStarted() {
                 }`}
               >
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                  className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
                     step.done
                       ? 'bg-status-success/20'
-                      : 'bg-[#1a1a1a]'
+                      : 'border border-[#333]'
                   }`}
                 >
-                  {step.done ? (
-                    <Check className="w-4 h-4 text-status-success" />
-                  ) : (
-                    <Icon className="w-4 h-4 text-gray-400" />
+                  {step.done && (
+                    <Check className="w-3 h-3 text-status-success" />
                   )}
                 </div>
                 <div className="min-w-0">
@@ -138,8 +130,7 @@ export function GettingStarted() {
                   <p className="text-xs text-gray-500 truncate">{step.description}</p>
                 </div>
               </Link>
-            )
-          })}
+            ))}
         </div>
       </CardContent>
     </Card>

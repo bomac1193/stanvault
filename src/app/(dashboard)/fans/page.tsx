@@ -1,17 +1,29 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { PageHeader } from '@/components/layout'
 import { FanTable, FanFilters, Pagination } from '@/components/fans'
 import { TableSkeleton, Skeleton } from '@/components/ui'
 import { CsvImportModal } from '@/components/import/csv-import-modal'
 import { useFans } from '@/hooks/use-fans'
-import { useFanFiltersStore } from '@/stores/fan-filters-store'
+import { useFanFiltersStore, TierFilter } from '@/stores/fan-filters-store'
 import { Upload } from 'lucide-react'
 
+const VALID_TIERS = new Set(['ALL', 'CASUAL', 'ENGAGED', 'DEDICATED', 'SUPERFAN'])
+
 export default function FansPage() {
+  const searchParams = useSearchParams()
   const { data, isLoading, refetch } = useFans()
-  const { sortField, sortOrder, setSort, setPage } = useFanFiltersStore()
+  const { sortField, sortOrder, setSort, setPage, setTier } = useFanFiltersStore()
+
+  // Apply ?tier= param from URL (e.g. from tier chart "View all" links)
+  useEffect(() => {
+    const tierParam = searchParams.get('tier')
+    if (tierParam && VALID_TIERS.has(tierParam)) {
+      setTier(tierParam as TierFilter)
+    }
+  }, [searchParams, setTier])
   const [showImport, setShowImport] = useState(false)
 
   const handleSort = (field: string) => {

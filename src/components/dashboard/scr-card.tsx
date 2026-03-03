@@ -1,7 +1,6 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { TrendingUp, TrendingDown, Minus, Activity, Clock, Layers, AlertTriangle } from 'lucide-react'
 import {
   LineChart,
   Line,
@@ -43,8 +42,6 @@ export function SCRCard({
   history,
   className,
 }: SCRCardProps) {
-  const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus
-
   const scrDisplay = scr >= 1 ? scr.toFixed(1) : scr.toFixed(2)
   const scrPercent = Math.round(scr * 100)
 
@@ -60,28 +57,24 @@ export function SCRCard({
 
   const componentItems = [
     {
-      name: 'Hold Rate (90d)',
+      name: 'Retention',
       value: components.holdRate,
-      icon: Clock,
-      description: 'Fan retention',
+      description: '90-day hold',
     },
     {
-      name: 'Depth Velocity',
+      name: 'Depth',
       value: components.depthVelocity,
-      icon: TrendingUp,
       description: 'Time to Core',
     },
     {
-      name: 'Platform Spread',
+      name: 'Reach',
       value: components.platformIndependence,
-      icon: Layers,
-      description: 'Multi-platform presence',
+      description: 'Cross-platform',
     },
     {
-      name: 'Churn Rate',
+      name: 'Fade Rate',
       value: components.churnRate,
-      icon: AlertTriangle,
-      description: 'Fan loss rate',
+      description: 'Core loss',
       isNegative: true,
     },
   ]
@@ -96,12 +89,9 @@ export function SCRCard({
       {/* Header */}
       <div className="px-6 py-4 border-b border-[#1a1a1a]">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Activity className="w-5 h-5 text-gray-400" />
-            <h3 className="text-sm font-medium text-gray-400">
-              Pulse Conversion Rate
-            </h3>
-          </div>
+          <h3 className="text-sm font-medium text-gray-400">
+            Core Conversion Rate
+          </h3>
           <span className={cn('text-sm font-medium px-2 py-1', rating.color, 'bg-black')}>
             {rating.label}
           </span>
@@ -113,35 +103,25 @@ export function SCRCard({
         <div className="flex items-start justify-between mb-6">
           <div>
             <div className="flex items-baseline gap-2">
-              <span className="text-5xl font-mono font-bold text-white">
+              <span className="text-3xl font-mono font-medium text-white tracking-tight">
                 {scrDisplay}
               </span>
-              <span className="text-lg text-gray-500">PCR</span>
+              <span className="text-sm text-gray-500">CCR</span>
             </div>
-            <p className="text-sm text-gray-500 mt-1">{scrPercent}% conversion efficiency</p>
+            <p className="text-xs text-gray-500 mt-1">{scrPercent}% conversion efficiency</p>
           </div>
 
           {/* Trend */}
-          <div className="flex items-center gap-1 px-3 py-1.5 bg-black">
-            <TrendIcon
-              className={cn(
-                'w-4 h-4',
-                trend === 'up' && 'text-status-success',
-                trend === 'down' && 'text-status-error',
-                trend === 'stable' && 'text-gray-500'
-              )}
-            />
-            <span
-              className={cn(
-                'text-sm font-medium',
-                trend === 'up' && 'text-status-success',
-                trend === 'down' && 'text-status-error',
-                trend === 'stable' && 'text-gray-500'
-              )}
-            >
-              {trend === 'stable' ? 'Stable' : `${trendPercent > 0 ? '+' : ''}${trendPercent}%`}
-            </span>
-          </div>
+          <span
+            className={cn(
+              'text-sm font-medium px-3 py-1.5 bg-black',
+              trend === 'up' && 'text-status-success',
+              trend === 'down' && 'text-status-error',
+              trend === 'stable' && 'text-gray-500'
+            )}
+          >
+            {trend === 'stable' ? 'Stable' : `${trendPercent > 0 ? '+' : ''}${trendPercent}%`}
+          </span>
         </div>
 
         {/* Interpretation */}
@@ -153,23 +133,20 @@ export function SCRCard({
         <div className="grid grid-cols-2 gap-4 mb-6">
           {componentItems.map((item) => (
             <div key={item.name} className="bg-black p-3">
-              <div className="flex items-center gap-2 mb-2">
-                <item.icon className="w-4 h-4 text-gray-500" />
-                <span className="text-xs text-gray-500">{item.name}</span>
-              </div>
+              <span className="text-xs text-gray-500 mb-2 block">{item.name}</span>
               <div className="flex items-baseline gap-1">
                 <span
                   className={cn(
-                    'text-xl font-mono font-semibold',
+                    'text-lg font-mono font-medium',
                     item.isNegative
                       ? item.value > 0.2
                         ? 'text-status-error'
-                        : 'text-status-success'
+                        : 'text-gray-300'
                       : item.value >= 0.6
-                        ? 'text-status-success'
+                        ? 'text-white'
                         : item.value >= 0.3
-                          ? 'text-accent'
-                          : 'text-status-error'
+                          ? 'text-gray-400'
+                          : 'text-gray-500'
                   )}
                 >
                   {Math.round(item.value * 100)}%
@@ -204,7 +181,7 @@ export function SCRCard({
                     color: '#fff',
                   }}
                   labelStyle={{ color: '#737373' }}
-                  formatter={(value: number) => [value?.toFixed(2), 'PCR']}
+                  formatter={(value: number) => [value?.toFixed(2), 'CCR']}
                 />
                 <Line
                   type="monotone"

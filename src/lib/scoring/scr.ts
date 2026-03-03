@@ -17,9 +17,9 @@ interface SCRResult {
 }
 
 /**
- * Calculate the Pulse Conversion Rate (PCR) for a creator.
- * Internally still called "SCR" in code — UI surfaces "PCR" via labels.ts.
- * PCR = (Hold Rate × Depth Velocity × Platform Independence) / Churn Drag
+ * Calculate the Core Conversion Rate (CCR) for a creator.
+ * Internally still called "SCR" in code — UI surfaces "CCR" via labels.ts.
+ * CCR = (Hold Rate × Depth Velocity × Platform Independence) / Churn Drag
  */
 export async function calculateSCR(userId: string): Promise<SCRResult> {
   const components = await calculateSCRComponents(userId)
@@ -35,15 +35,15 @@ export async function calculateSCR(userId: string): Promise<SCRResult> {
   // Generate interpretation
   let interpretation: string
   if (scr >= 3) {
-    interpretation = 'Exceptional fan conversion. Your audience builds lasting connections.'
+    interpretation = 'Exceptional conversion. Your audience builds lasting connections.'
   } else if (scr >= 1.5) {
-    interpretation = 'Strong fan conversion. Most listeners become genuine fans.'
+    interpretation = 'Strong conversion. Most listeners become genuine fans.'
   } else if (scr >= 0.5) {
-    interpretation = 'Average fan conversion. Room for deeper engagement.'
+    interpretation = 'Moderate conversion. Room for deeper engagement.'
   } else if (scr >= 0.2) {
     interpretation = 'Below average conversion. Focus on retention and depth.'
   } else {
-    interpretation = 'Low conversion. High churn or shallow engagement.'
+    interpretation = 'Low conversion. High fade rate or shallow depth.'
   }
 
   return {

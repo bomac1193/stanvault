@@ -9,8 +9,8 @@
 export const PRODUCT_NAME = 'Imprint'
 export const PRODUCT_TAGLINE = 'Own Your Fans. Own Your Future.'
 export const SCORE_NAME = 'Pulse'
-export const CONVERSION_RATE_NAME = 'PCR'          // Pulse Conversion Rate
-export const CONVERSION_RATE_LONG = 'Pulse Conversion Rate'
+export const CONVERSION_RATE_NAME = 'CCR'          // Core Conversion Rate
+export const CONVERSION_RATE_LONG = 'Core Conversion Rate'
 
 // ── Tier labels (DB enum → UI) ──────────────────────────
 export const TIER_LABELS: Record<string, string> = {
@@ -30,10 +30,10 @@ export const TIER_COLORS: Record<string, string> = {
 
 // ── Tier badge variant colors (Tailwind class strings) ──
 export const TIER_BADGE_CLASSES: Record<string, string> = {
-  CASUAL: 'bg-gray-800 text-gray-400',
-  ENGAGED: 'bg-gray-700 text-gray-300',
-  DEDICATED: 'bg-gray-600 text-gray-200',
-  SUPERFAN: 'bg-white text-black',
+  CASUAL: 'bg-white/5 text-gray-500 border-white/5',
+  ENGAGED: 'bg-white/8 text-gray-400 border-white/8',
+  DEDICATED: 'bg-white/10 text-gray-300 border-white/10',
+  SUPERFAN: 'bg-white/15 text-white border-white/15',
 }
 
 // ── Helpers ─────────────────────────────────────────────

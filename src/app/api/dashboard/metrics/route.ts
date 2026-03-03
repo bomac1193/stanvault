@@ -11,58 +11,72 @@ export async function GET() {
 
     const userId = session.user.id
 
-    // Get fan counts by tier
-    const [totalFans, superfans, dedicated, engaged, casual] = await Promise.all([
-      prisma.fan.count({ where: { userId } }),
-      prisma.fan.count({ where: { userId, tier: 'SUPERFAN' } }),
-      prisma.fan.count({ where: { userId, tier: 'DEDICATED' } }),
-      prisma.fan.count({ where: { userId, tier: 'ENGAGED' } }),
-      prisma.fan.count({ where: { userId, tier: 'CASUAL' } }),
-    ])
-
-    // Get average stan score
-    const avgScoreResult = await prisma.fan.aggregate({
-      where: { userId },
-      _avg: { stanScore: true },
-    })
-
-    // Get rising fans (recently active with high engagement)
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-
-    const risingFans = await prisma.fan.count({
-      where: {
-        userId,
-        lastActiveAt: { gte: thirtyDaysAgo },
-        stanScore: { gte: 50 },
-      },
-    })
-
-    // Get new fans this month
     const startOfMonth = new Date()
     startOfMonth.setDate(1)
     startOfMonth.setHours(0, 0, 0, 0)
 
-    const newFansThisMonth = await prisma.fan.count({
-      where: {
-        userId,
-        firstSeenAt: { gte: startOfMonth },
-      },
-    })
+    // 3 queries instead of 13
+    const [tierStats, risingFans, newThisMonthByTier] = await Promise.all([
+      // 1. Single groupBy: tier counts + avg scores
+      prisma.fan.groupBy({
+        by: ['tier'],
+        where: { userId },
+        _count: { tier: true },
+        _avg: { stanScore: true },
+      }),
+      // 2. Rising fans
+      prisma.fan.count({
+        where: { userId, lastActiveAt: { gte: thirtyDaysAgo }, stanScore: { gte: 50 } },
+      }),
+      // 3. New this month by tier
+      prisma.fan.groupBy({
+        by: ['tier'],
+        where: { userId, firstSeenAt: { gte: startOfMonth } },
+        _count: { tier: true },
+      }),
+    ])
 
-    // Get tier distribution for chart
+    // Build lookup maps from the two groupBy results
+    const countMap: Record<string, number> = {}
+    const avgMap: Record<string, number> = {}
+    let totalFans = 0
+    let totalScoreSum = 0
+    let totalScoreCount = 0
+
+    for (const row of tierStats) {
+      countMap[row.tier] = row._count.tier
+      avgMap[row.tier] = Math.round(row._avg.stanScore || 0)
+      totalFans += row._count.tier
+      if (row._avg.stanScore) {
+        totalScoreSum += (row._avg.stanScore * row._count.tier)
+        totalScoreCount += row._count.tier
+      }
+    }
+
+    const newMap: Record<string, number> = {}
+    let newFansThisMonth = 0
+    for (const row of newThisMonthByTier) {
+      newMap[row.tier] = row._count.tier
+      newFansThisMonth += row._count.tier
+    }
+
+    const superfans = countMap['SUPERFAN'] || 0
+    const avgStanScore = totalScoreCount > 0 ? Math.round(totalScoreSum / totalScoreCount) : 0
+
     const tierDistribution = [
-      { tier: 'Core', count: superfans, color: '#C9A227' },
-      { tier: 'Strong', count: dedicated, color: '#8B5CF6' },
-      { tier: 'Steady', count: engaged, color: '#3B82F6' },
-      { tier: 'Faint', count: casual, color: '#6B7280' },
+      { tier: 'Core', dbTier: 'SUPERFAN', count: superfans, color: '#FFFFFF', avgScore: avgMap['SUPERFAN'] || 0, newThisMonth: newMap['SUPERFAN'] || 0 },
+      { tier: 'Strong', dbTier: 'DEDICATED', count: countMap['DEDICATED'] || 0, color: '#A3A3A3', avgScore: avgMap['DEDICATED'] || 0, newThisMonth: newMap['DEDICATED'] || 0 },
+      { tier: 'Steady', dbTier: 'ENGAGED', count: countMap['ENGAGED'] || 0, color: '#525252', avgScore: avgMap['ENGAGED'] || 0, newThisMonth: newMap['ENGAGED'] || 0 },
+      { tier: 'Faint', dbTier: 'CASUAL', count: countMap['CASUAL'] || 0, color: '#333333', avgScore: avgMap['CASUAL'] || 0, newThisMonth: newMap['CASUAL'] || 0 },
     ]
 
     return NextResponse.json({
       totalFans,
       superfans,
       risingFans,
-      avgStanScore: Math.round(avgScoreResult._avg.stanScore || 0),
+      avgStanScore,
       newFansThisMonth,
       tierDistribution,
       metrics: {
@@ -80,7 +94,7 @@ export async function GET() {
           label: 'High engagement recently',
         },
         avgStanScore: {
-          value: Math.round(avgScoreResult._avg.stanScore || 0),
+          value: avgStanScore,
           max: 100,
         },
       },

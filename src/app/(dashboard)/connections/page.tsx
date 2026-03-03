@@ -51,6 +51,7 @@ export default function ConnectionsPage() {
       if (!res.ok) throw new Error('Failed to fetch platforms')
       return res.json()
     },
+    staleTime: 10 * 60 * 1000,
   })
 
   const connectMutation = useMutation({

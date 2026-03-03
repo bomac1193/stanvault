@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import { signOut } from 'next-auth/react'
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard' },
+  { href: '/dashboard', label: 'Overview' },
   { href: '/fans', label: 'Fans' },
   { href: '/drops', label: 'Drops' },
   { href: '/connections', label: 'Connect' },
@@ -39,6 +39,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              prefetch={true}
               className={cn(
                 'block px-4 py-3 transition-all duration-200 border-l-2',
                 isActive

@@ -4,7 +4,6 @@ import { PageHeader } from '@/components/layout'
 import { MetricCard, TierChart, SuperfanMoments, SCRCard, GettingStarted } from '@/components/dashboard'
 import { MetricCardSkeleton, Skeleton } from '@/components/ui'
 import { useDashboardMetrics, useSuperfanMoments, useSCR } from '@/hooks/use-dashboard'
-import { Users, Star, TrendingUp, Target } from 'lucide-react'
 
 export default function DashboardPage() {
   const { data: metrics, isLoading: metricsLoading } = useDashboardMetrics()
@@ -14,8 +13,8 @@ export default function DashboardPage() {
   return (
     <div>
       <PageHeader
-        title="Dashboard"
-        description="Your fan intelligence overview"
+        title="Overview"
+        description="Your fan intelligence at a glance"
       />
 
       <GettingStarted />
@@ -36,25 +35,21 @@ export default function DashboardPage() {
               value={metrics?.totalFans?.toLocaleString() || '0'}
               change={metrics?.newFansThisMonth}
               changeType="increase"
-              icon={Users}
             />
             <MetricCard
               title="Core Fans"
               value={metrics?.superfans?.toLocaleString() || '0'}
               subtitle={`${metrics?.totalFans ? Math.round((metrics.superfans / metrics.totalFans) * 100) : 0}% of total`}
-              icon={Star}
             />
             <MetricCard
               title="Rising Fans"
               value={metrics?.risingFans?.toLocaleString() || '0'}
               subtitle="High engagement recently"
-              icon={TrendingUp}
             />
             <MetricCard
               title="Avg Pulse"
               value={metrics?.avgStanScore || 0}
               subtitle="out of 100"
-              icon={Target}
             />
           </>
         )}

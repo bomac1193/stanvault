@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent, Avatar, TierBadge } from '@/components/ui'
 import { formatRelativeTime } from '@/lib/utils'
-import { Star, TrendingUp, Zap, Music } from 'lucide-react'
 
 interface Moment {
   id: string
@@ -24,11 +23,11 @@ interface SuperfanMomentsProps {
   moments: Moment[]
 }
 
-const eventIcons: Record<string, typeof Star> = {
-  BECAME_SUPERFAN: Star,
-  TIER_UPGRADE: TrendingUp,
-  MILESTONE_STREAMS: Music,
-  MILESTONE_ENGAGEMENT: Zap,
+const eventDotColor: Record<string, string> = {
+  BECAME_SUPERFAN: '#FFFFFF',
+  TIER_UPGRADE: '#A3A3A3',
+  MILESTONE_STREAMS: '#737373',
+  MILESTONE_ENGAGEMENT: '#737373',
 }
 
 export function SuperfanMoments({ moments }: SuperfanMomentsProps) {
@@ -55,7 +54,7 @@ export function SuperfanMoments({ moments }: SuperfanMomentsProps) {
       <CardContent className="p-0">
         <div className="divide-y divide-[#1a1a1a]">
           {moments.map((moment) => {
-            const Icon = eventIcons[moment.type] || Star
+            const dotColor = eventDotColor[moment.type] || '#525252'
 
             return (
               <Link
@@ -69,9 +68,10 @@ export function SuperfanMoments({ moments }: SuperfanMomentsProps) {
                     name={moment.fan.name}
                     size="md"
                   />
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-accent flex items-center justify-center">
-                    <Icon className="w-3 h-3 text-black" />
-                  </div>
+                  <div
+                    className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0a0a0a]"
+                    style={{ backgroundColor: dotColor }}
+                  />
                 </div>
 
                 <div className="flex-1 min-w-0">

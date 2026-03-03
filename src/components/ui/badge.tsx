@@ -34,18 +34,22 @@ export function Badge({ className, variant = 'default', ...props }: BadgeProps) 
 
 export function TierBadge({ tier }: { tier: string }) {
   const upperTier = tier.toUpperCase()
-  const variantMap: Record<string, BadgeProps['variant']> = {
-    CASUAL: 'casual',
-    ENGAGED: 'engaged',
-    DEDICATED: 'dedicated',
-    SUPERFAN: 'superfan',
+  const styles: Record<string, string> = {
+    CASUAL: 'bg-white/5 text-gray-500 border-white/5',
+    ENGAGED: 'bg-white/8 text-gray-400 border-white/8',
+    DEDICATED: 'bg-white/10 text-gray-300 border-white/10',
+    SUPERFAN: 'bg-white/15 text-white border-white/15',
   }
-  const variant = variantMap[upperTier] || 'default'
 
   return (
-    <Badge variant={variant}>
+    <span
+      className={cn(
+        'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium border',
+        styles[upperTier] || 'bg-white/5 text-gray-500 border-white/5'
+      )}
+    >
       {getTierLabel(upperTier)}
-    </Badge>
+    </span>
   )
 }
 

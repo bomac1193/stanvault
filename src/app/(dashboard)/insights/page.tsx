@@ -13,6 +13,7 @@ export default function InsightsPage() {
       if (!res.ok) throw new Error('Failed to fetch conversion data')
       return res.json()
     },
+    staleTime: 10 * 60 * 1000,
   })
 
   const { data: geoData, isLoading: geoLoading } = useQuery({
@@ -22,6 +23,7 @@ export default function InsightsPage() {
       if (!res.ok) throw new Error('Failed to fetch geography data')
       return res.json()
     },
+    staleTime: 10 * 60 * 1000,
   })
 
   const { data: metricsData } = useQuery({
@@ -31,6 +33,7 @@ export default function InsightsPage() {
       if (!res.ok) throw new Error('Failed to fetch metrics')
       return res.json()
     },
+    staleTime: 5 * 60 * 1000,
   })
 
   const { data: platformsData } = useQuery({
@@ -40,6 +43,7 @@ export default function InsightsPage() {
       if (!res.ok) throw new Error('Failed to fetch platforms')
       return res.json()
     },
+    staleTime: 10 * 60 * 1000,
   })
 
   const superfanPercentage =

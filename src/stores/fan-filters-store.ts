@@ -21,7 +21,7 @@ interface FanFiltersState {
 }
 
 const initialState = {
-  tier: 'ALL' as TierFilter,
+  tier: 'SUPERFAN' as TierFilter,
   search: '',
   sortField: 'stanScore' as SortField,
   sortOrder: 'desc' as SortOrder,
