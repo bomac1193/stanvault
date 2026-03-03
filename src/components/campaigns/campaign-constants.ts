@@ -155,13 +155,13 @@ export const messageTemplateSuggestions = [
     id: 'welcome',
     label: 'Welcome Core Fan',
     subject: 'You are officially in my inner circle',
-    body: 'Hey {fan_name} - I see you. Welcome to the {stan_club_name}. Your pulse score is {stan_score}, and that support means everything to me.',
+    body: 'Hey {fan_name} - I see you. Welcome to the {stan_club_name}. Your pulse is {stan_score}, and that support means everything to me.',
   },
   {
-    id: 'propagation',
-    label: 'Propagation Push',
+    id: 'share-push',
+    label: 'Share Push',
     subject: 'Can you help me push this one out?',
-    body: '{fan_name}, you already drove {propagation_count} propagations for me. We are aiming for {propagation_goal} this round. If you are in, {call_to_action}.',
+    body: '{fan_name}, you already drove {propagation_count} shares for me. We are aiming for {propagation_goal} this round. If you are in, {call_to_action}.',
   },
   {
     id: 'tip-reward',
@@ -173,56 +173,43 @@ export const messageTemplateSuggestions = [
 
 export const actionCtaPresets = [
   {
-    id: 'propagate',
-    label: 'Propagate This Drop',
-    action: 'Send this drop to 3 specific people who will take action, not just react.',
-    cta: 'Propagate this drop to 3 high-intent people in your circle.',
+    id: 'share',
+    label: 'Share This',
+    action: 'Send this to 3 people who will actually listen, not just scroll past.',
+    cta: 'Share this with 3 people who will actually listen.',
     oryxPhase: 'Propagation',
   },
   {
-    id: 'prove-conviction',
-    label: 'Prove Conviction',
-    action: 'Back your support with one real stake action now: tip, pledge, or pre-order.',
-    cta: 'Prove conviction with one real stake action right now.',
+    id: 'back',
+    label: 'Back This',
+    action: 'Tip, pledge, or pre-order right now.',
+    cta: 'Back this with one real action right now.',
     oryxPhase: 'Conviction',
   },
   {
-    id: 'micro-circle',
-    label: 'Lead a Listening Circle',
-    action: 'Run a small listening circle (5-10 people) and report what landed.',
-    cta: 'Lead a 5-10 person listening circle and send me the key feedback.',
+    id: 'host-listen',
+    label: 'Host a Listen',
+    action: 'Run a listening session with 5-10 people and report what landed.',
+    cta: 'Host a listen with 5-10 people and send me what landed.',
   },
   {
-    id: 'city-node',
-    label: 'Activate Your City',
-    action: 'Execute one local move: DJ handoff, campus share, venue intro, or playlist placement.',
-    cta: 'Activate your city with one local move this week.',
+    id: 'go-local',
+    label: 'Go Local',
+    action: 'Make one real move in your city: DJ handoff, campus share, venue intro, playlist placement.',
+    cta: 'Make one real local move this week and report it.',
+    oryxPhase: 'Propagation',
   },
   {
-    id: 'bring-one-fan',
-    label: 'Bring One New Fan',
-    action: 'Bring one new fan in and guide them to their first meaningful action.',
-    cta: 'Bring one new fan in and guide their first real action.',
+    id: 'bring-in',
+    label: 'Bring Someone In',
+    action: 'Bring one new fan in and guide them to their first real action.',
+    cta: 'Bring one person in and guide their first action.',
   },
   {
     id: 'archive',
-    label: 'Archive This Era',
-    action: 'Contribute one story, clip, translation, or memory that deepens the movement.',
-    cta: 'Archive one story or clip that defines this era.',
-  },
-  {
-    id: 'city-surge',
-    label: 'Run City Surge',
-    action: 'Execute one verified local move and log it to advance your city phase.',
-    cta: 'Run one verified city surge action and report it today.',
-    oryxPhase: 'Propagation',
-  },
-  {
-    id: 'conviction-proof',
-    label: 'Log Conviction Proof',
-    action: 'Complete one stake-backed action and submit proof for conviction progression.',
-    cta: 'Log one conviction-proof action with evidence now.',
-    oryxPhase: 'Conviction',
+    label: 'Archive This',
+    action: 'Add one story, clip, or memory that defines this era.',
+    cta: 'Archive one story or clip from this era.',
   },
 ] as const
 
@@ -239,19 +226,40 @@ export const moodPresets = [
 export const tokenGroups = [
   {
     label: 'Fan',
-    tokens: ['{fan_name}', '{city}', '{country}', '{fan_tier}'],
+    tokens: [
+      { token: '{fan_name}', display: 'name' },
+      { token: '{city}', display: 'city' },
+      { token: '{country}', display: 'country' },
+      { token: '{fan_tier}', display: 'tier' },
+    ],
   },
   {
     label: 'Scores',
-    tokens: ['{stan_score}', '{conviction_score}', '{engagement_score}', '{longevity_score}', '{recency_score}', '{platform_score}'],
+    tokens: [
+      { token: '{stan_score}', display: 'pulse' },
+      { token: '{conviction_score}', display: 'conviction' },
+      { token: '{engagement_score}', display: 'engagement' },
+      { token: '{longevity_score}', display: 'longevity' },
+      { token: '{recency_score}', display: 'recency' },
+      { token: '{platform_score}', display: 'platform' },
+    ],
   },
   {
     label: 'Activity',
-    tokens: ['{propagation_count}', '{propagrations}', '{tip_count}', '{tip_amount_usd}', '{tip_frequency}', '{moment_saves}'],
+    tokens: [
+      { token: '{propagation_count}', display: 'shares' },
+      { token: '{tip_count}', display: 'tips' },
+      { token: '{tip_amount_usd}', display: 'tip $' },
+      { token: '{tip_frequency}', display: 'tip freq' },
+      { token: '{moment_saves}', display: 'saves' },
+    ],
   },
   {
     label: 'Identity',
-    tokens: ['{stan_club_name}', '{stan_name}'],
+    tokens: [
+      { token: '{stan_club_name}', display: 'fan circle' },
+      { token: '{stan_name}', display: 'fan name' },
+    ],
   },
 ] as const
 
@@ -263,17 +271,26 @@ export const voiceDefaults: Record<
     mood: string
   }
 > = {
-  propagate: { style: 'shouting', emotion: 'excited', mood: 'excited' },
-  'prove-conviction': { style: 'natural', emotion: 'heartfelt', mood: 'heartfelt' },
-  'micro-circle': { style: 'natural', emotion: 'playful', mood: 'playful' },
-  'city-node': { style: 'natural', emotion: 'excited', mood: 'excited' },
-  'bring-one-fan': { style: 'natural', emotion: 'grateful', mood: 'grateful' },
+  share: { style: 'shouting', emotion: 'excited', mood: 'excited' },
+  back: { style: 'natural', emotion: 'heartfelt', mood: 'heartfelt' },
+  'host-listen': { style: 'natural', emotion: 'playful', mood: 'playful' },
+  'go-local': { style: 'natural', emotion: 'excited', mood: 'excited' },
+  'bring-in': { style: 'natural', emotion: 'grateful', mood: 'grateful' },
   archive: { style: 'whisper', emotion: 'heartfelt', mood: 'heartfelt' },
-  'city-surge': { style: 'shouting', emotion: 'excited', mood: 'excited' },
-  'conviction-proof': { style: 'natural', emotion: 'heartfelt', mood: 'heartfelt' },
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
+
+const PRICING_TIER_LABELS: Record<string, string> = {
+  STARTER: 'Starter',
+  PRIVATE_CIRCLE: 'Private Circle',
+  PATRON_GROWTH: 'Patron Growth',
+  SOVEREIGN: 'Sovereign',
+}
+
+export function formatTierLabel(tier: string): string {
+  return PRICING_TIER_LABELS[tier] || tier
+}
 
 export function formatVoiceDuration(ms: number) {
   const totalSeconds = Math.floor(ms / 1000)
@@ -294,16 +311,16 @@ export function getVoiceDurationGuidance(ms: number) {
 
 export function getTieredActionCtaPresets(pricingTier: string) {
   if (pricingTier === 'STARTER') {
-    return actionCtaPresets.filter((p) => ['propagate', 'bring-one-fan'].includes(p.id))
+    return actionCtaPresets.filter((p) => ['share', 'bring-in'].includes(p.id))
   }
   if (pricingTier === 'PRIVATE_CIRCLE') {
     return actionCtaPresets.filter((p) =>
-      ['propagate', 'prove-conviction', 'bring-one-fan'].includes(p.id)
+      ['share', 'back', 'bring-in'].includes(p.id)
     )
   }
   if (pricingTier === 'PATRON_GROWTH') {
     return actionCtaPresets.filter((p) =>
-      ['propagate', 'prove-conviction', 'micro-circle', 'city-node', 'bring-one-fan', 'city-surge'].includes(p.id)
+      ['share', 'back', 'host-listen', 'go-local', 'bring-in'].includes(p.id)
     )
   }
   return [...actionCtaPresets]
@@ -314,10 +331,10 @@ export function getRecommendedActionCtaPresets(
   tiered: readonly (typeof actionCtaPresets)[number][]
 ) {
   const orderByTier: Record<string, string[]> = {
-    STARTER: ['propagate', 'bring-one-fan'],
-    PRIVATE_CIRCLE: ['propagate', 'prove-conviction', 'bring-one-fan'],
-    PATRON_GROWTH: ['propagate', 'prove-conviction', 'city-node'],
-    SOVEREIGN: ['city-surge', 'conviction-proof', 'archive'],
+    STARTER: ['share', 'bring-in'],
+    PRIVATE_CIRCLE: ['share', 'back', 'bring-in'],
+    PATRON_GROWTH: ['share', 'back', 'go-local'],
+    SOVEREIGN: ['go-local', 'back', 'archive'],
   }
   const order = orderByTier[pricingTier] || orderByTier.PRIVATE_CIRCLE
   return order

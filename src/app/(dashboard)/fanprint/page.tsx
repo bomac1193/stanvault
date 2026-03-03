@@ -31,7 +31,7 @@ export default function FanPrintPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="FanPrint"
+        title="Imprints"
         description="Revenue intelligence from your fan data"
       />
 

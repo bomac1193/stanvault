@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useRef, forwardRef, useImperativeHandle } from 'react'
-import { Loader2, Send, TestTube2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { Disclosure } from '@/components/ui/disclosure'
-import { moodPresets, tokenGroups, type CampaignEntitlements } from './campaign-constants'
+import { moodPresets, tokenGroups, messageTemplateSuggestions, formatTierLabel, type CampaignEntitlements } from './campaign-constants'
 
 export interface ComposeFormRef {
   getMessageTemplateRef: () => HTMLTextAreaElement | null
@@ -155,19 +155,37 @@ export const ComposeForm = forwardRef<ComposeFormRef, ComposeFormProps>(function
           onChange={(e) => onMessageTemplateChange(e.target.value)}
           placeholder="Write your message to fans..."
         />
+        {!messageTemplate.trim() && (
+          <div className="flex items-center gap-2">
+            <span className="text-caption text-gray-600">Start from</span>
+            {messageTemplateSuggestions.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => {
+                  onSubjectChange(t.subject)
+                  onMessageTemplateChange(t.body)
+                }}
+                className="px-2.5 py-1 text-caption text-gray-400 border border-[#1a1a1a] hover:text-white hover:border-[#2a2a2a] transition-colors"
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        )}
         {showTokens && (
           <div className="flex flex-wrap gap-x-4 gap-y-2">
             {tokenGroups.map((group) => (
               <div key={group.label} className="flex items-center gap-1">
                 <span className="text-caption text-gray-600 mr-0.5">{group.label}</span>
-                {group.tokens.map((token) => (
+                {group.tokens.map((t) => (
                   <button
                     type="button"
-                    key={token}
-                    onClick={() => insertToken(token)}
+                    key={t.token}
+                    onClick={() => insertToken(t.token)}
                     className="px-1.5 py-0.5 text-caption text-gray-500 hover:text-white hover:bg-[#141414] transition-colors"
                   >
-                    {token}
+                    {t.display}
                   </button>
                 ))}
               </div>
@@ -298,12 +316,12 @@ export const ComposeForm = forwardRef<ComposeFormRef, ComposeFormProps>(function
             role="switch"
             aria-checked={dryRun}
             onClick={() => onDryRunChange(!dryRun)}
-            className={`relative w-8 h-[18px] rounded-full transition-colors ${
+            className={`relative w-8 h-[18px] transition-colors ${
               dryRun ? 'bg-gray-400' : 'bg-[#222]'
             }`}
           >
             <span
-              className={`absolute top-[2px] left-[2px] h-[14px] w-[14px] rounded-full bg-black transition-transform ${
+              className={`absolute top-[2px] left-[2px] h-[14px] w-[14px] bg-black transition-transform ${
                 dryRun ? 'translate-x-[14px]' : 'translate-x-0'
               }`}
             />
@@ -323,15 +341,9 @@ export const ComposeForm = forwardRef<ComposeFormRef, ComposeFormProps>(function
               Running...
             </>
           ) : dryRun ? (
-            <>
-              <TestTube2 className="w-3.5 h-3.5 mr-1.5" />
-              Preview
-            </>
+            'Preview'
           ) : (
-            <>
-              <Send className="w-3.5 h-3.5 mr-1.5" />
-              Send
-            </>
+            'Send'
           )}
         </Button>
 
@@ -357,7 +369,7 @@ export const ComposeForm = forwardRef<ComposeFormRef, ComposeFormProps>(function
       {/* Entitlements footer */}
       {entitlements && (
         <div className="flex items-center gap-4 text-caption text-gray-600 pt-2">
-          <span>{entitlements.pricingTier}</span>
+          <span>{formatTierLabel(entitlements.pricingTier)}</span>
           <span>
             {entitlements.monthSentSoFar.toLocaleString()} /{' '}
             {entitlements.monthlyLiveSendLimit === null

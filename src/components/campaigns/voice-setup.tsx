@@ -130,6 +130,17 @@ export function VoiceSetup({
 
       {voiceSetupMode === 'simple' ? (
         <div className="space-y-4">
+          {!voiceModelId && (
+            <div className="flex items-center gap-2 text-caption text-gray-500">
+              <span className={voiceName ? 'text-gray-400' : 'text-white'}>1 Name</span>
+              <span className="text-gray-700">&rarr;</span>
+              <span className={voiceName && voiceTakes.length > 0 ? 'text-gray-400' : voiceName ? 'text-white' : ''}>2 Record or upload</span>
+              <span className="text-gray-700">&rarr;</span>
+              <span className={voiceName && voiceTakes.length > 0 ? 'text-white' : ''}>3 Clone</span>
+              <span className="text-gray-700">&rarr;</span>
+              <span>Done</span>
+            </div>
+          )}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <Input
               label="Voice Name"

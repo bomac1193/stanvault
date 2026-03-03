@@ -13,7 +13,7 @@ export function CampaignHistory({ history, loading }: CampaignHistoryProps) {
   }
 
   if (history.length === 0) {
-    return <p className="text-caption text-gray-500">No runs yet.</p>
+    return <p className="text-caption text-gray-500">No campaigns yet. Compose your first one above.</p>
   }
 
   return (

@@ -34,7 +34,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-caption uppercase tracking-widest text-gray-400"
+            className="block text-caption tracking-wide text-gray-400"
           >
             {label}
           </label>
