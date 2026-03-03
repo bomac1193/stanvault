@@ -141,11 +141,20 @@ function generateEvents(
     })
   })
 
-  // Tier upgrades
+  // Tier upgrades — describe the action that triggered the upgrade
+  const upgradeReasons = [
+    'Saved 50+ tracks on Spotify',
+    'Shared 3 drops this month',
+    'Engaged across 3 platforms',
+    'Streamed every release in the last 90 days',
+    'Opened every campaign email',
+    'Tipped twice via Dasham',
+  ]
+
   if (tier === 'ENGAGED' || tier === 'DEDICATED' || tier === 'SUPERFAN') {
     events.push({
       eventType: 'TIER_UPGRADE',
-      description: 'Upgraded to Engaged tier',
+      description: faker.helpers.arrayElement(upgradeReasons),
       occurredAt: faker.date.between({ from: firstSeenAt, to: new Date() }),
     })
   }
@@ -153,15 +162,20 @@ function generateEvents(
   if (tier === 'DEDICATED' || tier === 'SUPERFAN') {
     events.push({
       eventType: 'TIER_UPGRADE',
-      description: 'Upgraded to Dedicated tier',
+      description: faker.helpers.arrayElement(upgradeReasons),
       occurredAt: faker.date.between({ from: firstSeenAt, to: new Date() }),
     })
   }
 
   if (tier === 'SUPERFAN') {
+    const coreReasons = [
+      'Hit 95 pulse score via streams + tips',
+      'Active on all connected platforms',
+      'Shared every drop and tipped 4 times',
+    ]
     events.push({
       eventType: 'BECAME_SUPERFAN',
-      description: 'Achieved Superfan status!',
+      description: faker.helpers.arrayElement(coreReasons),
       occurredAt: faker.date.recent({ days: 60 }),
     })
   }

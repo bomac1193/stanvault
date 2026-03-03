@@ -140,6 +140,74 @@ Faint fans following on Instagram is noise. The feed shows what matters and what
 
 ---
 
+## The Conviction Loop
+
+Post-vanity metrics only work if conviction flows both ways. The fan gives conviction. The artist acknowledges it. Without acknowledgment, conviction decays silently -- the fan churns and no one knows why.
+
+### The Loop
+
+```
+Fan gives conviction (streams, shares, tips, time)
+        ↓
+Artist acknowledges conviction (personalized message, unlock, title)
+        ↓
+Fan deepens conviction (because they were seen)
+        ↓
+CCR rises (retention + depth velocity increase)
+        ↓
+Revenue follows (higher CCR = sustainable income, not more followers)
+        ↓
+Fan gives more conviction (the flywheel spins)
+```
+
+The flywheel only spins if the acknowledgment step happens. Every other step is automatic -- fans engage naturally, CCR calculates itself, revenue settles on-chain. But acknowledgment requires the artist to act. Imprint's job is to make that action effortless.
+
+### Fan Incentive
+
+The fan's incentive is not the score. Scores are internal. The fan's incentive is being *seen*.
+
+| Level | What the fan gets | Effort for artist |
+|-------|-------------------|-------------------|
+| **Acknowledge** | A message when their conviction is noticed: "Your 3.4k streams didn't go unnoticed." | Zero (auto-triggered by moments) |
+| **Unlock** | Tier-gated access to drops, voice messages, early releases. The reward is earned, not bought. | Low (set tier gates once) |
+| **Name** | A title tied to their action. "3.4k streams" becomes "Marathon Listener." "89 saves" becomes "Vault Keeper." | Medium (define title rules) |
+| **Reflect** | A fan-facing profile showing their conviction journey. Not a leaderboard (that's vanity again), but a personal timeline. | Built into the platform |
+
+The lightest win is Acknowledge -- hook moments into campaigns. When a TIER_UPGRADE event fires, auto-queue a personalized message using the reason data from the moment. The fan gets "I see you -- 3.4k streams, that's real" instead of silence. The campaigns infrastructure already exists. It just needs a trigger.
+
+### Why Acknowledgment Creates Revenue
+
+- A fan who feels seen **tips 3-4x more** than one who doesn't
+- A Core fan who gets a personal voice drop **shares 6x more** than one who gets a generic newsletter
+- Tier-gated drops create **artificial scarcity that's earned**, not bought -- that's the difference between post-vanity and paywall
+- Acknowledged fans have **2x longer retention** -- they don't churn because the relationship feels reciprocal
+
+### What Imprint Is Actually Selling
+
+Not analytics. Not CRM. Imprint sells the **proof that conviction matters**.
+
+The artist proves to the fan that their actions were counted. The fan proves to the artist that they're real. Imperium settles it on-chain.
+
+The stack:
+- **Palmlion** measures conviction
+- **Imprint** proves it was noticed
+- **Imperium** makes it worth something (fractional ownership, royalty splits)
+
+Without the acknowledgment loop, Palmlion is just another analytics dashboard and Imperium is just another token platform. The loop is what connects measurement to meaning to money.
+
+### Implementation Status
+
+| Piece | Status | Where |
+|-------|--------|-------|
+| Moments with reasons | Built | `superfan-moments` component, `buildReason` API |
+| Campaigns system | Built | `/campaigns` page, Echoniq API |
+| Tier-gated drops | Designed | Drop model supports `minTier` |
+| Auto-acknowledge trigger | Not built | Wire moments → campaigns |
+| Fan-facing profile | Not built | Fan sees their own journey |
+| Earned titles | Not built | Title rules from moment patterns |
+
+---
+
 ## Principles
 
 1. **If it doesn't measure conviction, it doesn't belong.** Followers are not fans. Streams are not loyalty. Likes are not love.
@@ -147,3 +215,4 @@ Faint fans following on Instagram is noise. The feed shows what matters and what
 3. **Attribution over aggregation.** Don't just count events. Connect them to the content that caused them.
 4. **Let fans narrate.** The best insight about why someone became a Core fan comes from the fan, not the algorithm.
 5. **Default to Core.** The dashboard, the moments feed, the distribution chart -- everything orients toward the fans that matter most.
+6. **Conviction must flow both ways.** If the fan gives and the artist takes without acknowledgment, the loop breaks. Every metric must eventually reach the fan who created it.

@@ -80,6 +80,7 @@ model User {
   savedVoiceModels     SavedVoiceModel[]
   ctaCompletions       CtaActionCompletion[]
   apiKeys              ApiKey[]             // B2B API access keys
+  acknowledgmentTemplates AcknowledgmentTemplate[]
 }
 
 enum CareerStage {
@@ -197,13 +198,14 @@ model Fan {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
-  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  platformLinks FanPlatformLink[]
-  events        FanEvent[]
-  snapshots     FanSnapshot[]
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platformLinks   FanPlatformLink[]
+  events          FanEvent[]
+  snapshots       FanSnapshot[]
   listeningEvents ListeningEvent[]
-  fanUserLink   FanUserArtistLink?  // Link to fan portal user if claimed
-  proofs        FanProof[]
+  fanUserLink     FanUserArtistLink?  // Link to fan portal user if claimed
+  proofs          FanProof[]
+  acknowledgments Acknowledgment[]
 
   @@index([userId, stanScore])
   @@index([userId, tier])
@@ -278,7 +280,8 @@ model FanEvent {
   occurredAt  DateTime  @default(now())
   createdAt   DateTime  @default(now())
 
-  fan Fan @relation(fields: [fanId], references: [id], onDelete: Cascade)
+  fan             Fan              @relation(fields: [fanId], references: [id], onDelete: Cascade)
+  acknowledgment  Acknowledgment?
 
   @@index([fanId, occurredAt])
 }
@@ -303,6 +306,13 @@ enum EventType {
   MILESTONE_TIPS
 }
 
+enum AcknowledgmentStatus {
+  PENDING
+  SENT
+  FAILED
+  SKIPPED
+}
+
 // Fan Snapshot - Daily snapshots for hold rate calculation
 model FanSnapshot {
   id        String   @id @default(cuid())
@@ -318,6 +328,49 @@ model FanSnapshot {
   @@unique([fanId, date])
   @@index([fanId, date])
   @@index([date])
+}
+
+// Acknowledgment - Auto-acknowledge fan milestones
+model Acknowledgment {
+  id              String              @id @default(cuid())
+  fanId           String
+  fanEventId      String              @unique // One ack per event
+  eventType       EventType
+  status          AcknowledgmentStatus @default(PENDING)
+  deliveryMethod  String              @default("email") // email, sms, etc.
+  messageRendered String?             // Final rendered message
+  subjectRendered String?             // Final rendered subject
+  sentAt          DateTime?
+  failedAt        DateTime?
+  failureReason   String?
+  retryCount      Int                 @default(0)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  fan      Fan      @relation(fields: [fanId], references: [id], onDelete: Cascade)
+  fanEvent FanEvent @relation(fields: [fanEventId], references: [id], onDelete: Cascade)
+
+  @@index([fanId])
+  @@index([status])
+  @@index([status, retryCount])
+}
+
+// AcknowledgmentTemplate - Artist-configurable per event type
+model AcknowledgmentTemplate {
+  id            String    @id @default(cuid())
+  userId        String
+  eventType     EventType
+  enabled       Boolean   @default(true)
+  subject       String
+  messageBody   String    // Supports {fan_name}, {fan_tier}, etc.
+  deliveryMode  String    @default("email")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventType])
+  @@index([userId])
 }
 
 // Artist Metrics History - SCR and other metrics over time

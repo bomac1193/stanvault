@@ -20,6 +20,7 @@ interface Moment {
   id: string
   type: string
   description: string
+  reason?: string
   platform?: string
   occurredAt: string
   fan: {

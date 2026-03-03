@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { takeDailySnapshot } from '@/lib/scoring/scr'
+import { processPendingAcknowledgments } from '@/lib/events'
 
 // This endpoint is designed to be called by a cron job (e.g., Vercel Cron)
 // In production, protect this with a secret header
@@ -43,10 +44,19 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Retry pending/failed acknowledgments
+    let ackResults = { processed: 0, sent: 0, failed: 0 }
+    try {
+      ackResults = await processPendingAcknowledgments()
+    } catch (error) {
+      console.error('Acknowledgment retry error:', error)
+    }
+
     return NextResponse.json({
       success: true,
       processed: results.length,
       results,
+      acknowledgments: ackResults,
     })
   } catch (error) {
     console.error('Daily snapshot error:', error)

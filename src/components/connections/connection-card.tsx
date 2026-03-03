@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui'
 import { formatDate, formatNumber } from '@/lib/utils'
-import { Music, Instagram, Youtube, Twitter, Mail, Heart, RefreshCw, Trash2, Headphones, Radio, MessageCircle } from 'lucide-react'
+import { RefreshCw, Trash2 } from 'lucide-react'
 
 interface ConnectionCardProps {
   platform: string
@@ -14,18 +14,18 @@ interface ConnectionCardProps {
   isSyncing?: boolean
 }
 
-const platformConfig: Record<string, { icon: typeof Music; name: string }> = {
-  SPOTIFY: { icon: Music, name: 'Spotify' },
-  INSTAGRAM: { icon: Instagram, name: 'Instagram' },
-  YOUTUBE: { icon: Youtube, name: 'YouTube' },
-  TIKTOK: { icon: Music, name: 'TikTok' },
-  TWITTER: { icon: Twitter, name: 'Twitter' },
-  EMAIL: { icon: Mail, name: 'Email List' },
-  DASHAM: { icon: Heart, name: 'Oryx' },
-  APPLE_MUSIC: { icon: Music, name: 'Apple Music' },
-  AUDIOMACK: { icon: Headphones, name: 'Audiomack' },
-  BOOMPLAY: { icon: Radio, name: 'Boomplay' },
-  DISCORD: { icon: MessageCircle, name: 'Discord' },
+const platformConfig: Record<string, { name: string }> = {
+  SPOTIFY: { name: 'Spotify' },
+  INSTAGRAM: { name: 'Instagram' },
+  YOUTUBE: { name: 'YouTube' },
+  TIKTOK: { name: 'TikTok' },
+  TWITTER: { name: 'Twitter' },
+  EMAIL: { name: 'Email List' },
+  DASHAM: { name: 'Oryx' },
+  APPLE_MUSIC: { name: 'Apple Music' },
+  AUDIOMACK: { name: 'Audiomack' },
+  BOOMPLAY: { name: 'Boomplay' },
+  DISCORD: { name: 'Discord' },
 }
 
 export function ConnectionCard({
@@ -40,16 +40,12 @@ export function ConnectionCard({
   const config = platformConfig[platform]
   if (!config) return null
 
-  const Icon = config.icon
   const isHealthy = status === 'CONNECTED'
 
   return (
     <div className="bg-[#0a0a0a] border border-[#1a1a1a] p-5">
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <Icon className="w-4 h-4 text-gray-500" />
-          <span className="text-body-sm font-medium text-white">{config.name}</span>
-        </div>
+        <span className="text-body-sm font-medium text-white">{config.name}</span>
         <span className={`text-caption ${isHealthy ? 'text-gray-400' : 'text-gray-600'}`}>
           {status.charAt(0) + status.slice(1).toLowerCase()}
         </span>

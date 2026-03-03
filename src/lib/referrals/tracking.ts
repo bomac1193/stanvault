@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { randomBytes } from 'crypto'
+import { recordFanEvent } from '@/lib/events'
 
 export interface ReferralLink {
   code: string
@@ -70,18 +71,16 @@ export async function createReferralLink(
   }
 
   // Store the referral code as a fan event
-  await prisma.fanEvent.create({
-    data: {
-      fanId: link.fanRecordId,
-      eventType: 'MILESTONE_ENGAGEMENT',
-      description: 'referral_link_created',
-      metadata: {
-        code,
-        artistId,
-        fanUserId,
-        clicks: 0,
-        conversions: 0,
-      },
+  await recordFanEvent({
+    fanId: link.fanRecordId,
+    eventType: 'MILESTONE_ENGAGEMENT',
+    description: 'referral_link_created',
+    metadata: {
+      code,
+      artistId,
+      fanUserId,
+      clicks: 0,
+      conversions: 0,
     },
   })
 

@@ -1,7 +1,5 @@
 'use client'
 
-import { Music, Disc3, Heart, Tv, Mail, Headphones, Radio, MessageCircle, Youtube } from 'lucide-react'
-
 interface PlatformGridProps {
   connectedPlatforms: string[]
   onConnect: (platform: string) => void
@@ -14,16 +12,16 @@ const PLATFORM_ALIAS: Record<string, string> = {
 }
 
 const platforms = [
-  { id: 'SPOTIFY', name: 'Spotify', icon: Music, signal: 'Streams, saves, repeats', ready: true },
-  { id: 'TWITCH', name: 'Twitch', icon: Tv, signal: 'Bits, subs, gift subs', ready: true },
-  { id: 'EMAIL', name: 'Email List', icon: Mail, signal: 'Import existing fans', ready: true },
-  { id: 'ORYX', name: 'Oryx', icon: Heart, signal: 'Tips, conviction', ready: true },
-  { id: 'APPLE_MUSIC', name: 'Apple Music', icon: Music, signal: 'Streams, library adds', ready: false },
-  { id: 'AUDIOMACK', name: 'Audiomack', icon: Headphones, signal: 'Streams, favorites, reposts', ready: false },
-  { id: 'BOOMPLAY', name: 'Boomplay', icon: Radio, signal: 'Streams, downloads', ready: false },
-  { id: 'YOUTUBE', name: 'YouTube', icon: Youtube, signal: 'Views, subs, comments', ready: false },
-  { id: 'DISCORD', name: 'Discord', icon: MessageCircle, signal: 'Roles, activity, reactions', ready: false },
-  { id: 'BANDCAMP', name: 'Bandcamp', icon: Disc3, signal: 'Purchases, tips', ready: false },
+  { id: 'SPOTIFY', name: 'Spotify', signal: 'Streams, saves, repeats', ready: true },
+  { id: 'TWITCH', name: 'Twitch', signal: 'Bits, subs, gift subs', ready: true },
+  { id: 'EMAIL', name: 'Email List', signal: 'Import existing fans', ready: true },
+  { id: 'ORYX', name: 'Oryx', signal: 'Tips, conviction', ready: true },
+  { id: 'APPLE_MUSIC', name: 'Apple Music', signal: 'Streams, library adds', ready: false },
+  { id: 'AUDIOMACK', name: 'Audiomack', signal: 'Streams, favorites, reposts', ready: false },
+  { id: 'BOOMPLAY', name: 'Boomplay', signal: 'Streams, downloads', ready: false },
+  { id: 'YOUTUBE', name: 'YouTube', signal: 'Views, subs, comments', ready: false },
+  { id: 'DISCORD', name: 'Discord', signal: 'Roles, activity, reactions', ready: false },
+  { id: 'BANDCAMP', name: 'Bandcamp', signal: 'Purchases, tips', ready: false },
 ]
 
 export function PlatformGrid({ connectedPlatforms, onConnect, isConnecting }: PlatformGridProps) {
@@ -42,7 +40,6 @@ export function PlatformGrid({ connectedPlatforms, onConnect, isConnecting }: Pl
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-px bg-[#1a1a1a]">
       {availablePlatforms.map((platform) => {
-        const Icon = platform.icon
         const isLoading = isConnecting === platform.id
 
         return (
@@ -57,8 +54,7 @@ export function PlatformGrid({ connectedPlatforms, onConnect, isConnecting }: Pl
                 : 'opacity-40 cursor-default'
             }`}
           >
-            <div className="flex items-center gap-3 mb-2">
-              <Icon className="w-4 h-4 text-gray-500 group-hover:text-gray-300 transition-colors shrink-0" />
+            <div className="flex items-center gap-2 mb-2">
               <span className="text-body-sm text-gray-300 group-hover:text-white transition-colors">
                 {platform.name}
               </span>

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { calculateStanScore } from '@/lib/scoring/stan-score'
 import { Platform, EventType, FanTier } from '@prisma/client'
+import { recordFanEvent } from '@/lib/events'
 
 const ECOSYSTEM_API_SECRET = process.env.ECOSYSTEM_API_SECRET || ''
 
@@ -196,35 +197,31 @@ export async function POST(request: NextRequest) {
         })
 
         // Record FIRST_TIP event
-        await prisma.fanEvent.create({
-          data: {
-            fanId: existingFan.id,
-            eventType: EventType.FIRST_TIP,
-            platform: Platform.DASHAM,
-            description: `First tip via Dasham: $${body.tipAmountUsd.toFixed(2)} USD for "${body.momentTitle}"`,
-            metadata: {
-              dashId: body.dashId,
-              momentId: body.momentId,
-              tipAmountUsd: body.tipAmountUsd,
-              city: body.city,
-            },
-            occurredAt: now,
+        await recordFanEvent({
+          fanId: existingFan.id,
+          eventType: EventType.FIRST_TIP,
+          platform: Platform.DASHAM,
+          description: `First tip via Dasham: $${body.tipAmountUsd.toFixed(2)} USD for "${body.momentTitle}"`,
+          metadata: {
+            dashId: body.dashId,
+            momentId: body.momentId,
+            tipAmountUsd: body.tipAmountUsd,
+            city: body.city,
           },
+          occurredAt: now,
         })
       }
 
       // Check for tip milestones
       const totalTips = (existingFan.platformLinks.find(l => l.platform === Platform.DASHAM)?.tipCount || 0) + 1
       if ([5, 10, 25, 50, 100].includes(totalTips)) {
-        await prisma.fanEvent.create({
-          data: {
-            fanId: existingFan.id,
-            eventType: EventType.MILESTONE_TIPS,
-            platform: Platform.DASHAM,
-            description: `Reached ${totalTips} tips milestone`,
-            metadata: { milestone: totalTips },
-            occurredAt: now,
-          },
+        await recordFanEvent({
+          fanId: existingFan.id,
+          eventType: EventType.MILESTONE_TIPS,
+          platform: Platform.DASHAM,
+          description: `Reached ${totalTips} tips milestone`,
+          metadata: { milestone: totalTips },
+          occurredAt: now,
         })
       }
 
@@ -287,30 +284,26 @@ export async function POST(request: NextRequest) {
           const oldIndex = tierOrder.indexOf(oldTier)
           const newIndex = tierOrder.indexOf(scoreResult.tier)
 
-          await prisma.fanEvent.create({
-            data: {
-              fanId: updatedFan.id,
-              eventType: newIndex > oldIndex ? EventType.TIER_UPGRADE : EventType.TIER_DOWNGRADE,
-              platform: Platform.DASHAM,
-              description: `Tier ${newIndex > oldIndex ? 'upgraded' : 'downgraded'}: ${oldTier} → ${scoreResult.tier}`,
-              metadata: {
-                oldTier,
-                newTier: scoreResult.tier,
-                trigger: 'dasham_tip',
-              },
-              occurredAt: now,
+          await recordFanEvent({
+            fanId: updatedFan.id,
+            eventType: newIndex > oldIndex ? EventType.TIER_UPGRADE : EventType.TIER_DOWNGRADE,
+            platform: Platform.DASHAM,
+            description: `Tier ${newIndex > oldIndex ? 'upgraded' : 'downgraded'}: ${oldTier} → ${scoreResult.tier}`,
+            metadata: {
+              oldTier,
+              newTier: scoreResult.tier,
+              trigger: 'dasham_tip',
             },
+            occurredAt: now,
           })
 
           if (scoreResult.tier === 'SUPERFAN') {
-            await prisma.fanEvent.create({
-              data: {
-                fanId: updatedFan.id,
-                eventType: EventType.BECAME_SUPERFAN,
-                platform: Platform.DASHAM,
-                description: `Became SUPERFAN through Dasham conviction`,
-                occurredAt: now,
-              },
+            await recordFanEvent({
+              fanId: updatedFan.id,
+              eventType: EventType.BECAME_SUPERFAN,
+              platform: Platform.DASHAM,
+              description: `Became SUPERFAN through Dasham conviction`,
+              occurredAt: now,
             })
           }
         }
@@ -402,23 +395,23 @@ export async function POST(request: NextRequest) {
               lastActiveAt: now,
             },
           },
-          events: {
-            create: {
-              eventType: EventType.FIRST_TIP,
-              platform: Platform.DASHAM,
-              description: `First tip via Dasham: $${body.tipAmountUsd.toFixed(2)} USD for "${body.momentTitle}"`,
-              metadata: {
-                dashId: body.dashId,
-                momentId: body.momentId,
-                momentTitle: body.momentTitle,
-                tipAmountUsd: body.tipAmountUsd,
-                tipCurrency: body.tipCurrency,
-                city: body.city,
-              },
-              occurredAt: now,
-            },
-          },
         },
+      })
+
+      await recordFanEvent({
+        fanId: newFan.id,
+        eventType: EventType.FIRST_TIP,
+        platform: Platform.DASHAM,
+        description: `First tip via Dasham: $${body.tipAmountUsd.toFixed(2)} USD for "${body.momentTitle}"`,
+        metadata: {
+          dashId: body.dashId,
+          momentId: body.momentId,
+          momentTitle: body.momentTitle,
+          tipAmountUsd: body.tipAmountUsd,
+          tipCurrency: body.tipCurrency,
+          city: body.city,
+        },
+        occurredAt: now,
       })
 
       // Mobile money verification for new fans
@@ -652,15 +645,13 @@ async function handlePurchaseImport(request: NextRequest, source: ValidSource) {
           const oldIndex = tierOrder.indexOf(oldTier)
           const newIndex = tierOrder.indexOf(scoreResult.tier)
 
-          await prisma.fanEvent.create({
-            data: {
-              fanId: updatedFan.id,
-              eventType: newIndex > oldIndex ? EventType.TIER_UPGRADE : EventType.TIER_DOWNGRADE,
-              platform,
-              description: `Tier ${newIndex > oldIndex ? 'upgraded' : 'downgraded'}: ${oldTier} → ${scoreResult.tier} (via ${source})`,
-              metadata: { oldTier, newTier: scoreResult.tier, trigger: `${source}_purchase` },
-              occurredAt: now,
-            },
+          await recordFanEvent({
+            fanId: updatedFan.id,
+            eventType: newIndex > oldIndex ? EventType.TIER_UPGRADE : EventType.TIER_DOWNGRADE,
+            platform,
+            description: `Tier ${newIndex > oldIndex ? 'upgraded' : 'downgraded'}: ${oldTier} → ${scoreResult.tier} (via ${source})`,
+            metadata: { oldTier, newTier: scoreResult.tier, trigger: `${source}_purchase` },
+            occurredAt: now,
           })
         }
 

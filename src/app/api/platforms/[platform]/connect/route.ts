@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { Platform } from '@prisma/client'
 import { generateFans } from '@/mocks/generators/fan-generator'
+import { recordFanEvent } from '@/lib/events'
 
 const VALID_PLATFORMS: Platform[] = ['SPOTIFY', 'INSTAGRAM', 'TIKTOK', 'YOUTUBE', 'TWITTER', 'EMAIL']
 
@@ -50,6 +51,15 @@ export async function POST(
     // Generate mock fans (200-500 for MVP)
     const fanCount = Math.floor(Math.random() * 300) + 200
     const generatedFans = generateFans(fanCount, connectedPlatforms)
+
+    // Collect events to record after transaction completes (for acknowledgment processing)
+    const pendingEvents: Array<{
+      fanId: string
+      eventType: any
+      platform: any
+      description: string
+      occurredAt: Date
+    }> = []
 
     // Create platform connection and fans in a transaction
     await prisma.$transaction(async (tx) => {
@@ -113,16 +123,14 @@ export async function POST(
           })
         }
 
-        // Create events
+        // Collect events for post-transaction recording via recordFanEvent
         for (const event of fan.events) {
-          await tx.fanEvent.create({
-            data: {
-              fanId: createdFan.id,
-              eventType: event.eventType,
-              platform: event.platform,
-              description: event.description,
-              occurredAt: event.occurredAt,
-            },
+          pendingEvents.push({
+            fanId: createdFan.id,
+            eventType: event.eventType,
+            platform: event.platform,
+            description: event.description,
+            occurredAt: event.occurredAt,
           })
         }
       }
@@ -142,6 +150,13 @@ export async function POST(
         data: { fanCount: totalFans },
       })
     })
+
+    // Record events after transaction (triggers acknowledgments for eligible events)
+    for (const event of pendingEvents) {
+      await recordFanEvent(event).catch((err) =>
+        console.error('[Platform Connect] Event recording error:', err)
+      )
+    }
 
     // Get final fan count
     const totalFanCount = await prisma.fan.count({

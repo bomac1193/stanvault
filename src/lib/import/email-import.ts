@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 import { parseEmailCSV, ParsedEmailSubscriber, detectEmailProvider } from './email-parser'
 import { calculateStanScore } from '@/lib/scoring/stan-score'
 import { Platform, EventType } from '@prisma/client'
+import { recordFanEvent } from '@/lib/events'
 
 interface ImportResult {
   success: boolean
@@ -147,14 +148,12 @@ async function processEmailSubscriber(
         },
       })
 
-      await prisma.fanEvent.create({
-        data: {
-          fanId: existingFan.id,
-          eventType: EventType.EMAIL_SUBSCRIBE,
-          platform: Platform.EMAIL,
-          description: 'Connected via email import',
-          occurredAt: subscriber.subscribedAt || new Date(),
-        },
+      await recordFanEvent({
+        fanId: existingFan.id,
+        eventType: EventType.EMAIL_SUBSCRIBE,
+        platform: Platform.EMAIL,
+        description: 'Connected via email import',
+        occurredAt: subscriber.subscribedAt || new Date(),
       })
     }
 
@@ -205,15 +204,15 @@ async function processEmailSubscriber(
           lastActiveAt: new Date(),
         },
       },
-      events: {
-        create: {
-          eventType: EventType.EMAIL_SUBSCRIBE,
-          platform: Platform.EMAIL,
-          description: 'Imported from email list',
-          occurredAt: firstSeenAt,
-        },
-      },
     },
+  })
+
+  await recordFanEvent({
+    fanId: newFan.id,
+    eventType: EventType.EMAIL_SUBSCRIBE,
+    platform: Platform.EMAIL,
+    description: 'Imported from email list',
+    occurredAt: firstSeenAt,
   })
 
   return { fanId: newFan.id, isNew: true }

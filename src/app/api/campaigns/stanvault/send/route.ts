@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { FanTier, Prisma } from '@prisma/client'
 import { tierPolicies } from '@/lib/campaign-entitlements'
+import { callEchoniqCampaign, type EchoniqCampaignResponse } from '@/lib/echoniq'
 
 const requestSchema = z.object({
   artistName: z.string().optional(),
@@ -33,56 +34,6 @@ const requestSchema = z.object({
   testRecipientEmail: z.string().email().optional(),
   dryRun: z.boolean().optional(),
 })
-
-function getEchoniqApiUrl(): string {
-  return process.env.ECHONIQ_API_URL || 'http://localhost:3004'
-}
-
-type EchoniqCampaignResponse = {
-  campaignId?: string
-  status?: string
-  dispatch?: {
-    mode?: string
-    provider?: string
-    subject?: string
-    deliveryMode?: 'TEXT' | 'VOICE'
-    voiceProvider?: string
-    testOnly?: boolean
-  }
-  totals?: {
-    segmentCount?: number
-    queuedRecipients?: number
-    skippedNoEmail?: number
-    sent?: number
-    failed?: number
-    previewOnly?: number
-  }
-  reliability?: {
-    retries?: number
-    timedOutAttempts?: number
-    providerErrors?: number
-  }
-}
-
-async function callEchoniqCampaign(body: Record<string, unknown>) {
-  const response = await fetch(`${getEchoniqApiUrl()}/api/campaigns/stanvault/send`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Stanvault-User-Id': String(body.artistId || ''),
-      'X-Stanvault-Tier': String(body.pricingTier || ''),
-    },
-    body: JSON.stringify(body),
-    cache: 'no-store',
-  })
-
-  const responseText = await response.text()
-  return {
-    ok: response.ok,
-    status: response.status,
-    responseText,
-  }
-}
 
 export async function GET(request: NextRequest) {
   try {

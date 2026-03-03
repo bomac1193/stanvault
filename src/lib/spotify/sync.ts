@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 import { SpotifyClient, RecentlyPlayedItem, SpotifyArtist } from './client'
 import { calculateStanScore } from '@/lib/scoring/stan-score'
 import { Platform, FanTier, EventType } from '@prisma/client'
+import { recordFanEvent } from '@/lib/events'
 
 interface SyncResult {
   success: boolean
@@ -192,27 +193,29 @@ async function createNewFan(artistUserId: string, data: FanData) {
           lastActiveAt: data.lastPlayedAt,
         },
       },
-      events: {
-        create: {
-          eventType: EventType.FIRST_STREAM,
-          platform: Platform.SPOTIFY,
-          description: 'First discovered via Spotify',
-          occurredAt: data.firstPlayedAt,
-        },
-      },
     },
+  })
+
+  await recordFanEvent({
+    fanId: fan.id,
+    eventType: EventType.FIRST_STREAM,
+    platform: Platform.SPOTIFY,
+    description: 'First discovered via Spotify',
+    occurredAt: data.firstPlayedAt,
   })
 
   // Add tier upgrade events if applicable
   if (scoreResult.tier === 'SUPERFAN') {
-    await prisma.fanEvent.create({
-      data: {
-        fanId: fan.id,
-        eventType: EventType.BECAME_SUPERFAN,
-        platform: Platform.SPOTIFY,
-        description: 'Became a superfan',
-        occurredAt: new Date(),
-      },
+    const stats = [
+      data.streams > 0 && `${data.streams.toLocaleString()} streams`,
+      data.savedTracks > 0 && `${data.savedTracks} saves`,
+      data.playlistAdds > 0 && `${data.playlistAdds} playlist adds`,
+    ].filter(Boolean)
+    await recordFanEvent({
+      fanId: fan.id,
+      eventType: EventType.BECAME_SUPERFAN,
+      platform: Platform.SPOTIFY,
+      description: stats.length > 0 ? stats.slice(0, 2).join(', ') : 'High engagement on Spotify',
     })
   }
 
@@ -255,14 +258,11 @@ async function addSpotifyLinkToFan(fanId: string, data: FanData) {
     },
   })
 
-  await prisma.fanEvent.create({
-    data: {
-      fanId,
-      eventType: EventType.FIRST_STREAM,
-      platform: Platform.SPOTIFY,
-      description: 'Connected Spotify account',
-      occurredAt: new Date(),
-    },
+  await recordFanEvent({
+    fanId,
+    eventType: EventType.FIRST_STREAM,
+    platform: Platform.SPOTIFY,
+    description: 'Connected Spotify account',
   })
 }
 
@@ -321,23 +321,33 @@ async function recalculateFanScore(fanId: string) {
     const oldIndex = tierOrder.indexOf(oldTier)
     const newIndex = tierOrder.indexOf(scoreResult.tier)
 
+    // Build reason from platform stats
+    const topStats: string[] = []
+    for (const link of fan.platformLinks) {
+      if (link.streams && link.streams > 0)
+        topStats.push(`${link.streams.toLocaleString()} ${link.platform.toLowerCase()} streams`)
+      if (link.saves && link.saves > 0)
+        topStats.push(`${link.saves} saves`)
+      if (link.shares && link.shares > 0)
+        topStats.push(`${link.shares} shares`)
+      if (link.tipCount && link.tipCount > 0)
+        topStats.push(`${link.tipCount} tip${link.tipCount > 1 ? 's' : ''}`)
+    }
+    const reason = topStats.length > 0
+      ? topStats.slice(0, 2).join(', ')
+      : `Active across ${fan.platformLinks.length} platform${fan.platformLinks.length > 1 ? 's' : ''}`
+
     if (newIndex > oldIndex) {
-      await prisma.fanEvent.create({
-        data: {
-          fanId,
-          eventType: scoreResult.tier === 'SUPERFAN' ? EventType.BECAME_SUPERFAN : EventType.TIER_UPGRADE,
-          description: `Upgraded from ${oldTier} to ${scoreResult.tier}`,
-          occurredAt: new Date(),
-        },
+      await recordFanEvent({
+        fanId,
+        eventType: scoreResult.tier === 'SUPERFAN' ? EventType.BECAME_SUPERFAN : EventType.TIER_UPGRADE,
+        description: reason,
       })
     } else {
-      await prisma.fanEvent.create({
-        data: {
-          fanId,
-          eventType: EventType.TIER_DOWNGRADE,
-          description: `Downgraded from ${oldTier} to ${scoreResult.tier}`,
-          occurredAt: new Date(),
-        },
+      await recordFanEvent({
+        fanId,
+        eventType: EventType.TIER_DOWNGRADE,
+        description: `Activity dropped — ${reason}`,
       })
     }
   }

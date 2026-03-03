@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { PageHeader } from '@/components/layout'
 import { Card, CardHeader, CardTitle, CardContent, Input, Button, Select } from '@/components/ui'
-import { User, Lock, Bell, Palette, Music, Check, Loader2, ExternalLink } from 'lucide-react'
+import { User, Lock, Bell, Palette, Music, Check, Loader2, ExternalLink, MessageCircle } from 'lucide-react'
 import ProfilePhotoUpload from '@/components/profile/ProfilePhotoUpload'
 
 export default function SettingsPage() {
@@ -17,6 +17,18 @@ export default function SettingsPage() {
   const [canOverrideTier, setCanOverrideTier] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+
+  // Auto-Acknowledge state
+  interface AckTemplate {
+    eventType: string
+    enabled: boolean
+    subject: string
+    messageBody: string
+    isCustomized: boolean
+  }
+  const [ackTemplates, setAckTemplates] = useState<AckTemplate[]>([])
+  const [ackSaving, setAckSaving] = useState<string | null>(null)
+  const [ackSaved, setAckSaved] = useState<string | null>(null)
 
   useEffect(() => {
     if (session?.user) {
@@ -41,6 +53,55 @@ export default function SettingsPage() {
     }
     loadProfileSettings()
   }, [])
+
+  // Load acknowledgment templates
+  useEffect(() => {
+    const loadAckTemplates = async () => {
+      try {
+        const res = await fetch('/api/settings/acknowledgments', { cache: 'no-store' })
+        const data = await res.json()
+        if (res.ok && data.templates) {
+          setAckTemplates(data.templates)
+        }
+      } catch (err) {
+        console.error('Failed to load ack templates:', err)
+      }
+    }
+    loadAckTemplates()
+  }, [])
+
+  const handleSaveAckTemplate = async (template: AckTemplate) => {
+    setAckSaving(template.eventType)
+    setAckSaved(null)
+    try {
+      const res = await fetch('/api/settings/acknowledgments', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(template),
+      })
+      if (res.ok) {
+        setAckSaved(template.eventType)
+        setTimeout(() => setAckSaved(null), 3000)
+      }
+    } catch (err) {
+      console.error('Failed to save ack template:', err)
+    } finally {
+      setAckSaving(null)
+    }
+  }
+
+  const updateAckTemplate = (eventType: string, updates: Partial<AckTemplate>) => {
+    setAckTemplates((prev) =>
+      prev.map((t) => (t.eventType === eventType ? { ...t, ...updates } : t))
+    )
+  }
+
+  const ackEventLabels: Record<string, string> = {
+    TIER_UPGRADE: 'Tier Upgrade',
+    BECAME_SUPERFAN: 'Reached Core',
+    FIRST_TIP: 'First Tip',
+    MILESTONE_TIPS: 'Tip Milestone',
+  }
 
   const handleSaveProfile = async () => {
     setSaving(true)
@@ -303,6 +364,87 @@ export default function SettingsPage() {
                 </label>
               ))}
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Auto-Acknowledge Section */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <MessageCircle className="w-5 h-5 text-accent" />
+              <CardTitle>Auto-Acknowledge</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <p className="text-body-sm text-gray-500 font-light">
+              When a fan hits a milestone, automatically send them a personalized message.
+              These are transactional and don&apos;t count against campaign limits.
+            </p>
+            <p className="text-caption text-gray-600">
+              Tokens: {'{fan_name}'} {'{fan_tier}'} {'{stan_score}'} {'{tip_count}'} {'{tip_amount_usd}'} {'{city}'} {'{stan_club_name}'}
+            </p>
+
+            {ackTemplates.map((template) => (
+              <div key={template.eventType} className="border border-[#1a1a1a] rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-body-sm font-medium text-white">
+                    {ackEventLabels[template.eventType] || template.eventType}
+                  </span>
+                  <label className="flex items-center cursor-pointer">
+                    <div className="relative">
+                      <input
+                        type="checkbox"
+                        checked={template.enabled}
+                        onChange={(e) => updateAckTemplate(template.eventType, { enabled: e.target.checked })}
+                        className="sr-only peer"
+                      />
+                      <div className="w-10 h-6 bg-[#1a1a1a] rounded-full peer peer-checked:bg-accent transition-colors" />
+                      <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-4 transition-transform" />
+                    </div>
+                  </label>
+                </div>
+                {template.enabled && (
+                  <>
+                    <Input
+                      label="Subject"
+                      type="text"
+                      value={template.subject}
+                      onChange={(e) => updateAckTemplate(template.eventType, { subject: e.target.value })}
+                      placeholder="Subject line"
+                    />
+                    <div>
+                      <label className="block text-caption text-gray-400 mb-1">Message</label>
+                      <textarea
+                        value={template.messageBody}
+                        onChange={(e) => updateAckTemplate(template.eventType, { messageBody: e.target.value })}
+                        rows={3}
+                        className="w-full bg-[#0f0f0f] border border-[#1a1a1a] rounded-lg px-3 py-2 text-body-sm text-white placeholder-gray-600 focus:outline-none focus:border-accent resize-none"
+                        placeholder="Message body with {tokens}"
+                      />
+                    </div>
+                    <Button
+                      variant="outline"
+                      onClick={() => handleSaveAckTemplate(template)}
+                      disabled={ackSaving === template.eventType}
+                    >
+                      {ackSaving === template.eventType ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                          Saving...
+                        </>
+                      ) : ackSaved === template.eventType ? (
+                        <>
+                          <Check className="w-4 h-4 mr-2" />
+                          Saved
+                        </>
+                      ) : (
+                        'Save'
+                      )}
+                    </Button>
+                  </>
+                )}
+              </div>
+            ))}
           </CardContent>
         </Card>
 
