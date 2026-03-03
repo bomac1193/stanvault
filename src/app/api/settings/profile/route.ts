@@ -31,12 +31,12 @@ export async function GET() {
   // Resolve user — fall back to email if JWT has stale ID
   let user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { id: true, artistName: true, spotifyArtistId: true, pricingTier: true, email: true },
+    select: { id: true, image: true, artistName: true, spotifyArtistId: true, pricingTier: true, email: true },
   })
   if (!user && session.user.email) {
     user = await prisma.user.findUnique({
       where: { email: session.user.email },
-      select: { id: true, artistName: true, spotifyArtistId: true, pricingTier: true, email: true },
+      select: { id: true, image: true, artistName: true, spotifyArtistId: true, pricingTier: true, email: true },
     })
   }
 
@@ -128,6 +128,7 @@ export async function PATCH(req: NextRequest) {
       data,
       select: {
         id: true,
+        image: true,
         artistName: true,
         email: true,
         spotifyArtistId: true,

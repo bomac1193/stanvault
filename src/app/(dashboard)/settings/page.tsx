@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { PageHeader } from '@/components/layout'
 import { Card, CardHeader, CardTitle, CardContent, Input, Button, Select } from '@/components/ui'
-import { User, Lock, Bell, Palette, Music, Check, Loader2, ExternalLink, MessageCircle } from 'lucide-react'
+import { Check, Loader2, ExternalLink } from 'lucide-react'
 import ProfilePhotoUpload from '@/components/profile/ProfilePhotoUpload'
 
 export default function SettingsPage() {
@@ -29,6 +29,7 @@ export default function SettingsPage() {
   const [ackTemplates, setAckTemplates] = useState<AckTemplate[]>([])
   const [ackSaving, setAckSaving] = useState<string | null>(null)
   const [ackSaved, setAckSaved] = useState<string | null>(null)
+  const [profileImage, setProfileImage] = useState<string | null>(null)
 
   useEffect(() => {
     if (session?.user) {
@@ -37,6 +38,14 @@ export default function SettingsPage() {
       setSpotifyArtistId(session.user.spotifyArtistId || '')
     }
   }, [session])
+
+  // Fetch profile image from API (not session — too large for JWT)
+  useEffect(() => {
+    fetch('/api/settings/profile/image', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => setProfileImage(data.image))
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     const loadProfileSettings = async () => {
@@ -146,15 +155,12 @@ export default function SettingsPage() {
         {/* Profile Section */}
         <Card>
           <CardHeader>
-            <div className="flex items-center gap-3">
-              <User className="w-5 h-5 text-accent" />
-              <CardTitle>Profile</CardTitle>
-            </div>
+            <CardTitle>Profile</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-6 pb-2">
               <ProfilePhotoUpload
-                currentPhoto={session?.user?.image}
+                currentPhoto={profileImage}
                 onPhotoChange={async (dataUrl) => {
                   const res = await fetch('/api/settings/profile', {
                     method: 'PATCH',
@@ -162,7 +168,7 @@ export default function SettingsPage() {
                     body: JSON.stringify({ image: dataUrl }),
                   })
                   if (!res.ok) throw new Error('Failed to upload')
-                  await update()
+                  setProfileImage(dataUrl)
                 }}
                 size="md"
               />
@@ -183,6 +189,7 @@ export default function SettingsPage() {
               value={artistName}
               onChange={(e) => setArtistName(e.target.value)}
               placeholder="Your name or brand"
+              className="bg-[#111] border border-[#2a2a2a]"
             />
             <Button
               variant="outline"
@@ -209,10 +216,7 @@ export default function SettingsPage() {
         {/* Spotify Connection */}
         <Card>
           <CardHeader>
-            <div className="flex items-center gap-3">
-              <Music className="w-5 h-5 text-accent" />
-              <CardTitle>Spotify ID (Optional)</CardTitle>
-            </div>
+            <CardTitle>Spotify ID (Optional)</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-body-sm text-gray-500 font-light">
@@ -264,10 +268,7 @@ export default function SettingsPage() {
         {canOverrideTier && (
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-3">
-                <Music className="w-5 h-5 text-accent" />
-                <CardTitle>Pricing Tier Control</CardTitle>
-              </div>
+              <CardTitle>Pricing Tier Control</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-body-sm text-gray-500 font-light">
@@ -311,10 +312,7 @@ export default function SettingsPage() {
         {/* Security Section */}
         <Card>
           <CardHeader>
-            <div className="flex items-center gap-3">
-              <Lock className="w-5 h-5 text-accent" />
-              <CardTitle>Security</CardTitle>
-            </div>
+            <CardTitle>Security</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Input
@@ -339,10 +337,7 @@ export default function SettingsPage() {
         {/* Notifications Section */}
         <Card>
           <CardHeader>
-            <div className="flex items-center gap-3">
-              <Bell className="w-5 h-5 text-accent" />
-              <CardTitle>Notifications</CardTitle>
-            </div>
+            <CardTitle>Notifications</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -370,10 +365,7 @@ export default function SettingsPage() {
         {/* Auto-Acknowledge Section */}
         <Card>
           <CardHeader>
-            <div className="flex items-center gap-3">
-              <MessageCircle className="w-5 h-5 text-accent" />
-              <CardTitle>Auto-Acknowledge</CardTitle>
-            </div>
+            <CardTitle>Auto-Acknowledge</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <p className="text-body-sm text-gray-500 font-light">
@@ -451,10 +443,7 @@ export default function SettingsPage() {
         {/* Appearance Section */}
         <Card>
           <CardHeader>
-            <div className="flex items-center gap-3">
-              <Palette className="w-5 h-5 text-accent" />
-              <CardTitle>Appearance</CardTitle>
-            </div>
+            <CardTitle>Appearance</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-body-sm text-gray-500 font-light">

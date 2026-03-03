@@ -22,9 +22,6 @@ export default function AuthLayout({
           <p className="text-body font-light text-gray-400 leading-relaxed">
             Not all fans are equal.
           </p>
-          <p className="text-caption text-gray-600 uppercase tracking-wider mt-2">
-            Fan Intelligence
-          </p>
         </div>
         <p className="relative text-caption text-gray-700 uppercase tracking-widest">
           &copy; {new Date().getFullYear()} Imprint
@@ -38,9 +35,6 @@ export default function AuthLayout({
           <div className="lg:hidden mb-12">
             <p className="text-caption uppercase tracking-[0.3em] text-gray-400 font-medium">
               Imprint
-            </p>
-            <p className="text-caption text-gray-600 font-light tracking-wide mt-1">
-              Fan Intelligence
             </p>
           </div>
           {children}

@@ -57,17 +57,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       // Handle session updates
       if (trigger === 'update' && session) {
-        token.name = session.name
-        token.picture = session.image
+        if (session.name !== undefined) token.name = session.name
       }
 
       // Fetch user data on each request to get latest onboarding status
+      // NOTE: image is NOT stored in the JWT (too large for cookies — causes 431).
+      // The client fetches it via /api/settings/profile or session.user.id.
       if (token.id || token.email) {
         let dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
           select: {
             id: true,
-            image: true,
             artistName: true,
             spotifyArtistId: true,
             onboardingCompleted: true,
@@ -80,7 +80,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             where: { email: token.email as string },
             select: {
               id: true,
-              image: true,
               artistName: true,
               spotifyArtistId: true,
               onboardingCompleted: true,
@@ -92,7 +91,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         }
         if (dbUser) {
-          token.picture = dbUser.image
+          token.picture = null // Never store image in JWT
           token.artistName = dbUser.artistName
           token.spotifyArtistId = dbUser.spotifyArtistId
           token.onboardingCompleted = dbUser.onboardingCompleted
