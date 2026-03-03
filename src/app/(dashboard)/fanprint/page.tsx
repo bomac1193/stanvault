@@ -29,7 +29,7 @@ export default function FanPrintPage() {
   const recommendations = data ? generateRecommendations(data) : []
 
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader
         title="FanPrint"
         description="Revenue intelligence from your fan data"

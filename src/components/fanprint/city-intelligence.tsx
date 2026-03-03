@@ -2,7 +2,6 @@
 
 import { Card, CardHeader, CardTitle, CardContent, Tabs } from '@/components/ui'
 import { formatNumber } from '@/lib/utils'
-import { Building2 } from 'lucide-react'
 import { useState } from 'react'
 
 interface CityData {
@@ -20,6 +19,10 @@ interface CityIntelligenceProps {
 }
 
 type SortMode = 'conviction' | 'revenue' | 'fans'
+
+function stripEmoji(str: string): string {
+  return str.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '').trim()
+}
 
 export function CityIntelligence({ cities }: CityIntelligenceProps) {
   const [sortBy, setSortBy] = useState<SortMode>('conviction')
@@ -53,12 +56,12 @@ export function CityIntelligence({ cities }: CityIntelligenceProps) {
           <Tabs tabs={tabs} value={sortBy} onChange={(v) => setSortBy(v as SortMode)} className="w-fit" />
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          {sorted.length === 0 ? (
-            <p className="text-center text-gray-500 py-4">No city data available</p>
-          ) : (
-            sorted.map((city, index) => {
+      <CardContent className="p-0">
+        {sorted.length === 0 ? (
+          <p className="text-center text-gray-500 py-6">No city data available</p>
+        ) : (
+          <div className="divide-y divide-[#1a1a1a]">
+            {sorted.map((city, index) => {
               const barValue =
                 sortBy === 'conviction'
                   ? city.avgConviction
@@ -68,22 +71,23 @@ export function CityIntelligence({ cities }: CityIntelligenceProps) {
               const barWidth = maxValue > 0 ? (barValue / maxValue) * 100 : 0
 
               return (
-                <div key={`${city.city}-${city.country}`}>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs text-gray-500 w-5 text-right flex-shrink-0">{index + 1}</span>
-                    <Building2 className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" />
-                    <span className="text-sm text-white truncate">{city.city}</span>
-                    <span className="text-xs text-gray-500 flex-shrink-0">{city.country}</span>
-                    <span className="ml-auto text-sm font-mono text-accent flex-shrink-0">
+                <div key={`${city.city}-${city.country}`} className="px-6 py-3">
+                  <div className="flex items-center">
+                    <span className="text-xs font-mono text-gray-500 w-6 flex-shrink-0">{index + 1}</span>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-sm text-white">{city.city}</span>
+                      <span className="text-xs text-gray-500 ml-2">{stripEmoji(city.country)}</span>
+                    </div>
+                    <span className="text-sm font-mono tabular-nums text-accent flex-shrink-0 w-16 text-right">
                       {sortBy === 'conviction' && city.avgConviction.toFixed(1)}
                       {sortBy === 'revenue' && `$${city.totalRevenue.toFixed(0)}`}
                       {sortBy === 'fans' && formatNumber(city.fanCount)}
                     </span>
-                    <span className="text-xs text-gray-500 flex-shrink-0">
+                    <span className="text-xs font-mono tabular-nums text-gray-500 flex-shrink-0 w-20 text-right">
                       {formatNumber(city.fanCount)} fans
                     </span>
                   </div>
-                  <div className="h-1.5 bg-black overflow-hidden">
+                  <div className="ml-6 mt-1.5 h-1 bg-black overflow-hidden">
                     <div
                       className="h-full bg-accent transition-all duration-300"
                       style={{ width: `${barWidth}%` }}
@@ -91,9 +95,9 @@ export function CityIntelligence({ cities }: CityIntelligenceProps) {
                   </div>
                 </div>
               )
-            })
-          )}
-        </div>
+            })}
+          </div>
+        )}
       </CardContent>
     </Card>
   )

@@ -16,10 +16,10 @@ interface DropPerformanceProps {
 }
 
 const TIER_COLORS: Record<string, string> = {
-  superfan: 'bg-purple-500',
-  dedicated: 'bg-blue-500',
-  engaged: 'bg-emerald-500',
-  casual: 'bg-gray-500',
+  superfan: 'bg-tier-superfan',
+  dedicated: 'bg-tier-dedicated',
+  engaged: 'bg-tier-engaged',
+  casual: 'bg-tier-casual',
 }
 
 const TIER_LABELS: Record<string, string> = {
@@ -47,7 +47,7 @@ export function DropPerformance({ drops }: DropPerformanceProps) {
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
               {Object.entries(TIER_LABELS).map(([key, label]) => (
                 <div key={key} className="flex items-center gap-1.5">
-                  <div className={`w-2.5 h-2.5 rounded-sm ${TIER_COLORS[key]}`} />
+                  <div className={`w-2.5 h-2.5 ${TIER_COLORS[key]}`} />
                   <span>{label}</span>
                 </div>
               ))}

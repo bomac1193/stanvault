@@ -90,3 +90,38 @@ export function useSCR() {
     staleTime: 15 * 60 * 1000, // 15 min — daily metric, no need to recalculate
   })
 }
+
+interface TrendPoint {
+  date: string
+  totalFans: number
+  casualCount: number
+  engagedCount: number
+  dedicatedCount: number
+  superfanCount: number
+  holdRate90Day: number | null
+  holdRate30Day: number | null
+  depthVelocity: number | null
+  platformIndependence: number | null
+  churnRate: number | null
+  scr: number | null
+  newFansCount: number | null
+  churnedFansCount: number | null
+  upgradedFansCount: number | null
+}
+
+interface TrendsData {
+  days: number
+  history: TrendPoint[]
+}
+
+export function useTrends(days: number = 30) {
+  return useQuery<TrendsData>({
+    queryKey: ['insights', 'trends', days],
+    queryFn: async () => {
+      const res = await fetch(`/api/insights/trends?days=${days}`)
+      if (!res.ok) throw new Error('Failed to fetch trends')
+      return res.json()
+    },
+    staleTime: 10 * 60 * 1000, // 10 min — daily snapshots
+  })
+}

@@ -1,3 +1,5 @@
 export { ConversionFunnel } from './conversion-funnel'
-export { GeographyList } from './geography-list'
 export { Recommendations } from './recommendations'
+export { FanGrowth } from './fan-growth'
+export { TierMigration } from './tier-migration'
+export { SCRTrends } from './scr-trends'

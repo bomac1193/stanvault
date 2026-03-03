@@ -1,11 +1,22 @@
 'use client'
 
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { PageHeader } from '@/components/layout'
-import { ConversionFunnel, GeographyList, Recommendations } from '@/components/insights'
-import { Skeleton } from '@/components/ui'
+import { ConversionFunnel, FanGrowth, TierMigration, SCRTrends } from '@/components/insights'
+import { Skeleton, Tabs } from '@/components/ui'
+import { useTrends } from '@/hooks/use-dashboard'
 
-export default function InsightsPage() {
+const periodTabs = [
+  { value: '30', label: '30d' },
+  { value: '90', label: '90d' },
+]
+
+export default function TrendsPage() {
+  const [period, setPeriod] = useState('30')
+  const days = Number(period)
+
+  const { data: trendsData, isLoading: trendsLoading } = useTrends(days)
   const { data: conversionData, isLoading: conversionLoading } = useQuery({
     queryKey: ['insights', 'conversion'],
     queryFn: async () => {
@@ -16,76 +27,44 @@ export default function InsightsPage() {
     staleTime: 10 * 60 * 1000,
   })
 
-  const { data: geoData, isLoading: geoLoading } = useQuery({
-    queryKey: ['insights', 'geography'],
-    queryFn: async () => {
-      const res = await fetch('/api/insights/geography')
-      if (!res.ok) throw new Error('Failed to fetch geography data')
-      return res.json()
-    },
-    staleTime: 10 * 60 * 1000,
-  })
-
-  const { data: metricsData } = useQuery({
-    queryKey: ['dashboard', 'metrics'],
-    queryFn: async () => {
-      const res = await fetch('/api/dashboard/metrics')
-      if (!res.ok) throw new Error('Failed to fetch metrics')
-      return res.json()
-    },
-    staleTime: 5 * 60 * 1000,
-  })
-
-  const { data: platformsData } = useQuery({
-    queryKey: ['platforms'],
-    queryFn: async () => {
-      const res = await fetch('/api/platforms')
-      if (!res.ok) throw new Error('Failed to fetch platforms')
-      return res.json()
-    },
-    staleTime: 10 * 60 * 1000,
-  })
-
-  const superfanPercentage =
-    metricsData?.totalFans > 0
-      ? Math.round((metricsData.superfans / metricsData.totalFans) * 100)
-      : 0
+  const history = trendsData?.history ?? []
+  const hasData = history.length >= 2
 
   return (
     <div>
       <PageHeader
-        title="Insights"
-        description="Deep dive into your fan data"
+        title="Shifts"
+        description="Your fanbase shifts"
+        actions={<Tabs tabs={periodTabs} value={period} onChange={setPeriod} />}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Conversion Funnel */}
-        {conversionLoading ? (
+      {trendsLoading ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Skeleton className="h-80" />
-        ) : (
-          <ConversionFunnel funnel={conversionData?.funnel || []} />
-        )}
-
-        {/* Geography */}
-        {geoLoading ? (
           <Skeleton className="h-80" />
-        ) : (
-          <GeographyList
-            countries={geoData?.countries || []}
-            cities={geoData?.cities || []}
-          />
-        )}
-
-        {/* Recommendations */}
-        <div className="lg:col-span-2">
-          <Recommendations
-            totalFans={metricsData?.totalFans || 0}
-            superfanPercentage={superfanPercentage}
-            topCountry={geoData?.countries?.[0]?.name}
-            connectedPlatforms={platformsData?.connections?.length || 0}
-          />
+          <Skeleton className="h-80" />
+          <Skeleton className="h-80" />
         </div>
-      </div>
+      ) : !hasData ? (
+        <div className="flex items-center justify-center h-64 border border-[#1a1a1a] bg-[#0a0a0a]">
+          <p className="text-gray-500 text-sm">
+            Shifts appear after a few days of daily snapshots.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <FanGrowth data={history} />
+          <TierMigration data={history} />
+
+          {conversionLoading ? (
+            <Skeleton className="h-80" />
+          ) : (
+            <ConversionFunnel funnel={conversionData?.funnel || []} />
+          )}
+
+          <SCRTrends data={history} />
+        </div>
+      )}
     </div>
   )
 }

@@ -16,9 +16,9 @@ interface PlatformGapsProps {
 }
 
 function getBarColor(percentage: number): string {
-  if (percentage > 50) return 'bg-emerald-500'
-  if (percentage >= 20) return 'bg-yellow-500'
-  return 'bg-red-400'
+  if (percentage > 50) return 'bg-white'
+  if (percentage >= 20) return 'bg-gray-400'
+  return 'bg-gray-600'
 }
 
 function getPlatformLabel(platform: string): string {

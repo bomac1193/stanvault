@@ -1,17 +1,15 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui'
-import { Lightbulb, Users, TrendingUp, Target, Music } from 'lucide-react'
+import { Lightbulb, TrendingUp, Target, Music } from 'lucide-react'
 
 interface RecommendationsProps {
   totalFans: number
   superfanPercentage: number
-  topCountry?: string
   connectedPlatforms: number
 }
 
 export function Recommendations({
   totalFans,
   superfanPercentage,
-  topCountry,
   connectedPlatforms,
 }: RecommendationsProps) {
   const recommendations = []
@@ -37,14 +35,6 @@ export function Recommendations({
       icon: TrendingUp,
       title: 'Great Core fan ratio!',
       description: `${superfanPercentage}% Core fan rate is excellent. Consider exclusive content for them.`,
-    })
-  }
-
-  if (topCountry) {
-    recommendations.push({
-      icon: Users,
-      title: `Strong in ${topCountry}`,
-      description: `Consider touring or targeted marketing in ${topCountry} where most fans are.`,
     })
   }
 

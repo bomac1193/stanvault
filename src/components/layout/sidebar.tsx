@@ -11,8 +11,8 @@ const navItems = [
   { href: '/drops', label: 'Drops' },
   { href: '/connections', label: 'Connect' },
   { href: '/campaigns', label: 'Campaigns' },
-  { href: '/insights', label: 'Insights' },
-  { href: '/fanprint', label: 'FanPrint' },
+  { href: '/insights', label: 'Shifts' },
+  { href: '/fanprint', label: 'Imprints' },
   { href: '/export', label: 'Export' },
 ]
 

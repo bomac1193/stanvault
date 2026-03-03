@@ -16,8 +16,8 @@ const TYPE_ICONS: Record<string, LucideIcon> = {
 }
 
 const PRIORITY_STYLES: Record<string, string> = {
-  high: 'border-l-red-400',
-  medium: 'border-l-yellow-500',
+  high: 'border-l-white',
+  medium: 'border-l-gray-400',
   low: 'border-l-[#1a1a1a]',
 }
 

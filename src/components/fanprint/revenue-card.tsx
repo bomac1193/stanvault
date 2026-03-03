@@ -97,8 +97,8 @@ export function RevenueCard({ revenue, platformGaps }: RevenueCardProps) {
           {/* Revenue breakdown by platform */}
           {revenuePlatforms.length > 0 && (
             <div className="space-y-2 border-t border-[#1a1a1a] pt-4">
-              <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">
-                Revenue by Platform
+              <p className="text-xs text-gray-500 mb-3">
+                Revenue by platform
               </p>
               {revenuePlatforms.map((p) => {
                 const platformRevenue = p.avgRevenue * p.dedicatedPlusFans

@@ -87,7 +87,7 @@ export function GeographyList({ countries, cities }: GeographyListProps) {
                     </div>
                     <div className="h-1.5 bg-black overflow-hidden">
                       <div
-                        className="h-full bg-status-success"
+                        className="h-full bg-accent"
                         style={{ width: `${(city.count / maxCityCount) * 100}%` }}
                       />
                     </div>
