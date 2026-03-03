@@ -1,0 +1,380 @@
+'use client'
+
+import { useState, useRef, forwardRef, useImperativeHandle } from 'react'
+import { Loader2, Send, TestTube2 } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Select } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
+import { Disclosure } from '@/components/ui/disclosure'
+import { moodPresets, tokenGroups, type CampaignEntitlements } from './campaign-constants'
+
+export interface ComposeFormRef {
+  getMessageTemplateRef: () => HTMLTextAreaElement | null
+}
+
+interface ComposeFormProps {
+  subject: string
+  onSubjectChange: (v: string) => void
+  minTier: string
+  onMinTierChange: (v: string) => void
+  messageTemplate: string
+  onMessageTemplateChange: (v: string) => void
+  mood: string
+  onMoodChange: (v: string) => void
+  deliveryMode: 'TEXT' | 'VOICE'
+  onDeliveryModeChange: (v: 'TEXT' | 'VOICE') => void
+  entitlements: CampaignEntitlements | null
+
+  // Targeting
+  fromEmail: string
+  onFromEmailChange: (v: string) => void
+  replyTo: string
+  onReplyToChange: (v: string) => void
+  minStanScore: string
+  onMinStanScoreChange: (v: string) => void
+  limit: string
+  onLimitChange: (v: string) => void
+
+  // Send
+  dryRun: boolean
+  onDryRunChange: (v: boolean) => void
+  loading: boolean
+  testSending: boolean
+  error: string | null
+  onSubmit: () => void
+  onTestVoice: () => void
+
+  // Slots for collapsed sections
+  voiceSlot: React.ReactNode
+  templatesSlot: React.ReactNode
+  variablesSlot: React.ReactNode
+}
+
+export const ComposeForm = forwardRef<ComposeFormRef, ComposeFormProps>(function ComposeForm(
+  {
+    subject,
+    onSubjectChange,
+    minTier,
+    onMinTierChange,
+    messageTemplate,
+    onMessageTemplateChange,
+    mood,
+    onMoodChange,
+    deliveryMode,
+    onDeliveryModeChange,
+    entitlements,
+    fromEmail,
+    onFromEmailChange,
+    replyTo,
+    onReplyToChange,
+    minStanScore,
+    onMinStanScoreChange,
+    limit,
+    onLimitChange,
+    dryRun,
+    onDryRunChange,
+    loading,
+    testSending,
+    error,
+    onSubmit,
+    onTestVoice,
+    voiceSlot,
+    templatesSlot,
+    variablesSlot,
+  },
+  ref
+) {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const [showTokens, setShowTokens] = useState(false)
+
+  useImperativeHandle(ref, () => ({
+    getMessageTemplateRef: () => textareaRef.current,
+  }))
+
+  function insertToken(token: string) {
+    const textarea = textareaRef.current
+    if (!textarea) {
+      onMessageTemplateChange(
+        `${messageTemplate}${messageTemplate.endsWith(' ') ? '' : ' '}${token}`
+      )
+      return
+    }
+    const start = textarea.selectionStart ?? messageTemplate.length
+    const end = textarea.selectionEnd ?? messageTemplate.length
+    const before = messageTemplate.slice(0, start)
+    const after = messageTemplate.slice(end)
+    onMessageTemplateChange(`${before}${token}${after}`)
+    requestAnimationFrame(() => {
+      textarea.focus()
+      const caret = start + token.length
+      textarea.setSelectionRange(caret, caret)
+    })
+  }
+
+  return (
+    <div className="space-y-5">
+      {/* Subject + Tier */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Input
+          label="Subject"
+          value={subject}
+          onChange={(e) => onSubjectChange(e.target.value)}
+          variant="boxed"
+          placeholder="VIP Fan Drop"
+        />
+        <Select
+          label="Minimum Tier"
+          value={minTier}
+          onChange={(e) => onMinTierChange(e.target.value)}
+          options={[
+            { value: 'CASUAL', label: 'Faint+' },
+            { value: 'ENGAGED', label: 'Steady+' },
+            { value: 'DEDICATED', label: 'Strong+' },
+            { value: 'SUPERFAN', label: 'Core only' },
+          ]}
+          variant="boxed"
+        />
+      </div>
+
+      {/* Message textarea */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <label className="block text-caption text-gray-500">Message</label>
+          <button
+            type="button"
+            onClick={() => setShowTokens((p) => !p)}
+            className="text-caption text-gray-600 hover:text-gray-300 transition-colors"
+          >
+            {showTokens ? 'Hide tokens' : 'Insert token'}
+          </button>
+        </div>
+        <textarea
+          ref={textareaRef}
+          className="w-full bg-[#0d0d0d] border border-[#1a1a1a] px-4 py-3 text-white font-light text-body-sm focus:outline-none focus:border-[#2a2a2a] transition-colors min-h-[120px] resize-y placeholder:text-gray-700"
+          value={messageTemplate}
+          onChange={(e) => onMessageTemplateChange(e.target.value)}
+          placeholder="Write your message to fans..."
+        />
+        {showTokens && (
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            {tokenGroups.map((group) => (
+              <div key={group.label} className="flex items-center gap-1">
+                <span className="text-caption text-gray-600 mr-0.5">{group.label}</span>
+                {group.tokens.map((token) => (
+                  <button
+                    type="button"
+                    key={token}
+                    onClick={() => insertToken(token)}
+                    className="px-1.5 py-0.5 text-caption text-gray-500 hover:text-white hover:bg-[#141414] transition-colors"
+                  >
+                    {token}
+                  </button>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Mood pills + Delivery toggle */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <label className="block text-caption text-gray-500">Mood</label>
+          <div className="flex flex-wrap gap-1.5">
+            {moodPresets.map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => onMoodChange(m)}
+                className={`px-3 py-1.5 text-caption border transition-colors ${
+                  mood === m
+                    ? 'text-white border-[#333] bg-[#141414]'
+                    : 'text-gray-500 border-[#1a1a1a] hover:text-white hover:border-[#2a2a2a]'
+                }`}
+              >
+                {m}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="block text-caption text-gray-500">Delivery</label>
+          <div className="inline-flex border border-[#1a1a1a]">
+            <button
+              type="button"
+              onClick={() => onDeliveryModeChange('TEXT')}
+              className={`px-4 py-2 text-caption transition-colors ${
+                deliveryMode === 'TEXT'
+                  ? 'text-white bg-[#141414]'
+                  : 'text-gray-500 hover:text-gray-300'
+              }`}
+            >
+              Text
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (entitlements && !entitlements.allowVoiceCampaigns) return
+                onDeliveryModeChange('VOICE')
+              }}
+              className={`px-4 py-2 text-caption border-l border-[#1a1a1a] transition-colors ${
+                deliveryMode === 'VOICE'
+                  ? 'text-white bg-[#141414]'
+                  : entitlements && !entitlements.allowVoiceCampaigns
+                    ? 'text-gray-700 cursor-not-allowed'
+                    : 'text-gray-500 hover:text-gray-300'
+              }`}
+            >
+              Voice
+            </button>
+          </div>
+          {entitlements && !entitlements.allowVoiceCampaigns && (
+            <p className="text-caption text-gray-700">Requires tier upgrade</p>
+          )}
+        </div>
+      </div>
+
+      {/* Collapsible sections */}
+      {deliveryMode === 'VOICE' && (
+        <Disclosure label="Voice" defaultOpen>
+          {voiceSlot}
+        </Disclosure>
+      )}
+
+      <Disclosure label="Quick Start">{templatesSlot}</Disclosure>
+
+      <Disclosure label="Personalize">{variablesSlot}</Disclosure>
+
+      <Disclosure label="Audience">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Input
+            label="From Email"
+            value={fromEmail}
+            onChange={(e) => onFromEmailChange(e.target.value)}
+            variant="boxed"
+            placeholder="Artist <campaigns@yourdomain.com>"
+            disabled={entitlements ? !entitlements.allowCustomFromEmail : false}
+            hint={
+              entitlements && !entitlements.allowCustomFromEmail
+                ? 'Upgrade to Patron Growth or Sovereign.'
+                : undefined
+            }
+          />
+          <Input
+            label="Reply-To"
+            value={replyTo}
+            onChange={(e) => onReplyToChange(e.target.value)}
+            variant="boxed"
+            placeholder="team@yourdomain.com"
+          />
+          <Input
+            label="Min Pulse Score"
+            type="number"
+            value={minStanScore}
+            onChange={(e) => onMinStanScoreChange(e.target.value)}
+            variant="boxed"
+            min={0}
+            max={100}
+          />
+          <Input
+            label="Recipient Limit"
+            type="number"
+            value={limit}
+            onChange={(e) => onLimitChange(e.target.value)}
+            variant="boxed"
+            min={1}
+            max={1000}
+          />
+        </div>
+      </Disclosure>
+
+      {/* Send row */}
+      <div className="flex items-center gap-4 pt-3 border-t border-[#1a1a1a]">
+        {/* Toggle switch for dry run */}
+        <label className="flex items-center gap-2.5 cursor-pointer select-none">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={dryRun}
+            onClick={() => onDryRunChange(!dryRun)}
+            className={`relative w-8 h-[18px] rounded-full transition-colors ${
+              dryRun ? 'bg-gray-400' : 'bg-[#222]'
+            }`}
+          >
+            <span
+              className={`absolute top-[2px] left-[2px] h-[14px] w-[14px] rounded-full bg-black transition-transform ${
+                dryRun ? 'translate-x-[14px]' : 'translate-x-0'
+              }`}
+            />
+          </button>
+          <span className="text-caption text-gray-400">Dry run</span>
+        </label>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onSubmit}
+          disabled={loading || !messageTemplate.trim()}
+        >
+          {loading ? (
+            <>
+              <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+              Running...
+            </>
+          ) : dryRun ? (
+            <>
+              <TestTube2 className="w-3.5 h-3.5 mr-1.5" />
+              Preview
+            </>
+          ) : (
+            <>
+              <Send className="w-3.5 h-3.5 mr-1.5" />
+              Send
+            </>
+          )}
+        </Button>
+
+        {deliveryMode === 'VOICE' && (
+          <button
+            type="button"
+            onClick={onTestVoice}
+            disabled={
+              testSending ||
+              loading ||
+              !messageTemplate.trim() ||
+              (entitlements ? !entitlements.allowVoiceCampaigns : false)
+            }
+            className="text-caption text-gray-500 hover:text-white transition-colors disabled:opacity-40"
+          >
+            {testSending ? 'Sending...' : 'Test Voice'}
+          </button>
+        )}
+
+        {error && <p className="text-caption text-status-error ml-2">{error}</p>}
+      </div>
+
+      {/* Entitlements footer */}
+      {entitlements && (
+        <div className="flex items-center gap-4 text-caption text-gray-600 pt-2">
+          <span>{entitlements.pricingTier}</span>
+          <span>
+            {entitlements.monthSentSoFar.toLocaleString()} /{' '}
+            {entitlements.monthlyLiveSendLimit === null
+              ? '\u221E'
+              : entitlements.monthlyLiveSendLimit.toLocaleString()}{' '}
+            sent
+          </span>
+          {entitlements.allowVoiceCampaigns && (
+            <span>
+              Voice {entitlements.monthVoiceSentSoFar.toLocaleString()} /{' '}
+              {entitlements.monthlyVoiceSendLimit === null
+                ? '\u221E'
+                : entitlements.monthlyVoiceSendLimit.toLocaleString()}
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  )
+})
