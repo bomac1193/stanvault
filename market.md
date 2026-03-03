@@ -27,14 +27,14 @@ They are building evergreen fan businesses, not short-term engagement spikes.
 - Workflows that treat fans as disposable traffic.
 
 ## Product Packaging Strategy
-Use Stanvault as the intelligence layer and Echoniq as the delivery layer.
+Use Stanvault as the intelligence layer and Emissar as the delivery layer.
 
 - Stanvault core: segmentation, scoring, dashboard, campaign planning.
-- Echoniq: live campaign execution, advanced personalization, orchestration.
+- Emissar: live campaign execution, advanced personalization, orchestration.
 
 Recommended structure:
 - Base tier includes Stanvault core plus dry-run campaign workflows.
-- Higher tiers unlock live Echoniq delivery and higher send limits.
+- Higher tiers unlock live Emissar delivery and higher send limits.
 
 ## Pricing Framework (Luxury Positioning)
 - Private Circle — $299/mo  
@@ -58,7 +58,7 @@ It helps premium creators own fan intelligence and activate it through luxury-gr
 Blue Ocean moat alignment:
 - Hyperlocal trust moat: city and culture-specific fan operations outperform generic global tooling.
 - Economic-context moat: conviction and value signals should reflect local purchasing context, not only raw spend.
-- System moat: Stanvault (intelligence) + Echoniq (activation) + Oryx market rails compounds advantage over point tools.
+- System moat: Stanvault (intelligence) + Emissar (activation) + Oryx market rails compounds advantage over point tools.
 
 Execution rule:
 - If a pricing or growth decision conflicts with Oryx market reality, choose Oryx-aligned defaults first and keep global options as secondary.

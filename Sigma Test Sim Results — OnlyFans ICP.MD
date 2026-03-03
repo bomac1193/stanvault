@@ -175,9 +175,9 @@ Technically possible (OF has an API). Would require:
 
 **But this bends the product away from the core ICP.** Every engineering hour on OF integration is an hour not spent on deepening Dasham conviction scoring, building the manager dashboard, or improving the Starter tier onboarding. The core ICP (African music artists) has 83.6% retention. OF creators have 18.8%. The ROI math is clear.
 
-### Could Echoniq (campaigns) add value?
+### Could Emissar (campaigns) add value?
 
-OF creators already have mass messaging on OnlyFans. Echoniq's value prop is reaching fans across platforms with tier-targeted messaging. But OF fans' primary engagement is ON OnlyFans — not across scattered platforms. The cross-platform campaign thesis is weaker when one platform dominates the relationship.
+OF creators already have mass messaging on OnlyFans. Emissar's value prop is reaching fans across platforms with tier-targeted messaging. But OF fans' primary engagement is ON OnlyFans — not across scattered platforms. The cross-platform campaign thesis is weaker when one platform dominates the relationship.
 
 ### What about the content gating (drops)?
 

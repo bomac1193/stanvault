@@ -200,7 +200,7 @@ Without the acknowledgment loop, Palmlion is just another analytics dashboard an
 | Piece | Status | Where |
 |-------|--------|-------|
 | Moments with reasons | Built | `superfan-moments` component, `buildReason` API |
-| Campaigns system | Built | `/campaigns` page, Echoniq API |
+| Campaigns system | Built | `/campaigns` page, Emissar API |
 | Tier-gated drops | Designed | Drop model supports `minTier` |
 | Auto-acknowledge trigger | Not built | Wire moments → campaigns |
 | Fan-facing profile | Not built | Fan sees their own journey |

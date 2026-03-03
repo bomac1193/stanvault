@@ -4,7 +4,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { FanTier, Prisma } from '@prisma/client'
 import { tierPolicies } from '@/lib/campaign-entitlements'
-import { callEchoniqCampaign, type EchoniqCampaignResponse } from '@/lib/echoniq'
+import { callEmissarCampaign, type EmissarCampaignResponse } from '@/lib/emissar'
 
 const requestSchema = z.object({
   artistName: z.string().optional(),
@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
       ...body,
       dryRun: true,
     }
-    const preflight = await callEchoniqCampaign(preflightBody)
+    const preflight = await callEmissarCampaign(preflightBody)
     if (!preflight.ok) {
       await prisma.campaignRun.create({
         data: {
@@ -219,14 +219,14 @@ export async function POST(request: NextRequest) {
           minStanScore: payload.data.minStanScore || null,
           recipientLimit: payload.data.limit || null,
           dryRun: true,
-          errorMessage: `Echoniq preflight returned ${preflight.status}: ${preflight.responseText}`,
+          errorMessage: `Emissar preflight returned ${preflight.status}: ${preflight.responseText}`,
           requestPayload: body as unknown as Prisma.JsonValue,
         },
       })
 
       return NextResponse.json(
         {
-          error: 'Echoniq campaign preflight failed',
+          error: 'Emissar campaign preflight failed',
           status: preflight.status,
           details: preflight.responseText,
         },
@@ -234,7 +234,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const preflightData = JSON.parse(preflight.responseText) as EchoniqCampaignResponse
+    const preflightData = JSON.parse(preflight.responseText) as EmissarCampaignResponse
     const plannedRecipients = preflightData.totals?.queuedRecipients || 0
     const isTestOnly = Boolean(payload.data.testOnly)
 
@@ -344,7 +344,7 @@ export async function POST(request: NextRequest) {
       ...body,
       dryRun: false,
     }
-    const liveResponse = await callEchoniqCampaign(liveBody)
+    const liveResponse = await callEmissarCampaign(liveBody)
     if (!liveResponse.ok) {
       await prisma.campaignRun.create({
         data: {
@@ -356,14 +356,14 @@ export async function POST(request: NextRequest) {
           minStanScore: payload.data.minStanScore || null,
           recipientLimit: payload.data.limit || null,
           dryRun: false,
-          errorMessage: `Echoniq live send returned ${liveResponse.status}: ${liveResponse.responseText}`,
+          errorMessage: `Emissar live send returned ${liveResponse.status}: ${liveResponse.responseText}`,
           requestPayload: liveBody as unknown as Prisma.JsonValue,
         },
       })
 
       return NextResponse.json(
         {
-          error: 'Echoniq campaign live send failed',
+          error: 'Emissar campaign live send failed',
           status: liveResponse.status,
           details: liveResponse.responseText,
         },
@@ -371,7 +371,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const data = JSON.parse(liveResponse.responseText) as EchoniqCampaignResponse
+    const data = JSON.parse(liveResponse.responseText) as EmissarCampaignResponse
 
     await prisma.campaignRun.create({
       data: {

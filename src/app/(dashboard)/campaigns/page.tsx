@@ -566,7 +566,7 @@ export default function CampaignsPage() {
         throw new Error(`Voice campaigns are not available on ${entitlements.pricingTier}.`)
       }
       if (deliveryMode === 'VOICE' && !voiceModelId.trim()) {
-        throw new Error('Please set your Echoniq voice before sending a voice campaign.')
+        throw new Error('Please set your Emissar voice before sending a voice campaign.')
       }
       const selectedCta = getSelectedActionCtaPresetId()
       if (selectedCta && (!ctaDeadline.trim() || !ctaProofInstruction.trim())) {
@@ -624,7 +624,7 @@ export default function CampaignsPage() {
     setTestSending(true)
     setError(null)
     try {
-      if (!voiceModelId.trim()) throw new Error('Please set your Echoniq voice before sending a test.')
+      if (!voiceModelId.trim()) throw new Error('Please set your Emissar voice before sending a test.')
       const selectedCta = getSelectedActionCtaPresetId()
       if (selectedCta && (!ctaDeadline.trim() || !ctaProofInstruction.trim())) {
         throw new Error('Set CTA deadline and proof instruction before running a voice test.')
@@ -676,7 +676,7 @@ export default function CampaignsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Campaigns"
-        description="Compose and send fan-targeted campaigns via Echoniq."
+        description="Compose and send fan-targeted campaigns via Emissar."
       />
 
       {/* ── Compose Card ──────────────────────────────────────────────── */}

@@ -3,7 +3,7 @@
 ## Positioning
 Stanvault is premium fan-relationship infrastructure for artists and teams that optimize for fan quality, retention, and high-LTV monetization.
 
-Echoniq is the activation layer: live delivery, personalized campaigns, and orchestration.
+Emissar is the activation layer: live delivery, personalized campaigns, and orchestration.
 
 ## TAM Stress Test (Upper-Bound Oriented)
 Note: figures below mix hard external benchmarks with modeled assumptions. Assumptions are explicitly marked.
@@ -24,7 +24,7 @@ https://www.riaa.com/2024-year-end-music-industry-revenue-report-riaa/
 https://www.riaa.com/growth-in-paid-subscription-streaming-drives-mid-year-2025-us-recorded-music-revenues-to-new-high-reports-riaa/
 
 ### TAM Modeling
-#### Layer A: Core Stanvault + Echoniq (music recorded-economy software take-rate)
+#### Layer A: Core Stanvault + Emissar (music recorded-economy software take-rate)
 Assumption: software + activation tooling can capture **1% to 5%** of recorded-music value creation as stack spend.
 
 - Low: 1% x $29.6B = **$296M TAM**
@@ -38,7 +38,7 @@ Modeled upper strategic TAM (5+ year): **$1.5B to $3B+**
 (Inference based on Layer A upper bound plus adjacent premium fan monetization tooling spend.)
 
 ## Biggest TAM (Pragmatic Answer)
-The **biggest defensible TAM today** for Stanvault + Echoniq as a premium software stack is in the **~$1B+ range**, with an **upper strategic path to ~$3B** as activation and commerce orchestration expands.
+The **biggest defensible TAM today** for Stanvault + Emissar as a premium software stack is in the **~$1B+ range**, with an **upper strategic path to ~$3B** as activation and commerce orchestration expands.
 
 ## ICP for Upper Price Range
 - Artist teams with strong direct monetization and premium audience intent.
@@ -47,7 +47,7 @@ The **biggest defensible TAM today** for Stanvault + Echoniq as a premium softwa
 
 ## Pricing Strategy (Upper-Market)
 - Keep Stanvault intelligence as the core.
-- Gate live Echoniq delivery and advanced orchestration behind higher tiers.
+- Gate live Emissar delivery and advanced orchestration behind higher tiers.
 - Use clear usage limits and concierge support as value anchors.
 
 Recommended anchors:

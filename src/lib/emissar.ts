@@ -1,4 +1,4 @@
-export type EchoniqCampaignResponse = {
+export type EmissarCampaignResponse = {
   campaignId?: string
   status?: string
   dispatch?: {
@@ -24,12 +24,12 @@ export type EchoniqCampaignResponse = {
   }
 }
 
-export function getEchoniqApiUrl(): string {
-  return process.env.ECHONIQ_API_URL || 'http://localhost:3004'
+export function getEmissarApiUrl(): string {
+  return process.env.EMISSAR_API_URL || 'http://localhost:3004'
 }
 
-export async function callEchoniqCampaign(body: Record<string, unknown>) {
-  const response = await fetch(`${getEchoniqApiUrl()}/api/campaigns/stanvault/send`, {
+export async function callEmissarCampaign(body: Record<string, unknown>) {
+  const response = await fetch(`${getEmissarApiUrl()}/api/campaigns/stanvault/send`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

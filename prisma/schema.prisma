@@ -75,7 +75,7 @@ model User {
   metricsHistory       ArtistMetricsHistory[]
   fanUserLinks         FanUserArtistLink[]  // Fan portal users who are fans of this artist
   drops                Drop[]               // Gated drops created by this artist
-  campaignRuns         CampaignRun[]        // Echoniq campaign run history
+  campaignRuns         CampaignRun[]        // Emissar campaign run history
   campaignVariablePresets CampaignVariablePreset[] // Saved campaign variable presets
   savedVoiceModels     SavedVoiceModel[]
   ctaCompletions       CtaActionCompletion[]
@@ -601,7 +601,7 @@ model FanIdentityExport {
   @@index([fanUserId])
 }
 
-// CampaignRun - Stanvault-side history of Echoniq campaign sends/previews
+// CampaignRun - Stanvault-side history of Emissar campaign sends/previews
 model CampaignRun {
   id                 String   @id @default(cuid())
   userId             String
@@ -635,7 +635,7 @@ model CampaignRun {
   @@index([userId, createdAt])
 }
 
-// SavedVoiceModel - Artist-linked Echoniq voice models for quick campaign selection
+// SavedVoiceModel - Artist-linked Emissar voice models for quick campaign selection
 model SavedVoiceModel {
   id           String   @id @default(cuid())
   userId       String

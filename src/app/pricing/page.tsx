@@ -48,7 +48,7 @@ const tiers = [
       'Imprint fan intelligence core',
       'Advanced segmentation and tier analytics',
       'Campaign workspace with variable presets',
-      'Echoniq live delivery (up to 15k sends/month)',
+      'Emissar live delivery (up to 15k sends/month)',
       'Structured onboarding support',
     ],
   },
@@ -82,7 +82,7 @@ const tiers = [
 
 const matrix = [
   ['Imprint scoring + fan tiers', 'Yes', 'Yes', 'Yes', 'Yes'],
-  ['Live Echoniq campaigns', '500/mo', 'Included', 'Included', 'Included'],
+  ['Live Emissar campaigns', '500/mo', 'Included', 'Included', 'Included'],
   ['Variable presets + smart mapping', 'Basic', 'Yes', 'Yes', 'Yes'],
   ['Monthly live send allowance', '500', '15k', '75k', 'Custom'],
   ['Voice campaigns', 'No', 'Included', 'Included', 'Included'],
@@ -131,7 +131,7 @@ export default function PricingPage() {
         <p className="text-caption uppercase tracking-widest text-gray-500">Pricing</p>
         <h1 className="mt-4 text-4xl md:text-5xl font-bold">Pricing for serious fan operations.</h1>
         <p className="mt-4 max-w-3xl text-gray-300">
-          Stanvault handles intelligence. Echoniq handles activation. Choose the tier that matches
+          Stanvault handles intelligence. Emissar handles activation. Choose the tier that matches
           campaign volume, operating requirements, and your primary fan market.
         </p>
         <div className="mt-6 flex flex-wrap items-center gap-3">

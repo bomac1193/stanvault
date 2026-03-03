@@ -3,8 +3,8 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { tierPolicies } from '@/lib/campaign-entitlements'
 
-function getEchoniqApiUrl(): string {
-  return process.env.ECHONIQ_API_URL || 'http://localhost:3004'
+function getEmissarApiUrl(): string {
+  return process.env.EMISSAR_API_URL || 'http://localhost:3004'
 }
 
 export async function POST(request: NextRequest) {
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
       form.append('provider', provider.trim())
     }
 
-    const response = await fetch(`${getEchoniqApiUrl()}/api/voice/clone`, {
+    const response = await fetch(`${getEmissarApiUrl()}/api/voice/clone`, {
       method: 'POST',
       headers: {
         'X-Stanvault-User-Id': session.user.id,
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
     if (!response.ok) {
       return NextResponse.json(
         {
-          error: 'Echoniq voice clone failed',
+          error: 'Emissar voice clone failed',
           status: response.status,
           details: text,
         },
@@ -138,14 +138,14 @@ export async function POST(request: NextRequest) {
             userId: session.user.id,
             externalId: data.externalId,
             provider: data.provider,
-            name: data.name || 'Echoniq Voice',
+            name: data.name || 'Emissar Voice',
             previewUrl: data.previewUrl || null,
             isActive: true,
             source: 'stanvault_clone',
           },
           update: {
             provider: data.provider,
-            name: data.name || 'Echoniq Voice',
+            name: data.name || 'Emissar Voice',
             previewUrl: data.previewUrl || null,
             isActive: true,
             source: 'stanvault_clone',

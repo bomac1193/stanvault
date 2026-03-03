@@ -1,10 +1,10 @@
 import { prisma } from '@/lib/prisma'
-import { callEchoniqCampaign } from '@/lib/echoniq'
+import { callEmissarCampaign } from '@/lib/emissar'
 import { resolveTokens } from './resolve-tokens'
 import { getDefaultTemplate } from './acknowledgment-templates'
 
 /**
- * Process a single acknowledgment — resolve tokens and send via Echoniq.
+ * Process a single acknowledgment — resolve tokens and send via Emissar.
  */
 export async function processAcknowledgment(ackId: string): Promise<void> {
   const ack = await prisma.acknowledgment.findUnique({
@@ -56,7 +56,7 @@ export async function processAcknowledgment(ackId: string): Promise<void> {
 
   try {
     const artistName = fan.user.artistName || fan.user.name || undefined
-    const result = await callEchoniqCampaign({
+    const result = await callEmissarCampaign({
       artistId: fan.userId,
       artistName,
       subject: renderedSubject,
@@ -81,7 +81,7 @@ export async function processAcknowledgment(ackId: string): Promise<void> {
         data: {
           status: 'FAILED',
           failedAt: new Date(),
-          failureReason: `Echoniq ${result.status}: ${result.responseText.slice(0, 500)}`,
+          failureReason: `Emissar ${result.status}: ${result.responseText.slice(0, 500)}`,
           retryCount: { increment: 1 },
           messageRendered: renderedBody,
           subjectRendered: renderedSubject,

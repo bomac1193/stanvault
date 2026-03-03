@@ -18,19 +18,19 @@ export const DEFAULT_TEMPLATES: Record<string, DefaultTemplate> = {
     eventType: 'TIER_UPGRADE',
     subject: 'You just leveled up',
     messageBody:
-      'Hey {fan_name} — I see you moving. You are now {fan_tier}. Pulse: {stan_score}. That kind of support does not go unnoticed.',
+      'Hey {fan_name}, I see you moving. You are now {fan_tier}. Pulse: {stan_score}. That kind of support does not go unnoticed.',
   },
   BECAME_SUPERFAN: {
     eventType: 'BECAME_SUPERFAN',
     subject: 'You are in my core now',
     messageBody:
-      '{fan_name}, you just reached Core. Pulse: {stan_score}. You are one of the people who actually showed up — and I see it. Welcome to the inner circle.',
+      '{fan_name}, you just reached Core. Pulse: {stan_score}. You are one of the people who actually showed up and I see it. Welcome to the inner circle.',
   },
   FIRST_TIP: {
     eventType: 'FIRST_TIP',
     subject: 'First tip received',
     messageBody:
-      '{fan_name}, your first tip just landed. That is real conviction — not a like, not a follow, but actual support. It means more than you think.',
+      '{fan_name}, your first tip just landed. Not a like, not a follow, you actually backed it. That means more than you think.',
   },
   MILESTONE_TIPS: {
     eventType: 'MILESTONE_TIPS',

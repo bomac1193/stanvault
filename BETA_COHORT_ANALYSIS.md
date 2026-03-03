@@ -159,7 +159,7 @@ The risk: the market.md also claims $299-$2500/mo luxury pricing. The cohort sho
 | Factor | Why Eliminate | Impact |
 |--------|-------------|--------|
 | **Vanity metrics dashboards** | Follower counts, likes/views, engagement rate displays. Every competitor leads with this. StanVault leads with conviction. | Removes feature bloat, forces users into the new paradigm. If they want vanity, they already have Spotify for Artists. |
-| **Mass email blasting** | Undifferentiated "send to all" campaigns. This is Mailchimp territory. | Focus on precision fan activation, not volume. Echoniq handles delivery. StanVault handles intelligence. |
+| **Mass email blasting** | Undifferentiated "send to all" campaigns. This is Mailchimp territory. | Focus on precision fan activation, not volume. Emissar handles delivery. StanVault handles intelligence. |
 | **Platform-locked analytics** | Recreating what Spotify for Artists, YouTube Studio, etc. already show. | Don't compete on analytics. Compete on verification. |
 | **Manual tier management** | Patreon forces fans to self-select tiers. StanVault calculates tiers from behavior. | Removes the friction that kills Patreon for music (fans don't want to manage subscriptions). |
 
@@ -280,10 +280,10 @@ Pricing             Free       $$$$$    Free/$$  $$$
 - **Value:** Artist-to-artist recommendations based on verified fan overlap, not algorithmic guessing.
 - **Cohort evidence:** 16 fans verified across 2+ artists. Seed of the graph.
 
-**7. Campaign Targeting via Echoniq** — "Send this voice note to my top 20 superfans in Lagos"
-- StanVault segments → Echoniq delivers personalized messages
+**7. Campaign Targeting via Emissar** — "Send this voice note to my top 20 superfans in Lagos"
+- StanVault segments → Emissar delivers personalized messages
 - **Value:** Precision fan communication, not mass blasts.
-- **Cohort evidence:** Managers used this most. Artists with Echoniq integration sent 3x more targeted messages.
+- **Cohort evidence:** Managers used this most. Artists with Emissar integration sent 3x more targeted messages.
 
 **8. Label A&R Intelligence** — "Show me artists with SCR > 2.0 and 500+ verified superfans"
 - Labels query StanVault for artists with strong fan health metrics
@@ -558,7 +558,7 @@ Year 1-2                 Year 2-3                 Year 3-4                Year 4
 | Phase | Revenue Play | Beachhead Impact | ARR Target |
 |-------|-------------|------------------|------------|
 | **Year 1** | Artist subscriptions in beachhead (Afrobeats/Amapiano) | Core. Deepen product-market fit. Add more Dasham conviction data. | $500K-$1M |
-| **Year 1.5** | Managers + Echoniq campaigns | Strengthens beachhead. Managers bring their roster. | $1.5M-$3M |
+| **Year 1.5** | Managers + Emissar campaigns | Strengthens beachhead. Managers bring their roster. | $1.5M-$3M |
 | **Year 2** | Discord bot + presale verification | Extends beachhead artists' reach. Their fans use verification in Discord servers. | $3M-$5M |
 | **Year 2.5** | Genre expansion (Latin, K-pop, UK) | New markets. Beachhead is self-sustaining with strong retention + SCR data. | $5M-$10M |
 | **Year 3** | B2B API (ticket platforms, merch) | Beachhead artists benefit — their fans verified at venue level. Beachhead gets stronger. | $10M-$20M |

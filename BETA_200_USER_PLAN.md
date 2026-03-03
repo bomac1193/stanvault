@@ -238,7 +238,7 @@ Fans outnumber artists 1.5:1 because each artist brings fans. Artists are the ac
 | 3-4 | Invite next 50 (diaspora + managers + their fans). First drop creation push. |
 | 5-6 | Invite remaining 100 (Starter tier artists, remaining fans, cold signups). Monitor scoring activation for non-Dasham artists. |
 | 7-8 | First retention checkpoint (30-day). Identify churning segments. |
-| 9-10 | Campaign activation push. Get artists to send first Echoniq campaigns. |
+| 9-10 | Campaign activation push. Get artists to send first Emissar campaigns. |
 | 11-12 | 90-day retention measurement. Cohort analysis. Decision: double down on core ICP or widen. |
 
 ### What to Watch For
