@@ -42,10 +42,10 @@ export function TierChart({ data }: TierChartProps) {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1A1A1A',
-                    border: '1px solid #2A2A2A',
-                    borderRadius: '8px',
-                    color: '#FAF9F7',
+                    backgroundColor: '#0a0a0a',
+                    border: '1px solid #1a1a1a',
+                    borderRadius: '0',
+                    color: '#fff',
                   }}
                   formatter={(value) => [
                     `${Number(value).toLocaleString()} fans`,
@@ -63,13 +63,13 @@ export function TierChart({ data }: TierChartProps) {
                     className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-sm text-warm-white">{item.tier}</span>
+                  <span className="text-sm text-white">{item.tier}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-mono text-warm-white">
+                  <span className="text-sm font-mono text-white">
                     {item.count.toLocaleString()}
                   </span>
-                  <span className="text-xs text-vault-muted w-12 text-right">
+                  <span className="text-xs text-gray-500 w-12 text-right">
                     {total > 0 ? Math.round((item.count / total) * 100) : 0}%
                   </span>
                 </div>

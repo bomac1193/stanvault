@@ -39,7 +39,7 @@ export function SuperfanMoments({ moments }: SuperfanMomentsProps) {
           <CardTitle>Recent Moments</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-center text-vault-muted py-8">
+          <p className="text-center text-gray-500 py-8">
             No notable moments yet. Keep building your fanbase!
           </p>
         </CardContent>
@@ -53,7 +53,7 @@ export function SuperfanMoments({ moments }: SuperfanMomentsProps) {
         <CardTitle>Recent Moments</CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="divide-y divide-vault-gray">
+        <div className="divide-y divide-[#1a1a1a]">
           {moments.map((moment) => {
             const Icon = eventIcons[moment.type] || Star
 
@@ -61,7 +61,7 @@ export function SuperfanMoments({ moments }: SuperfanMomentsProps) {
               <Link
                 key={moment.id}
                 href={`/fans/${moment.fan.id}`}
-                className="flex items-center gap-4 px-6 py-4 hover:bg-vault-gray/50 transition-colors"
+                className="flex items-center gap-4 px-6 py-4 hover:bg-[#111] transition-colors"
               >
                 <div className="relative">
                   <Avatar
@@ -69,25 +69,25 @@ export function SuperfanMoments({ moments }: SuperfanMomentsProps) {
                     name={moment.fan.name}
                     size="md"
                   />
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-gold flex items-center justify-center">
-                    <Icon className="w-3 h-3 text-vault-black" />
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-accent flex items-center justify-center">
+                    <Icon className="w-3 h-3 text-black" />
                   </div>
                 </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium text-warm-white truncate">
+                    <span className="font-medium text-white truncate">
                       {moment.fan.name}
                     </span>
                     <TierBadge tier={moment.fan.tier} />
                   </div>
-                  <p className="text-sm text-vault-muted truncate">
+                  <p className="text-sm text-gray-500 truncate">
                     {moment.description}
                   </p>
                 </div>
 
                 <div className="text-right">
-                  <p className="text-xs text-vault-muted">
+                  <p className="text-xs text-gray-500">
                     {formatRelativeTime(moment.occurredAt)}
                   </p>
                 </div>

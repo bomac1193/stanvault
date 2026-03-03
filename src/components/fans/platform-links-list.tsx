@@ -22,21 +22,21 @@ interface PlatformLinksListProps {
   platformLinks: PlatformLink[]
 }
 
-const platformConfig: Record<string, { icon: typeof Music; color: string; name: string }> = {
-  SPOTIFY: { icon: Music, color: '#1DB954', name: 'Spotify' },
-  INSTAGRAM: { icon: Instagram, color: '#E4405F', name: 'Instagram' },
-  YOUTUBE: { icon: Youtube, color: '#FF0000', name: 'YouTube' },
-  TIKTOK: { icon: Music, color: '#000000', name: 'TikTok' },
-  TWITTER: { icon: Twitter, color: '#1DA1F2', name: 'Twitter' },
-  EMAIL: { icon: Mail, color: '#C9A227', name: 'Email' },
+const platformConfig: Record<string, { icon: typeof Music; name: string }> = {
+  SPOTIFY: { icon: Music, name: 'Spotify' },
+  INSTAGRAM: { icon: Instagram, name: 'Instagram' },
+  YOUTUBE: { icon: Youtube, name: 'YouTube' },
+  TIKTOK: { icon: Music, name: 'TikTok' },
+  TWITTER: { icon: Twitter, name: 'Twitter' },
+  EMAIL: { icon: Mail, name: 'Email' },
 }
 
 function MetricItem({ icon: Icon, label, value }: { icon: typeof Play; label: string; value: string | number }) {
   return (
     <div className="flex items-center gap-2">
-      <Icon className="w-4 h-4 text-vault-muted" />
-      <span className="text-sm text-vault-muted">{label}:</span>
-      <span className="text-sm font-medium text-warm-white">{value}</span>
+      <Icon className="w-4 h-4 text-gray-500" />
+      <span className="text-sm text-gray-500">{label}:</span>
+      <span className="text-sm font-medium text-white">{value}</span>
     </div>
   )
 }
@@ -48,7 +48,7 @@ export function PlatformLinksList({ platformLinks }: PlatformLinksListProps) {
         <CardTitle>Platform Connections</CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="divide-y divide-vault-gray">
+        <div className="divide-y divide-[#1a1a1a]">
           {platformLinks.map((link) => {
             const config = platformConfig[link.platform]
             if (!config) return null
@@ -58,13 +58,8 @@ export function PlatformLinksList({ platformLinks }: PlatformLinksListProps) {
             return (
               <div key={link.platform} className="px-6 py-4">
                 <div className="flex items-center gap-3 mb-3">
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: `${config.color}20` }}
-                  >
-                    <Icon className="w-5 h-5" style={{ color: config.color }} />
-                  </div>
-                  <span className="font-medium text-warm-white">{config.name}</span>
+                  <Icon className="w-5 h-5 text-gray-500" />
+                  <span className="font-medium text-white">{config.name}</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 pl-13">

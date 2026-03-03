@@ -23,16 +23,16 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
     const variants = {
       underline: cn(
-        'w-full bg-transparent border-b border-gray-700 py-3 pr-10 text-white font-light',
+        'w-full bg-transparent border-b border-[#1a1a1a] py-3 pr-10 text-white font-light',
         'appearance-none cursor-pointer',
-        'focus:outline-none focus:border-accent transition-colors',
+        'focus:outline-none focus:border-[#333] transition-colors',
         'disabled:opacity-40 disabled:cursor-not-allowed',
         error && 'border-status-error focus:border-status-error'
       ),
       boxed: cn(
-        'w-full bg-gray-900 border border-gray-800 px-4 py-3 pr-10 text-white font-light',
+        'w-full bg-[#0a0a0a] border border-[#1a1a1a] px-4 py-3 pr-10 text-white font-light',
         'appearance-none cursor-pointer',
-        'focus:outline-none focus:border-accent transition-colors',
+        'focus:outline-none focus:border-[#333] transition-colors',
         'disabled:opacity-40 disabled:cursor-not-allowed',
         error && 'border-status-error focus:border-status-error'
       ),
@@ -61,7 +61,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
               </option>
             )}
             {options.map((option) => (
-              <option key={option.value} value={option.value} className="bg-gray-900">
+              <option key={option.value} value={option.value} className="bg-[#0a0a0a]">
                 {option.label}
               </option>
             ))}

@@ -62,17 +62,37 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       // Fetch user data on each request to get latest onboarding status
-      if (token.id) {
-        const dbUser = await prisma.user.findUnique({
+      if (token.id || token.email) {
+        let dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
           select: {
+            id: true,
+            image: true,
             artistName: true,
             spotifyArtistId: true,
             onboardingCompleted: true,
             onboardingStep: true,
           },
         })
+        // Fall back to email lookup if ID is stale (e.g. DB was reseeded)
+        if (!dbUser && token.email) {
+          dbUser = await prisma.user.findUnique({
+            where: { email: token.email as string },
+            select: {
+              id: true,
+              image: true,
+              artistName: true,
+              spotifyArtistId: true,
+              onboardingCompleted: true,
+              onboardingStep: true,
+            },
+          })
+          if (dbUser) {
+            token.id = dbUser.id // Fix the stale ID
+          }
+        }
         if (dbUser) {
+          token.picture = dbUser.image
           token.artistName = dbUser.artistName
           token.spotifyArtistId = dbUser.spotifyArtistId
           token.onboardingCompleted = dbUser.onboardingCompleted
@@ -85,6 +105,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string
+        session.user.image = (token.picture as string) || null
         session.user.artistName = token.artistName as string | undefined
         session.user.spotifyArtistId = token.spotifyArtistId as string | undefined
         session.user.onboardingCompleted = token.onboardingCompleted as boolean

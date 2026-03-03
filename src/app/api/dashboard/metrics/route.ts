@@ -52,10 +52,10 @@ export async function GET() {
 
     // Get tier distribution for chart
     const tierDistribution = [
-      { tier: 'Superfan', count: superfans, color: '#C9A227' },
-      { tier: 'Dedicated', count: dedicated, color: '#8B5CF6' },
-      { tier: 'Engaged', count: engaged, color: '#3B82F6' },
-      { tier: 'Casual', count: casual, color: '#6B7280' },
+      { tier: 'Core', count: superfans, color: '#C9A227' },
+      { tier: 'Strong', count: dedicated, color: '#8B5CF6' },
+      { tier: 'Steady', count: engaged, color: '#3B82F6' },
+      { tier: 'Faint', count: casual, color: '#6B7280' },
     ]
 
     return NextResponse.json({

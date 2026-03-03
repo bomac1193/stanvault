@@ -1,7 +1,7 @@
 'use client'
 
 import { PageHeader } from '@/components/layout'
-import { MetricCard, TierChart, SuperfanMoments, SCRCard } from '@/components/dashboard'
+import { MetricCard, TierChart, SuperfanMoments, SCRCard, GettingStarted } from '@/components/dashboard'
 import { MetricCardSkeleton, Skeleton } from '@/components/ui'
 import { useDashboardMetrics, useSuperfanMoments, useSCR } from '@/hooks/use-dashboard'
 import { Users, Star, TrendingUp, Target } from 'lucide-react'
@@ -17,6 +17,8 @@ export default function DashboardPage() {
         title="Dashboard"
         description="Your fan intelligence overview"
       />
+
+      <GettingStarted />
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -37,7 +39,7 @@ export default function DashboardPage() {
               icon={Users}
             />
             <MetricCard
-              title="Superfans"
+              title="Core Fans"
               value={metrics?.superfans?.toLocaleString() || '0'}
               subtitle={`${metrics?.totalFans ? Math.round((metrics.superfans / metrics.totalFans) * 100) : 0}% of total`}
               icon={Star}
@@ -49,7 +51,7 @@ export default function DashboardPage() {
               icon={TrendingUp}
             />
             <MetricCard
-              title="Avg Stan Score"
+              title="Avg Pulse"
               value={metrics?.avgStanScore || 0}
               subtitle="out of 100"
               icon={Target}
@@ -61,7 +63,7 @@ export default function DashboardPage() {
       {/* SCR Card - Full Width */}
       <div className="mb-8">
         {scrLoading ? (
-          <div className="bg-vault-dark border border-vault-gray rounded-lg p-6">
+          <div className="bg-[#0a0a0a] border border-[#1a1a1a] p-6">
             <Skeleton className="h-6 w-48 mb-6" />
             <Skeleton className="h-16 w-32 mb-4" />
             <Skeleton className="h-4 w-full mb-6" />
@@ -87,7 +89,7 @@ export default function DashboardPage() {
       {/* Charts and Moments */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {metricsLoading ? (
-          <div className="bg-vault-dark border border-vault-gray rounded-lg p-6">
+          <div className="bg-[#0a0a0a] border border-[#1a1a1a] p-6">
             <Skeleton className="h-6 w-40 mb-6" />
             <Skeleton className="h-48 w-full" />
           </div>
@@ -96,7 +98,7 @@ export default function DashboardPage() {
         )}
 
         {momentsLoading ? (
-          <div className="bg-vault-dark border border-vault-gray rounded-lg p-6">
+          <div className="bg-[#0a0a0a] border border-[#1a1a1a] p-6">
             <Skeleton className="h-6 w-40 mb-6" />
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (

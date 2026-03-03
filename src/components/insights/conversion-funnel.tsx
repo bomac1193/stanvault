@@ -13,7 +13,7 @@ interface ConversionFunnelProps {
   funnel: FunnelStage[]
 }
 
-const stageColors = ['#6B7280', '#3B82F6', '#8B5CF6', '#C9A227']
+const stageColors = ['#6B7280', '#3B82F6', '#8B5CF6', '#FF2D92']
 
 export function ConversionFunnel({ funnel }: ConversionFunnelProps) {
   const maxCount = Math.max(...funnel.map((s) => s.count))
@@ -31,21 +31,21 @@ export function ConversionFunnel({ funnel }: ConversionFunnelProps) {
             return (
               <div key={stage.stage}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-warm-white">
+                  <span className="text-sm font-medium text-white">
                     {stage.stage}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-mono text-warm-white">
+                    <span className="text-sm font-mono text-white">
                       {formatNumber(stage.count)}
                     </span>
-                    <span className="text-xs text-vault-muted">
+                    <span className="text-xs text-gray-500">
                       ({stage.percentage}%)
                     </span>
                   </div>
                 </div>
-                <div className="h-8 bg-vault-darker rounded-lg overflow-hidden">
+                <div className="h-8 bg-black overflow-hidden">
                   <div
-                    className="h-full rounded-lg transition-all duration-500"
+                    className="h-full transition-all duration-500"
                     style={{
                       width: `${width}%`,
                       backgroundColor: stageColors[index],

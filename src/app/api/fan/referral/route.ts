@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
           code,
           url: referralUrl,
-          shareText: `Check out this artist on Stanvault! ${referralUrl}`,
+          shareText: `Check out this creator on Imprint! ${referralUrl}`,
         })
       }
 

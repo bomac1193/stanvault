@@ -1,6 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent, ProgressRing } from '@/components/ui'
+import { SCORE_NAME } from '@/lib/labels'
 
-interface StanScoreBreakdownProps {
+interface PulseBreakdownProps {
   convictionScore?: number
   platformScore: number
   engagementScore: number
@@ -16,7 +17,7 @@ export function StanScoreBreakdown({
   longevityScore,
   recencyScore,
   totalScore,
-}: StanScoreBreakdownProps) {
+}: PulseBreakdownProps) {
   const scores = [
     ...(convictionScore > 0
       ? [{ label: 'Conviction', value: convictionScore, max: 35, description: 'Financial conviction (tips)' }]
@@ -30,7 +31,7 @@ export function StanScoreBreakdown({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Stan Score Breakdown</CardTitle>
+        <CardTitle>{SCORE_NAME} Breakdown</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex items-center justify-center mb-6">
@@ -53,9 +54,9 @@ export function StanScoreBreakdown({
                 strokeWidth={5}
                 showValue
               />
-              <p className="mt-2 text-sm font-medium text-warm-white">{score.label}</p>
-              <p className="text-xs text-vault-muted text-center">{score.description}</p>
-              <p className="text-xs text-vault-muted">
+              <p className="mt-2 text-sm font-medium text-white">{score.label}</p>
+              <p className="text-xs text-gray-500 text-center">{score.description}</p>
+              <p className="text-xs text-gray-500">
                 {score.value}/{score.max} pts
               </p>
             </div>

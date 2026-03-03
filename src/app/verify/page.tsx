@@ -80,7 +80,7 @@ export default function VerifyPage() {
       <main className="max-w-2xl mx-auto px-6 py-16">
         <div className="mb-12">
           <p className="text-caption text-gray-600 uppercase tracking-widest mb-2">Public Verification</p>
-          <h1 className="text-display-md font-bold text-white">
+          <h1 className="text-2xl font-medium text-white" style={{ fontFamily: 'Canela, serif' }}>
             Verify <span className="text-accent">"Fan"</span> Status
           </h1>
           <p className="text-body text-gray-500 font-light mt-4">
@@ -103,7 +103,7 @@ export default function VerifyPage() {
           <button
             onClick={handleVerify}
             disabled={isVerifying || !token.trim()}
-            className="w-full mt-4 py-4 bg-white text-black font-medium hover:bg-gray-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full mt-4 py-4 bg-gray-900 text-gray-200 font-medium border border-gray-700 hover:border-gray-500 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isVerifying ? (
               <>
@@ -158,7 +158,7 @@ export default function VerifyPage() {
                     <div>
                       <p className="text-caption text-gray-500 uppercase tracking-wider mb-1">Tier</p>
                       <span className={`inline-block px-4 py-2 text-body-sm font-medium uppercase tracking-wide ${getTierStyle(result.tier || 'CASUAL')}`}>
-                        {result.tier}
+                        {({ CASUAL: 'Faint', ENGAGED: 'Steady', DEDICATED: 'Strong', SUPERFAN: 'Core' } as Record<string, string>)[result.tier || 'CASUAL'] || result.tier}
                       </span>
                     </div>
 
@@ -202,8 +202,8 @@ export default function VerifyPage() {
         <div className="mt-16 pt-8 border-t border-gray-800">
           <h3 className="text-body font-medium text-white mb-4">What is this?</h3>
           <p className="text-body-sm text-gray-500 font-light">
-            Stanvault verification tokens are cryptographic proofs of fan relationships.
-            Artists control who gets verified. Fans own their identity.
+            Imprint verification tokens are cryptographic proofs of fan relationships.
+            Creators control who gets verified. Fans own their identity.
             Use tokens for presale access, exclusive content, or any service that needs to verify fandom.
           </p>
         </div>
@@ -213,7 +213,7 @@ export default function VerifyPage() {
       <footer className="border-t border-gray-800">
         <div className="max-w-4xl mx-auto px-6 py-8">
           <p className="text-caption text-gray-700 uppercase tracking-widest">
-            <span className="text-accent">[</span>SV<span className="text-accent">]</span> — The anti-algorithm platform
+            <span className="text-accent">[</span>IM<span className="text-accent">]</span> — The anti-algorithm platform
           </p>
         </div>
       </footer>

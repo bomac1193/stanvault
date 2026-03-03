@@ -23,16 +23,16 @@ export function MetricCard({
   return (
     <div
       className={cn(
-        'bg-vault-dark border border-vault-gray rounded-lg p-6 transition-all duration-200 hover:border-vault-muted',
+        'bg-[#0a0a0a] border border-[#1a1a1a] p-6 transition-all duration-200 hover:border-[#333]',
         className
       )}
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-vault-muted mb-1">{title}</p>
-          <p className="text-3xl font-mono font-bold text-warm-white">{value}</p>
+          <p className="text-sm text-gray-500 mb-1">{title}</p>
+          <p className="text-3xl font-mono font-bold text-white">{value}</p>
           {subtitle && (
-            <p className="text-sm text-vault-muted mt-1">{subtitle}</p>
+            <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
           )}
           {change !== undefined && (
             <div className="flex items-center gap-1 mt-2">
@@ -47,7 +47,7 @@ export function MetricCard({
                   'text-sm font-medium',
                   changeType === 'increase' && 'text-status-success',
                   changeType === 'decrease' && 'text-status-error',
-                  changeType === 'neutral' && 'text-vault-muted'
+                  changeType === 'neutral' && 'text-gray-500'
                 )}
               >
                 {change > 0 ? '+' : ''}
@@ -57,8 +57,8 @@ export function MetricCard({
           )}
         </div>
         {Icon && (
-          <div className="p-3 bg-gold/10 rounded-lg">
-            <Icon className="w-6 h-6 text-gold" />
+          <div className="p-3 bg-[#141414]">
+            <Icon className="w-6 h-6 text-gray-400" />
           </div>
         )}
       </div>

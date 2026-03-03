@@ -1,5 +1,5 @@
 /*
- * STANVAULT Design System
+ * IMPRINT Design System
  * "Bourgeois Twitch meets Balenciaga meets Napster"
  *
  * Virgil's 3% rule: Change just enough to make it yours
@@ -7,6 +7,23 @@
  * Apple's refinement: Every pixel matters
  * Napster's rebellion: Democratize everything
  */
+
+/* Söhne */
+@font-face { font-family: 'Sohne'; src: url('/fonts/sohne/sohne-light.otf') format('opentype'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Sohne'; src: url('/fonts/sohne/sohne-regular.otf') format('opentype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Sohne'; src: url('/fonts/sohne/sohne-medium.otf') format('opentype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Sohne'; src: url('/fonts/sohne/sohne-semibold.otf') format('opentype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Sohne'; src: url('/fonts/sohne/sohne-bold.otf') format('opentype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Sohne'; src: url('/fonts/sohne/sohne-black.otf') format('opentype'); font-weight: 900; font-style: normal; font-display: swap; }
+
+/* Canela */
+@font-face { font-family: 'Canela'; src: url('/fonts/canela/Canela-Light-Trial.otf') format('opentype'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Canela'; src: url('/fonts/canela/Canela-Regular-Trial.otf') format('opentype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Canela'; src: url('/fonts/canela/Canela-Medium-Trial.otf') format('opentype'); font-weight: 500; font-style: normal; font-display: swap; }
+
+/* Söhne Mono */
+@font-face { font-family: 'Sohne Mono'; src: url('/fonts/sohne-mono/sohne-mono-regular.otf') format('opentype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Sohne Mono'; src: url('/fonts/sohne-mono/sohne-mono-semibold.otf') format('opentype'); font-weight: 600; font-style: normal; font-display: swap; }
 
 @tailwind base;
 @tailwind components;
@@ -28,7 +45,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Sohne", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: 300;
@@ -124,7 +141,7 @@ body {
   }
 
   .btn-primary {
-    @apply bg-white text-black hover:bg-gray-200 active:bg-gray-300;
+    @apply bg-gray-900 text-gray-200 border border-gray-700 hover:border-gray-500 hover:text-white active:bg-gray-800;
   }
 
   .btn-accent {
@@ -247,4 +264,22 @@ body {
   .backdrop-blur-dark {
     @apply backdrop-blur-xl bg-black/80;
   }
+}
+
+/* Mapbox popup overrides */
+.mapboxgl-popup-content {
+  background: #171717 !important;
+  color: #e5e5e5;
+  border: 1px solid #262626;
+  border-radius: 6px;
+  padding: 0 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.mapboxgl-popup-tip {
+  border-top-color: #171717 !important;
+}
+.mapboxgl-popup-close-button {
+  color: #737373;
+  font-size: 16px;
+  padding: 4px 8px;
 }

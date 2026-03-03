@@ -28,16 +28,17 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const user = await prisma.user.findUnique({
+  // Resolve user — fall back to email if JWT has stale ID
+  let user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: {
-      id: true,
-      artistName: true,
-      spotifyArtistId: true,
-      pricingTier: true,
-      email: true,
-    },
+    select: { id: true, artistName: true, spotifyArtistId: true, pricingTier: true, email: true },
   })
+  if (!user && session.user.email) {
+    user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: { id: true, artistName: true, spotifyArtistId: true, pricingTier: true, email: true },
+    })
+  }
 
   return NextResponse.json({
     user,
@@ -54,8 +55,44 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  // Resolve the actual DB user — JWT may have a stale ID after DB reset
+  let userId = session.user.id
+  const userById = await prisma.user.findUnique({ where: { id: userId }, select: { id: true } })
+  if (!userById && session.user.email) {
+    const userByEmail = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: { id: true },
+    })
+    if (userByEmail) {
+      userId = userByEmail.id
+    } else {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+  }
+
   const body = await req.json()
-  const { artistName, spotifyArtistId, pricingTier } = body
+  const { artistName, spotifyArtistId, pricingTier, image, email } = body
+
+  // Validate image if provided
+  if (image !== undefined && image !== null) {
+    if (typeof image !== 'string') {
+      return NextResponse.json({ error: 'Invalid image format' }, { status: 400 })
+    }
+    if (!image.startsWith('data:image/') && !image.startsWith('http')) {
+      return NextResponse.json({ error: 'Invalid image format' }, { status: 400 })
+    }
+    if (image.startsWith('data:') && image.length > 2_000_000) {
+      return NextResponse.json({ error: 'Image too large (max 1.5MB)' }, { status: 400 })
+    }
+  }
+
+  // Validate email if provided
+  if (email !== undefined && email !== null && email !== '') {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
+    }
+  }
 
   // Validate Spotify Artist ID format if provided
   if (spotifyArtistId && !/^[a-zA-Z0-9]{22}$/.test(spotifyArtistId)) {
@@ -77,20 +114,31 @@ export async function PATCH(req: NextRequest) {
     )
   }
 
-  const updated = await prisma.user.update({
-    where: { id: session.user.id },
-    data: {
-      artistName: artistName || null,
-      spotifyArtistId: spotifyArtistId || null,
-      ...(parsedTier ? { pricingTier: parsedTier } : {}),
-    },
-    select: {
-      id: true,
-      artistName: true,
-      spotifyArtistId: true,
-      pricingTier: true,
-    },
-  })
+  // Only update fields that were explicitly sent in the request
+  const data: Record<string, unknown> = {}
+  if (artistName !== undefined) data.artistName = artistName || null
+  if (spotifyArtistId !== undefined) data.spotifyArtistId = spotifyArtistId || null
+  if (parsedTier) data.pricingTier = parsedTier
+  if (image !== undefined) data.image = image || null
+  if (email !== undefined && email !== null && email !== '') data.email = email
 
-  return NextResponse.json({ user: updated })
+  try {
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data,
+      select: {
+        id: true,
+        artistName: true,
+        email: true,
+        spotifyArtistId: true,
+        pricingTier: true,
+      },
+    })
+
+    return NextResponse.json({ user: updated })
+  } catch (err: unknown) {
+    console.error('Profile update error:', err)
+    const message = err instanceof Error ? err.message : 'Failed to update profile'
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }

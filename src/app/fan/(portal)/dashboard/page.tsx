@@ -13,6 +13,7 @@ import {
   Music,
 } from 'lucide-react'
 import { LogoMark } from '@/components/brand/Logo'
+import ProfilePhotoUpload from '@/components/profile/ProfilePhotoUpload'
 
 interface ArtistRelationship {
   id: string
@@ -155,14 +156,31 @@ export default function FanDashboardPage() {
 
       <main className="max-w-6xl mx-auto px-6 py-12">
         {/* Welcome */}
-        <div className="mb-12">
-          <p className="text-caption text-gray-600 uppercase tracking-widest mb-2">Welcome back</p>
-          <h1 className="text-display-md font-bold text-white">{data.user.displayName}</h1>
-          {!data.user.spotifyConnected && (
-            <Link href="/fan/onboarding" className="text-accent hover:underline text-body-sm mt-2 inline-block">
-              Connect Spotify to verify fandom →
-            </Link>
-          )}
+        <div className="mb-12 flex items-center gap-6">
+          <ProfilePhotoUpload
+            currentPhoto={data.user.avatarUrl}
+            onPhotoChange={async (dataUrl) => {
+              const res = await fetch('/api/fan/avatar', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ avatarUrl: dataUrl }),
+              })
+              if (!res.ok) throw new Error('Failed to upload')
+              setData((prev) =>
+                prev ? { ...prev, user: { ...prev.user, avatarUrl: dataUrl } } : prev
+              )
+            }}
+            size="lg"
+          />
+          <div>
+            <p className="text-caption text-gray-600 uppercase tracking-widest mb-2">Welcome back</p>
+            <h1 className="text-2xl font-medium text-warm-white" style={{ fontFamily: 'Canela, serif' }}>{data.user.displayName}</h1>
+            {!data.user.spotifyConnected && (
+              <Link href="/fan/onboarding" className="text-accent hover:underline text-body-sm mt-2 inline-block">
+                Connect Spotify to verify fandom →
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Stats */}
@@ -173,11 +191,11 @@ export default function FanDashboardPage() {
           </div>
           <div className="bg-black p-6">
             <p className="text-display-sm font-bold text-accent">{data.stats.superfanCount}</p>
-            <p className="text-caption text-gray-500 uppercase tracking-widest mt-1">Superfan</p>
+            <p className="text-caption text-gray-500 uppercase tracking-widest mt-1">Core</p>
           </div>
           <div className="bg-black p-6">
             <p className="text-display-sm font-bold text-white">{data.stats.avgScore}</p>
-            <p className="text-caption text-gray-500 uppercase tracking-widest mt-1">Avg Score</p>
+            <p className="text-caption text-gray-500 uppercase tracking-widest mt-1">Avg Pulse</p>
           </div>
           <div className="bg-black p-6">
             <p className="text-display-sm font-bold text-white">{data.stats.verifiedCount}</p>
@@ -189,8 +207,8 @@ export default function FanDashboardPage() {
         <div>
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-body-lg font-medium text-white">Your <span className="text-accent">"Artists"</span></h2>
-              <p className="text-body-sm text-gray-500 font-light">Artists on Stanvault that you support</p>
+              <h2 className="text-sm font-medium text-gray-400">Your <span className="text-accent">Creators</span></h2>
+              <p className="text-body-sm text-gray-500 font-light">Creators on Imprint that you support</p>
             </div>
           </div>
 
@@ -206,7 +224,7 @@ export default function FanDashboardPage() {
               {!data.user.spotifyConnected && (
                 <Link
                   href="/fan/onboarding"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black text-body-sm hover:bg-gray-200 transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 text-gray-200 text-body-sm border border-gray-700 hover:border-gray-500 hover:text-white transition-colors"
                 >
                   Connect Spotify
                   <ExternalLink className="w-3 h-3" />
@@ -245,12 +263,12 @@ export default function FanDashboardPage() {
                     {/* Score */}
                     <div className="text-right px-4">
                       <p className="text-body-lg font-bold font-mono text-white">{rel.stanScore}</p>
-                      <p className="text-caption text-gray-600 uppercase tracking-wider">Score</p>
+                      <p className="text-caption text-gray-600 uppercase tracking-wider">Pulse</p>
                     </div>
 
                     {/* Tier */}
                     <span className={`px-3 py-1 text-caption font-medium uppercase tracking-wider ${getTierStyle(rel.tier)}`}>
-                      {rel.tier}
+                      {({ CASUAL: 'Faint', ENGAGED: 'Steady', DEDICATED: 'Strong', SUPERFAN: 'Core' }[rel.tier]) || rel.tier}
                     </span>
 
                     {/* Token */}
@@ -281,7 +299,7 @@ export default function FanDashboardPage() {
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-8">
           <p className="text-caption text-gray-700 uppercase tracking-widest">
-            <span className="text-accent">[</span>SV<span className="text-accent">]</span> — Own your "fans"
+            <span className="text-accent">[</span>IM<span className="text-accent">]</span> — Own your fans
           </p>
         </div>
       </footer>

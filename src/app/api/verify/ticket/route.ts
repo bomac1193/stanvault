@@ -194,10 +194,10 @@ export async function POST(request: NextRequest) {
 // GET - Check verification endpoint status (for integration testing)
 export async function GET() {
   return NextResponse.json({
-    service: 'Stanvault Anti-Scalper Verification',
+    service: 'Imprint Anti-Scalper Verification',
     version: '1.0',
     status: 'operational',
-    documentation: 'https://stanvault.io/docs/ticket-verification',
+    documentation: 'https://imprint.io/docs/ticket-verification',
     endpoints: {
       verify: {
         method: 'POST',

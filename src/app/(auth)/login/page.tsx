@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 export default function LoginPage() {
@@ -46,9 +45,14 @@ export default function LoginPage() {
   return (
     <div>
       <div className="mb-10">
-        <h1 className="text-display-sm font-bold text-white">Sign in</h1>
+        <p className="text-caption uppercase tracking-widest text-gray-500 mb-4">
+          Welcome back
+        </p>
+        <h1 className="text-2xl font-medium text-white" style={{ fontFamily: 'Canela, serif' }}>
+          Sign in
+        </h1>
         <p className="text-body-sm text-gray-500 font-light mt-2">
-          Access your artist portal
+          Access your fan intelligence dashboard.
         </p>
       </div>
 
@@ -75,14 +79,13 @@ export default function LoginPage() {
           <p className="text-caption text-status-error">{error}</p>
         )}
 
-        <Button
+        <button
           type="submit"
-          className="w-full"
-          size="lg"
-          isLoading={isLoading}
+          disabled={isLoading}
+          className="w-full px-6 py-3 text-body-sm font-medium text-black bg-white hover:bg-gray-200 transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          Continue
-        </Button>
+          {isLoading ? 'Signing in...' : 'Enter'}
+        </button>
       </form>
 
       <div className="relative my-8">
@@ -96,22 +99,25 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <Button
+      <button
         type="button"
-        variant="outline"
-        className="w-full"
-        size="lg"
         onClick={handleGoogleSignIn}
+        className="w-full px-6 py-3 text-body-sm font-medium text-white border border-gray-700 hover:border-gray-500 transition-colors duration-300"
       >
         Continue with Google
-      </Button>
+      </button>
 
-      <p className="mt-8 text-center text-body-sm text-gray-500">
-        No account?{' '}
-        <Link href="/register" className="text-white hover:text-accent transition-colors">
-          Create one
+      <div className="mt-10 flex items-center justify-between">
+        <p className="text-body-sm text-gray-500">
+          No account?{' '}
+          <Link href="/register" className="text-white hover:text-accent transition-colors duration-300">
+            Create one
+          </Link>
+        </p>
+        <Link href="/fan/login" className="text-body-sm text-gray-600 hover:text-accent transition-colors duration-300">
+          Fan Portal
         </Link>
-      </p>
+      </div>
     </div>
   )
 }

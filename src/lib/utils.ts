@@ -1,5 +1,9 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import {
+  getTierLabel as _getTierLabel,
+  getTierColor as _getTierColor,
+} from './labels'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -48,22 +52,6 @@ export function getInitials(name: string): string {
     .slice(0, 2)
 }
 
-export function getTierColor(tier: string): string {
-  const colors: Record<string, string> = {
-    CASUAL: 'tier-casual',
-    ENGAGED: 'tier-engaged',
-    DEDICATED: 'tier-dedicated',
-    SUPERFAN: 'tier-superfan',
-  }
-  return colors[tier] || 'tier-casual'
-}
-
-export function getTierLabel(tier: string): string {
-  const labels: Record<string, string> = {
-    CASUAL: 'Casual',
-    ENGAGED: 'Engaged',
-    DEDICATED: 'Dedicated',
-    SUPERFAN: 'Superfan',
-  }
-  return labels[tier] || tier
-}
+// Re-export from labels module (single source of truth)
+export const getTierColor = _getTierColor
+export const getTierLabel = _getTierLabel

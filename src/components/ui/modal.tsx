@@ -39,25 +39,25 @@ export function Modal({ isOpen, onClose, title, description, children, size = 'm
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
               className={cn(
-                'w-full bg-vault-dark border border-vault-gray rounded-xl shadow-2xl',
+                'w-full bg-[#0a0a0a] border border-[#1a1a1a] shadow-2xl',
                 sizes[size]
               )}
               onClick={(e) => e.stopPropagation()}
             >
               {(title || description) && (
-                <div className="px-6 py-4 border-b border-vault-gray">
+                <div className="px-6 py-4 border-b border-[#1a1a1a]">
                   <div className="flex items-start justify-between">
                     <div>
                       {title && (
-                        <h2 className="text-lg font-semibold text-warm-white">{title}</h2>
+                        <h2 className="text-lg font-semibold text-white">{title}</h2>
                       )}
                       {description && (
-                        <p className="mt-1 text-sm text-vault-muted">{description}</p>
+                        <p className="mt-1 text-sm text-gray-500">{description}</p>
                       )}
                     </div>
                     <button
                       onClick={onClose}
-                      className="p-1 text-vault-muted hover:text-warm-white transition-colors rounded-lg hover:bg-vault-gray"
+                      className="p-1 text-gray-500 hover:text-white transition-colors hover:bg-[#111]"
                     >
                       <X className="w-5 h-5" />
                     </button>

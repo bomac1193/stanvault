@@ -8,7 +8,7 @@ export function Skeleton({ className }: SkeletonProps) {
   return (
     <div
       className={cn(
-        'animate-pulse rounded-md bg-vault-gray/50',
+        'animate-pulse bg-[#1a1a1a]/50',
         className
       )}
     />
@@ -17,7 +17,7 @@ export function Skeleton({ className }: SkeletonProps) {
 
 export function MetricCardSkeleton() {
   return (
-    <div className="bg-vault-dark border border-vault-gray rounded-lg p-6">
+    <div className="bg-[#0a0a0a] border border-[#1a1a1a] p-6">
       <Skeleton className="h-4 w-24 mb-4" />
       <Skeleton className="h-8 w-20 mb-2" />
       <Skeleton className="h-3 w-16" />
@@ -27,7 +27,7 @@ export function MetricCardSkeleton() {
 
 export function FanRowSkeleton() {
   return (
-    <div className="flex items-center gap-4 px-6 py-4 border-b border-vault-gray">
+    <div className="flex items-center gap-4 px-6 py-4 border-b border-[#1a1a1a]">
       <Skeleton className="w-10 h-10 rounded-full" />
       <div className="flex-1">
         <Skeleton className="h-4 w-32 mb-2" />

@@ -57,7 +57,7 @@ export default function FanLoginPage() {
 
         {/* Form */}
         <div className="mb-8">
-          <h1 className="text-display-sm font-bold text-white">Sign in</h1>
+          <h1 className="text-2xl font-medium text-white" style={{ fontFamily: 'Canela, serif' }}>Sign in</h1>
           <p className="text-body-sm text-gray-500 font-light mt-2">
             Access your fan identity
           </p>
@@ -110,7 +110,7 @@ export default function FanLoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-4 bg-white text-black font-medium hover:bg-gray-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full py-4 bg-gray-900 text-gray-200 font-medium border border-gray-700 hover:border-gray-500 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>

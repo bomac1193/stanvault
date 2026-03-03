@@ -225,7 +225,7 @@ export default function FanTokensPage() {
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-display font-bold text-warm-white">Verification Tokens</h1>
+              <h1 className="text-2xl font-medium text-warm-white" style={{ fontFamily: 'Canela, serif' }}>Verification Tokens</h1>
               <p className="text-vault-muted">
                 Prove your fan status to third parties
               </p>
@@ -254,7 +254,7 @@ export default function FanTokensPage() {
           <h3 className="font-display font-bold text-warm-white mb-2">What are verification tokens?</h3>
           <p className="text-sm text-vault-muted">
             Verification tokens are cryptographic proofs of your fan relationship with an artist.
-            Share them with ticket vendors, merch sites, or Discord bots to prove your superfan
+            Share them with ticket vendors, merch sites, or Discord bots to prove your fan
             status and unlock exclusive access. Each token is signed and verifiable without
             exposing your personal data.
           </p>
@@ -290,7 +290,7 @@ export default function FanTokensPage() {
                     </h4>
                     <div className="flex items-center gap-3 mt-1 text-sm">
                       <span className={getTierColor(token.tier)}>{token.tier}</span>
-                      <span className="text-vault-muted">Score: {token.stanScore}</span>
+                      <span className="text-vault-muted">Pulse: {token.stanScore}</span>
                       <span className="text-vault-muted">
                         {token.relationshipMonths} months
                       </span>
@@ -396,7 +396,7 @@ export default function FanTokensPage() {
                   </div>
 
                   <p className="mt-3 text-xs text-vault-muted">
-                    This token can be verified at any Stanvault-integrated service
+                    This token can be verified at any Imprint-integrated service
                   </p>
                 </div>
               ) : (

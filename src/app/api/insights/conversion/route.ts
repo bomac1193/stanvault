@@ -26,17 +26,17 @@ export async function GET() {
     const funnel = [
       { stage: 'All Fans', count: totalFans, percentage: 100 },
       {
-        stage: 'Engaged+',
+        stage: 'Steady+',
         count: engaged,
         percentage: totalFans > 0 ? Math.round((engaged / totalFans) * 100) : 0,
       },
       {
-        stage: 'Dedicated+',
+        stage: 'Strong+',
         count: dedicated,
         percentage: totalFans > 0 ? Math.round((dedicated / totalFans) * 100) : 0,
       },
       {
-        stage: 'Superfans',
+        stage: 'Core',
         count: superfans,
         percentage: totalFans > 0 ? Math.round((superfans / totalFans) * 100) : 0,
       },

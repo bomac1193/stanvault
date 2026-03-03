@@ -75,7 +75,7 @@ export default function FanOnboardingPage() {
         {/* Header */}
         <div className="mb-8">
           <p className="text-caption text-gray-600 uppercase tracking-widest mb-2">Step 1 of 1</p>
-          <h1 className="text-display-sm font-bold text-white">Connect Spotify</h1>
+          <h1 className="text-2xl font-medium text-white" style={{ fontFamily: 'Canela, serif' }}>Connect Spotify</h1>
           <p className="text-body-sm text-gray-500 font-light mt-2">
             Verify your listening history. Prove your fandom.
           </p>
@@ -144,7 +144,7 @@ export default function FanOnboardingPage() {
           disabled={isCompleting}
           className={`w-full py-4 font-medium transition-all flex items-center justify-center gap-2 ${
             spotifyConnected
-              ? 'bg-white text-black hover:bg-gray-200'
+              ? 'bg-gray-900 text-gray-200 border border-gray-700 hover:border-gray-500 hover:text-white'
               : 'bg-gray-900 text-gray-500 hover:bg-gray-800'
           }`}
         >

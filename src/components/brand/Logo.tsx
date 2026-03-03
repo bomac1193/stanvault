@@ -17,9 +17,9 @@ const sizes = {
 }
 
 /**
- * STANVAULT Logo Mark
+ * IMPRINT Logo Mark
  *
- * Deconstructed "SV" - Virgil energy
+ * Deconstructed "IM" - Virgil energy
  * The brackets represent: [contained] yet open
  * Typography as identity
  */
@@ -42,17 +42,16 @@ export function LogoMark({
       )}
     >
       <span className="text-accent">[</span>
-      SV
+      IM
       <span className="text-accent">]</span>
     </span>
   )
 }
 
 /**
- * STANVAULT Wordmark
+ * IMPRINT Wordmark
  *
  * All caps, tracked, brutal
- * "STANVAULT" or "STAN VAULT" depending on context
  */
 export function Wordmark({
   size = "md",
@@ -76,10 +75,10 @@ export function Wordmark({
     >
       {split ? (
         <>
-          STAN<span className="text-accent">VAULT</span>
+          IM<span className="text-accent">PRINT</span>
         </>
       ) : (
-        "STANVAULT"
+        "IMPRINT"
       )}
     </span>
   )
@@ -128,10 +127,10 @@ export function StatementLogo({ className }: { className?: string }) {
     <div className={cn("select-none", className)}>
       <div className="text-display-xl font-black tracking-tighter leading-none">
         <span className="text-accent">[</span>
-        STAN
+        IM
       </div>
       <div className="text-display-xl font-black tracking-tighter leading-none">
-        VAULT
+        PRINT
         <span className="text-accent">]</span>
       </div>
     </div>
@@ -153,7 +152,7 @@ export function Tagline({
   if (variant === "minimal") {
     return (
       <p className={cn("text-caption text-gray-500 uppercase tracking-widest", className)}>
-        Own your "fans"
+        Own your fans
       </p>
     )
   }
@@ -162,10 +161,10 @@ export function Tagline({
     return (
       <div className={cn("space-y-1", className)}>
         <p className="text-body font-light text-gray-400">
-          The platform for artists who refuse to be algorithms.
+          The platform for creators who refuse to be algorithms.
         </p>
         <p className="text-caption text-gray-600 uppercase tracking-wider">
-          Know your <span className="text-accent">"fans"</span> — Own your future
+          Know your <span className="text-accent">fans</span> — Own your future
         </p>
       </div>
     )

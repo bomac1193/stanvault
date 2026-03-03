@@ -17,8 +17,9 @@ interface SCRResult {
 }
 
 /**
- * Calculate the Stan Conversion Rate for an artist
- * SCR = (Hold Rate × Depth Velocity × Platform Independence) / Churn Drag
+ * Calculate the Pulse Conversion Rate (PCR) for a creator.
+ * Internally still called "SCR" in code — UI surfaces "PCR" via labels.ts.
+ * PCR = (Hold Rate × Depth Velocity × Platform Independence) / Churn Drag
  */
 export async function calculateSCR(userId: string): Promise<SCRResult> {
   const components = await calculateSCRComponents(userId)

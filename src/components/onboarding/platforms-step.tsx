@@ -74,7 +74,7 @@ export function PlatformsStep({ onNext, onBack }: PlatformsStepProps) {
       exit={{ opacity: 0, y: -20 }}
       className="w-full max-w-2xl mx-auto"
     >
-      <h2 className="text-2xl font-display font-bold text-warm-white mb-2 text-center">
+      <h2 className="text-2xl font-medium text-warm-white mb-2 text-center" style={{ fontFamily: 'Canela, serif' }}>
         Connect your platforms
       </h2>
       <p className="text-vault-muted mb-8 text-center">
@@ -146,10 +146,9 @@ export function PlatformsStep({ onNext, onBack }: PlatformsStepProps) {
         <Button
           type="button"
           className="flex-1"
-          disabled={!hasConnections}
           onClick={onNext}
         >
-          {hasConnections ? 'Continue' : 'Connect at least one platform'}
+          {hasConnections ? 'Continue' : 'Skip for now'}
         </Button>
       </div>
 

@@ -18,10 +18,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     )
 
     const variants = {
-      primary: 'bg-white text-black hover:bg-gray-200 active:bg-gray-300',
+      primary: 'bg-[#0a0a0a] text-gray-200 border border-[#1a1a1a] hover:border-[#333] hover:text-white active:bg-black',
       accent: 'bg-accent text-black hover:brightness-110 active:brightness-90',
       ghost: 'bg-transparent text-white hover:text-accent',
-      outline: 'bg-transparent border border-gray-700 text-white hover:border-white hover:bg-white/5',
+      outline: 'bg-transparent border border-[#1a1a1a] text-white hover:border-white hover:bg-white/5',
       danger: 'bg-status-error text-white hover:brightness-110',
     }
 

@@ -111,7 +111,7 @@ export function VerificationSection({
     <Card className={className}>
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex items-center gap-2">
-          <Shield className="w-5 h-5 text-gold" />
+          <Shield className="w-5 h-5 text-gray-400" />
           <CardTitle>Fan Verification</CardTitle>
         </div>
         <Button
@@ -129,14 +129,14 @@ export function VerificationSection({
       </CardHeader>
 
       <CardContent>
-        <p className="text-sm text-vault-muted mb-4">
+        <p className="text-sm text-gray-500 mb-4">
           Verification tokens allow {fanName} to prove their fan status to third parties
           (ticketing, merch, exclusive content).
         </p>
 
         {/* New Token Display */}
         {newToken && (
-          <div className="mb-6 p-4 bg-status-success/10 border border-status-success rounded-lg">
+          <div className="mb-6 p-4 bg-status-success/10 border border-status-success">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-status-success">
                 New Token Generated
@@ -145,13 +145,13 @@ export function VerificationSection({
                 variant="ghost"
                 size="sm"
                 onClick={() => setNewToken(null)}
-                className="text-vault-muted hover:text-warm-white"
+                className="text-gray-500 hover:text-white"
               >
                 Dismiss
               </Button>
             </div>
             <div className="flex items-center gap-2">
-              <code className="flex-1 p-2 bg-vault-darker rounded text-xs text-warm-white font-mono break-all">
+              <code className="flex-1 p-2 bg-black text-xs text-white font-mono break-all">
                 {newToken}
               </code>
               <Button
@@ -166,7 +166,7 @@ export function VerificationSection({
                 )}
               </Button>
             </div>
-            <p className="text-xs text-vault-muted mt-2">
+            <p className="text-xs text-gray-500 mt-2">
               Copy this token now. It won't be shown again in full.
             </p>
           </div>
@@ -176,11 +176,11 @@ export function VerificationSection({
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2].map((i) => (
-              <div key={i} className="h-20 bg-vault-darker rounded-lg animate-pulse" />
+              <div key={i} className="h-20 bg-black animate-pulse" />
             ))}
           </div>
         ) : tokens.length === 0 ? (
-          <div className="text-center py-8 text-vault-muted">
+          <div className="text-center py-8 text-gray-500">
             <Shield className="w-12 h-12 mx-auto mb-3 opacity-50" />
             <p>No active verification tokens</p>
             <p className="text-sm mt-1">
@@ -192,15 +192,15 @@ export function VerificationSection({
             {tokens.map((token) => (
               <div
                 key={token.id}
-                className="bg-vault-darker rounded-lg p-4"
+                className="bg-black p-4"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <div className="flex items-center gap-2">
                       <span
                         className={cn(
-                          'px-2 py-0.5 rounded text-xs font-medium',
-                          token.tier === 'SUPERFAN' && 'bg-gold/20 text-gold',
+                          'px-2 py-0.5 text-xs font-medium',
+                          token.tier === 'SUPERFAN' && 'bg-accent/20 text-accent',
                           token.tier === 'DEDICATED' && 'bg-tier-dedicated/20 text-tier-dedicated',
                           token.tier === 'ENGAGED' && 'bg-tier-engaged/20 text-tier-engaged',
                           token.tier === 'CASUAL' && 'bg-tier-casual/20 text-tier-casual'
@@ -208,15 +208,15 @@ export function VerificationSection({
                       >
                         {token.tier}
                       </span>
-                      <span className="text-sm text-vault-muted">
+                      <span className="text-sm text-gray-500">
                         Score: {token.stanScore}
                       </span>
-                      <span className="text-sm text-vault-muted">
+                      <span className="text-sm text-gray-500">
                         • {token.relationshipMonths} months
                       </span>
                     </div>
                     {token.issuedFor && (
-                      <p className="text-xs text-vault-muted mt-1">
+                      <p className="text-xs text-gray-500 mt-1">
                         Issued for: {token.issuedFor}
                       </p>
                     )}
@@ -232,7 +232,7 @@ export function VerificationSection({
                   </Button>
                 </div>
 
-                <div className="flex items-center gap-4 text-xs text-vault-muted">
+                <div className="flex items-center gap-4 text-xs text-gray-500">
                   <div className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     <span>
@@ -256,14 +256,14 @@ export function VerificationSection({
         )}
 
         {/* Verification Info */}
-        <div className="mt-6 pt-4 border-t border-vault-gray">
-          <h4 className="text-sm font-medium text-warm-white mb-2">
+        <div className="mt-6 pt-4 border-t border-[#1a1a1a]">
+          <h4 className="text-sm font-medium text-white mb-2">
             How Verification Works
           </h4>
-          <div className="text-xs text-vault-muted space-y-1">
+          <div className="text-xs text-gray-500 space-y-1">
             <p>1. Generate a token for this fan</p>
             <p>2. Share the token with the fan or third party</p>
-            <p>3. Third parties verify at: <code className="text-gold">/api/verify</code></p>
+            <p>3. Third parties verify at: <code className="text-accent">/api/verify</code></p>
             <p>4. Token confirms tier, score, and relationship duration</p>
           </div>
         </div>

@@ -68,12 +68,12 @@ export function SuccessStep() {
         <PartyPopper className="w-12 h-12 text-gold" />
       </motion.div>
 
-      <h1 className="text-3xl font-display font-bold text-warm-white mb-4">
-        You&apos;re all set, {profileData.artistName || 'Artist'}!
+      <h1 className="text-2xl font-medium text-warm-white mb-4" style={{ fontFamily: 'Canela, serif' }}>
+        You&apos;re all set, {profileData.artistName || 'Creator'}!
       </h1>
 
       <p className="text-lg text-vault-muted mb-8 max-w-md mx-auto">
-        Your Stanvault is ready. Let&apos;s discover who your biggest supporters are.
+        Your Imprint is ready. Let&apos;s discover who your biggest supporters are.
       </p>
 
       <div className="grid grid-cols-3 gap-4 max-w-md mx-auto mb-8">
@@ -100,7 +100,7 @@ export function SuccessStep() {
         isLoading={isLoading}
         className="animate-pulse-gold"
       >
-        Enter Your Vault
+        Enter Dashboard
       </Button>
     </motion.div>
   )

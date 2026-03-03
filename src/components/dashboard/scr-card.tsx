@@ -45,15 +45,13 @@ export function SCRCard({
 }: SCRCardProps) {
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus
 
-  // Format SCR for display
   const scrDisplay = scr >= 1 ? scr.toFixed(1) : scr.toFixed(2)
   const scrPercent = Math.round(scr * 100)
 
-  // Get SCR rating
   const getSCRRating = (value: number) => {
     if (value >= 3) return { label: 'Exceptional', color: 'text-status-success' }
-    if (value >= 1.5) return { label: 'Strong', color: 'text-gold' }
-    if (value >= 0.5) return { label: 'Average', color: 'text-vault-muted' }
+    if (value >= 1.5) return { label: 'Strong', color: 'text-accent' }
+    if (value >= 0.5) return { label: 'Average', color: 'text-gray-500' }
     if (value >= 0.2) return { label: 'Below Average', color: 'text-orange-400' }
     return { label: 'Low', color: 'text-status-error' }
   }
@@ -71,7 +69,7 @@ export function SCRCard({
       name: 'Depth Velocity',
       value: components.depthVelocity,
       icon: TrendingUp,
-      description: 'Time to superfan',
+      description: 'Time to Core',
     },
     {
       name: 'Platform Spread',
@@ -91,20 +89,20 @@ export function SCRCard({
   return (
     <div
       className={cn(
-        'bg-vault-dark border border-vault-gray rounded-lg overflow-hidden',
+        'bg-[#0a0a0a] border border-[#1a1a1a] overflow-hidden',
         className
       )}
     >
       {/* Header */}
-      <div className="px-6 py-4 border-b border-vault-gray">
+      <div className="px-6 py-4 border-b border-[#1a1a1a]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Activity className="w-5 h-5 text-gold" />
-            <h3 className="text-lg font-semibold text-warm-white">
-              Stan Conversion Rate
+            <Activity className="w-5 h-5 text-gray-400" />
+            <h3 className="text-sm font-medium text-gray-400">
+              Pulse Conversion Rate
             </h3>
           </div>
-          <span className={cn('text-sm font-medium px-2 py-1 rounded', rating.color, 'bg-vault-darker')}>
+          <span className={cn('text-sm font-medium px-2 py-1', rating.color, 'bg-black')}>
             {rating.label}
           </span>
         </div>
@@ -115,22 +113,22 @@ export function SCRCard({
         <div className="flex items-start justify-between mb-6">
           <div>
             <div className="flex items-baseline gap-2">
-              <span className="text-5xl font-mono font-bold text-warm-white">
+              <span className="text-5xl font-mono font-bold text-white">
                 {scrDisplay}
               </span>
-              <span className="text-lg text-vault-muted">SCR</span>
+              <span className="text-lg text-gray-500">PCR</span>
             </div>
-            <p className="text-sm text-vault-muted mt-1">{scrPercent}% conversion efficiency</p>
+            <p className="text-sm text-gray-500 mt-1">{scrPercent}% conversion efficiency</p>
           </div>
 
           {/* Trend */}
-          <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-vault-darker">
+          <div className="flex items-center gap-1 px-3 py-1.5 bg-black">
             <TrendIcon
               className={cn(
                 'w-4 h-4',
                 trend === 'up' && 'text-status-success',
                 trend === 'down' && 'text-status-error',
-                trend === 'stable' && 'text-vault-muted'
+                trend === 'stable' && 'text-gray-500'
               )}
             />
             <span
@@ -138,7 +136,7 @@ export function SCRCard({
                 'text-sm font-medium',
                 trend === 'up' && 'text-status-success',
                 trend === 'down' && 'text-status-error',
-                trend === 'stable' && 'text-vault-muted'
+                trend === 'stable' && 'text-gray-500'
               )}
             >
               {trend === 'stable' ? 'Stable' : `${trendPercent > 0 ? '+' : ''}${trendPercent}%`}
@@ -147,17 +145,17 @@ export function SCRCard({
         </div>
 
         {/* Interpretation */}
-        <p className="text-sm text-vault-muted mb-6 pb-6 border-b border-vault-gray">
+        <p className="text-sm text-gray-500 mb-6 pb-6 border-b border-[#1a1a1a]">
           {interpretation}
         </p>
 
         {/* Components Grid */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           {componentItems.map((item) => (
-            <div key={item.name} className="bg-vault-darker rounded-lg p-3">
+            <div key={item.name} className="bg-black p-3">
               <div className="flex items-center gap-2 mb-2">
-                <item.icon className="w-4 h-4 text-vault-muted" />
-                <span className="text-xs text-vault-muted">{item.name}</span>
+                <item.icon className="w-4 h-4 text-gray-500" />
+                <span className="text-xs text-gray-500">{item.name}</span>
               </div>
               <div className="flex items-baseline gap-1">
                 <span
@@ -170,14 +168,14 @@ export function SCRCard({
                       : item.value >= 0.6
                         ? 'text-status-success'
                         : item.value >= 0.3
-                          ? 'text-gold'
+                          ? 'text-accent'
                           : 'text-status-error'
                   )}
                 >
                   {Math.round(item.value * 100)}%
                 </span>
               </div>
-              <p className="text-xs text-vault-muted mt-1">{item.description}</p>
+              <p className="text-xs text-gray-500 mt-1">{item.description}</p>
             </div>
           ))}
         </div>
@@ -200,21 +198,21 @@ export function SCRCard({
                 <YAxis hide domain={['auto', 'auto']} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1a1a1a',
-                    border: '1px solid #333',
-                    borderRadius: '8px',
+                    backgroundColor: '#0a0a0a',
+                    border: '1px solid #1a1a1a',
+                    borderRadius: '0',
                     color: '#fff',
                   }}
-                  labelStyle={{ color: '#999' }}
-                  formatter={(value: number) => [value?.toFixed(2), 'SCR']}
+                  labelStyle={{ color: '#737373' }}
+                  formatter={(value: number) => [value?.toFixed(2), 'PCR']}
                 />
                 <Line
                   type="monotone"
                   dataKey="scr"
-                  stroke="#d4af37"
+                  stroke="#FF2D92"
                   strokeWidth={2}
                   dot={false}
-                  activeDot={{ r: 4, fill: '#d4af37' }}
+                  activeDot={{ r: 4, fill: '#FF2D92' }}
                 />
               </LineChart>
             </ResponsiveContainer>

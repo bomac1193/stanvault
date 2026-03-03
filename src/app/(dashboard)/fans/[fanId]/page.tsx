@@ -1,6 +1,5 @@
 'use client'
 
-import { use } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import Link from 'next/link'
 import { Button, Skeleton } from '@/components/ui'
@@ -11,15 +10,16 @@ import {
   JourneyTimeline,
   FanNotes,
   VerificationSection,
+  FanProofs,
 } from '@/components/fans'
 import { ArrowLeft } from 'lucide-react'
 
 interface FanPageProps {
-  params: Promise<{ fanId: string }>
+  params: { fanId: string }
 }
 
 export default function FanProfilePage({ params }: FanPageProps) {
-  const { fanId } = use(params)
+  const { fanId } = params
   const queryClient = useQueryClient()
 
   const { data: fan, isLoading: fanLoading } = useQuery({
@@ -74,7 +74,7 @@ export default function FanProfilePage({ params }: FanPageProps) {
   if (!fan) {
     return (
       <div className="text-center py-12">
-        <p className="text-warm-white mb-4">Fan not found</p>
+        <p className="text-white mb-4">Fan not found</p>
         <Link href="/fans">
           <Button variant="secondary">Back to Fans</Button>
         </Link>
@@ -87,7 +87,7 @@ export default function FanProfilePage({ params }: FanPageProps) {
       {/* Back link */}
       <Link
         href="/fans"
-        className="inline-flex items-center gap-2 text-vault-muted hover:text-warm-white transition-colors mb-6"
+        className="inline-flex items-center gap-2 text-gray-500 hover:text-white transition-colors mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Fans
@@ -129,6 +129,11 @@ export default function FanProfilePage({ params }: FanPageProps) {
             onSave={saveNotesMutation.mutateAsync}
           />
         </div>
+      </div>
+
+      {/* Fan Proofs */}
+      <div className="mt-6">
+        <FanProofs fanId={fanId} />
       </div>
 
       {/* Verification Section - Full Width */}

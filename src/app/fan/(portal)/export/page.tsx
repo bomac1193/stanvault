@@ -206,7 +206,7 @@ export default function FanExportPage() {
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-display font-bold text-warm-white">Export Your Fan Identity</h1>
+              <h1 className="text-2xl font-medium text-warm-white" style={{ fontFamily: 'Canela, serif' }}>Export Your Fan Identity</h1>
               <p className="text-vault-muted">
                 Take your fan data anywhere
               </p>
@@ -248,7 +248,7 @@ export default function FanExportPage() {
           <>
             {/* Format Selection */}
             <div className="mb-8">
-              <h2 className="text-lg font-semibold text-warm-white mb-4">Choose Export Format</h2>
+              <h2 className="text-sm font-medium text-gray-400 mb-4">Choose Export Format</h2>
               <div className="space-y-3">
                 {formatOptions.map((format) => (
                   <button

@@ -82,10 +82,10 @@ export default function ProfilePhotoUpload({
       <div className="relative group">
         {/* Photo Display */}
         <div
-          className={`${sizeClasses[size]} rounded-full overflow-hidden bg-vault-darker border-2 border-vault-gray flex items-center justify-center`}
+          className={`${sizeClasses[size]} rounded-full overflow-hidden bg-black border border-[#1a1a1a] flex items-center justify-center`}
         >
           {isUploading ? (
-            <Loader2 className="w-8 h-8 text-gold animate-spin" />
+            <Loader2 className="w-8 h-8 text-accent animate-spin" />
           ) : currentPhoto ? (
             <img
               src={currentPhoto}
@@ -93,7 +93,7 @@ export default function ProfilePhotoUpload({
               className="w-full h-full object-cover"
             />
           ) : (
-            <User className="w-1/2 h-1/2 text-vault-muted" />
+            <User className="w-1/2 h-1/2 text-gray-600" />
           )}
         </div>
 

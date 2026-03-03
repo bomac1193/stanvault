@@ -34,7 +34,7 @@ const tiers = [
     fit: 'Independent and experimental artists',
     includes: [
       'Fan intelligence core (up to 200 fans)',
-      'Stan Score + tier analytics',
+      'Pulse Score + tier analytics',
       'Up to 5 drops',
       'Spotify fan discovery',
       'Basic segmentation',
@@ -45,7 +45,7 @@ const tiers = [
     amountUsd: 1500,
     fit: 'Focused independent teams',
     includes: [
-      'Stanvault fan intelligence core',
+      'Imprint fan intelligence core',
       'Advanced segmentation and tier analytics',
       'Campaign workspace with variable presets',
       'Echoniq live delivery (up to 15k sends/month)',
@@ -81,7 +81,7 @@ const tiers = [
 ]
 
 const matrix = [
-  ['Stanvault scoring + fan tiers', 'Yes', 'Yes', 'Yes', 'Yes'],
+  ['Imprint scoring + fan tiers', 'Yes', 'Yes', 'Yes', 'Yes'],
   ['Live Echoniq campaigns', '500/mo', 'Included', 'Included', 'Included'],
   ['Variable presets + smart mapping', 'Basic', 'Yes', 'Yes', 'Yes'],
   ['Monthly live send allowance', '500', '15k', '75k', 'Custom'],
@@ -98,7 +98,7 @@ export default function PricingPage() {
     const detected = detectCurrencyFromLocale()
     setAutoCurrency(detected)
 
-    const persisted = window.localStorage.getItem('sv_currency_mode') as CurrencyMode | null
+    const persisted = window.localStorage.getItem('im_currency_mode') as CurrencyMode | null
     if (
       persisted === 'AUTO' ||
       persisted === 'USD' ||
@@ -116,7 +116,7 @@ export default function PricingPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      window.localStorage.setItem('sv_currency_mode', currencyMode)
+      window.localStorage.setItem('im_currency_mode', currencyMode)
     }
   }, [currencyMode])
 
@@ -185,7 +185,7 @@ export default function PricingPage() {
             </ul>
             <Link
               href="/register"
-              className="mt-6 inline-block px-5 py-2.5 bg-white text-black font-medium hover:bg-gray-200 transition-colors"
+              className="mt-6 inline-block px-5 py-2.5 bg-gray-900 text-gray-200 font-medium border border-gray-700 hover:border-gray-500 hover:text-white transition-colors"
             >
               Start Application
             </Link>
@@ -223,7 +223,7 @@ export default function PricingPage() {
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="/register"
-            className="px-6 py-3 bg-white text-black font-medium hover:bg-gray-200 transition-colors"
+            className="px-6 py-3 bg-gray-900 text-gray-200 font-medium border border-gray-700 hover:border-gray-500 hover:text-white transition-colors"
           >
             Apply Now
           </Link>

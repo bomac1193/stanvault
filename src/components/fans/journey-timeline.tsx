@@ -39,7 +39,7 @@ export function JourneyTimeline({ events }: JourneyTimelineProps) {
           <CardTitle>Fan Journey</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-center text-vault-muted py-4">
+          <p className="text-center text-gray-500 py-4">
             No journey events recorded yet.
           </p>
         </CardContent>
@@ -55,7 +55,7 @@ export function JourneyTimeline({ events }: JourneyTimelineProps) {
       <CardContent>
         <div className="relative">
           {/* Timeline line */}
-          <div className="absolute left-5 top-0 bottom-0 w-px bg-vault-gray" />
+          <div className="absolute left-5 top-0 bottom-0 w-px bg-[#1a1a1a]" />
 
           <div className="space-y-4">
             {events.map((event) => {
@@ -74,10 +74,10 @@ export function JourneyTimeline({ events }: JourneyTimelineProps) {
 
                   {/* Content */}
                   <div className="flex-1 pt-1">
-                    <p className="text-sm font-medium text-warm-white">
+                    <p className="text-sm font-medium text-white">
                       {event.description || event.eventType.replace(/_/g, ' ')}
                     </p>
-                    <p className="text-xs text-vault-muted">
+                    <p className="text-xs text-gray-500">
                       {formatDate(event.occurredAt)}
                       {event.platform && ` • ${event.platform}`}
                     </p>

@@ -88,10 +88,9 @@ const config: Config = {
         foreground: "var(--foreground)",
       },
       fontFamily: {
-        // Grotesk stack - brutal, clean, Virgil-approved
-        sans: ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
-        display: ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
-        mono: ["SF Mono", "Consolas", "monospace"],
+        sans: ["Sohne", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        display: ["Sohne", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        mono: ["Sohne Mono", "SF Mono", "Consolas", "monospace"],
       },
       fontSize: {
         // Brutal scale - make statements

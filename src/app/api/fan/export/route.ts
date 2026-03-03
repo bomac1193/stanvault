@@ -142,7 +142,7 @@ export async function GET(request: NextRequest) {
         const header = { alg: 'HS256', typ: 'FIP' } // Fan Identity Protocol
         const payload = {
           ...identityData,
-          iss: 'stanvault',
+          iss: 'imprint',
           iat: Math.floor(Date.now() / 1000),
           exp: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60, // 1 year
           jti: exportId,
@@ -169,18 +169,18 @@ export async function GET(request: NextRequest) {
         const vc = {
           '@context': [
             'https://www.w3.org/2018/credentials/v1',
-            'https://stanvault.io/credentials/fan-identity/v1',
+            'https://imprint.io/credentials/fan-identity/v1',
           ],
           id: `urn:uuid:${exportId}`,
           type: ['VerifiableCredential', 'FanIdentityCredential'],
           issuer: {
-            id: 'did:web:stanvault.io',
-            name: 'Stanvault',
+            id: 'did:web:imprint.io',
+            name: 'Imprint',
           },
           issuanceDate: new Date().toISOString(),
           expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
           credentialSubject: {
-            id: `did:stanvault:fan:${fanUser.id}`,
+            id: `did:imprint:fan:${fanUser.id}`,
             displayName: fanUser.displayName,
             memberSince: fanUser.createdAt.toISOString(),
             fanProfile: {
@@ -200,7 +200,7 @@ export async function GET(request: NextRequest) {
           proof: {
             type: 'HmacSha256Signature2024',
             created: new Date().toISOString(),
-            verificationMethod: 'did:web:stanvault.io#key-1',
+            verificationMethod: 'did:web:imprint.io#key-1',
             proofPurpose: 'assertionMethod',
             // In production, this would be a proper cryptographic signature
             proofValue: createHmac('sha256', EXPORT_SECRET)
@@ -228,7 +228,7 @@ export async function GET(request: NextRequest) {
           data: identityData,
           signature,
           exportId,
-          verifyUrl: `https://stanvault.io/verify/${exportId}`,
+          verifyUrl: `https://imprint.io/verify/${exportId}`,
         })
       }
     }

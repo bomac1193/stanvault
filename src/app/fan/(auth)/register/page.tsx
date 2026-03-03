@@ -66,20 +66,16 @@ export default function FanRegisterPage() {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-display-sm font-bold text-white">Create account</h1>
-          <p className="text-body-sm text-gray-500 font-light mt-2">
-            Own your <span className="text-accent">"fan"</span> identity
+          <h1 className="text-2xl font-medium text-white" style={{ fontFamily: 'Canela, serif' }}>Your fandom is invisible.</h1>
+          <p className="text-body-sm text-gray-400 font-light mt-3 leading-relaxed">
+            You&apos;ve streamed them 10,000 times. Bought every album. Showed up to 6 shows.
+            And when they drop limited merch? You&apos;re in the same queue as someone who heard
+            one song on TikTok yesterday.
           </p>
-        </div>
-
-        {/* Value prop */}
-        <div className="mb-8 p-4 border-l-2 border-l-accent bg-gray-900/30">
-          <p className="text-caption text-gray-400 uppercase tracking-wider mb-2">Why join</p>
-          <ul className="space-y-1 text-body-sm text-gray-300 font-light">
-            <li>• Prove fandom for presales & perks</li>
-            <li>• Portable, verifiable data you own</li>
-            <li>• Direct connection to artists</li>
-          </ul>
+          <p className="text-body-sm text-gray-300 font-light mt-3 leading-relaxed">
+            Imprint makes your devotion <span className="text-accent">visible</span>. Your conviction becomes
+            a Pulse score. The creator can see you. Not as a number — as a person.
+          </p>
         </div>
 
         {/* Form */}
@@ -174,7 +170,7 @@ export default function FanRegisterPage() {
           <button
             type="submit"
             disabled={isLoading || !passwordRequirements.every(r => r.met)}
-            className="w-full py-4 bg-white text-black font-medium hover:bg-gray-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full py-4 bg-gray-900 text-gray-200 font-medium border border-gray-700 hover:border-gray-500 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>
@@ -187,13 +183,21 @@ export default function FanRegisterPage() {
           </button>
         </form>
 
-        {/* Link */}
-        <p className="mt-8 text-center text-body-sm text-gray-500">
-          Have an account?{' '}
-          <Link href="/fan/login" className="text-white hover:text-accent transition-colors">
-            Sign in
-          </Link>
-        </p>
+        {/* Links */}
+        <div className="mt-8 space-y-4 text-center">
+          <p className="text-body-sm text-gray-500">
+            Have an account?{' '}
+            <Link href="/fan/login" className="text-white hover:text-accent transition-colors">
+              Sign in
+            </Link>
+          </p>
+          <p className="text-caption text-gray-600">
+            Are you a creator?{' '}
+            <Link href="/register" className="text-gray-400 hover:text-white transition-colors">
+              Creator registration →
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )

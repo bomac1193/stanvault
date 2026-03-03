@@ -17,6 +17,7 @@ export const authConfig: NextAuthConfig = {
         nextUrl.pathname.startsWith('/campaigns') ||
         nextUrl.pathname.startsWith('/connections') ||
         nextUrl.pathname.startsWith('/insights') ||
+        nextUrl.pathname.startsWith('/fanprint') ||
         nextUrl.pathname.startsWith('/export') ||
         nextUrl.pathname.startsWith('/settings')
 

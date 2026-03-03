@@ -104,7 +104,7 @@ export function EmailImportDropzone({ onImportComplete, className }: EmailImport
   // Show result state
   if (result) {
     return (
-      <div className={cn('bg-vault-dark border border-vault-gray rounded-lg p-6', className)}>
+      <div className={cn('bg-[#0a0a0a] border border-[#1a1a1a] p-6', className)}>
         <div className="flex items-center gap-3 mb-4">
           {result.success ? (
             <CheckCircle className="w-8 h-8 text-status-success" />
@@ -112,39 +112,39 @@ export function EmailImportDropzone({ onImportComplete, className }: EmailImport
             <AlertCircle className="w-8 h-8 text-status-error" />
           )}
           <div>
-            <h3 className="text-lg font-semibold text-warm-white">
+            <h3 className="text-lg font-semibold text-white">
               {result.success ? 'Import Complete' : 'Import Completed with Errors'}
             </h3>
-            <p className="text-sm text-vault-muted">
+            <p className="text-sm text-gray-500">
               Provider detected: {result.provider}
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-vault-darker rounded-lg p-4 text-center">
-            <p className="text-2xl font-mono font-bold text-warm-white">
+          <div className="bg-black p-4 text-center">
+            <p className="text-2xl font-mono font-bold text-white">
               {result.stats.totalRows}
             </p>
-            <p className="text-sm text-vault-muted">Total Rows</p>
+            <p className="text-sm text-gray-500">Total Rows</p>
           </div>
-          <div className="bg-vault-darker rounded-lg p-4 text-center">
+          <div className="bg-black p-4 text-center">
             <p className="text-2xl font-mono font-bold text-status-success">
               {result.stats.imported}
             </p>
-            <p className="text-sm text-vault-muted">Imported</p>
+            <p className="text-sm text-gray-500">Imported</p>
           </div>
-          <div className="bg-vault-darker rounded-lg p-4 text-center">
-            <p className="text-2xl font-mono font-bold text-gold">
+          <div className="bg-black p-4 text-center">
+            <p className="text-2xl font-mono font-bold text-accent">
               {result.stats.updated}
             </p>
-            <p className="text-sm text-vault-muted">Updated</p>
+            <p className="text-sm text-gray-500">Updated</p>
           </div>
-          <div className="bg-vault-darker rounded-lg p-4 text-center">
-            <p className="text-2xl font-mono font-bold text-vault-muted">
+          <div className="bg-black p-4 text-center">
+            <p className="text-2xl font-mono font-bold text-gray-500">
               {result.stats.skipped}
             </p>
-            <p className="text-sm text-vault-muted">Skipped</p>
+            <p className="text-sm text-gray-500">Skipped</p>
           </div>
         </div>
 
@@ -153,9 +153,9 @@ export function EmailImportDropzone({ onImportComplete, className }: EmailImport
             <h4 className="text-sm font-medium text-status-error mb-2">
               Errors ({result.errors.length}{result.hasMoreErrors ? '+' : ''})
             </h4>
-            <div className="bg-vault-darker rounded-lg p-3 max-h-32 overflow-y-auto">
+            <div className="bg-black p-3 max-h-32 overflow-y-auto">
               {result.errors.map((err, i) => (
-                <p key={i} className="text-xs text-vault-muted mb-1">
+                <p key={i} className="text-xs text-gray-500 mb-1">
                   {err}
                 </p>
               ))}
@@ -171,12 +171,12 @@ export function EmailImportDropzone({ onImportComplete, className }: EmailImport
   }
 
   return (
-    <div className={cn('bg-vault-dark border border-vault-gray rounded-lg p-6', className)}>
-      <h3 className="text-lg font-semibold text-warm-white mb-4">
+    <div className={cn('bg-[#0a0a0a] border border-[#1a1a1a] p-6', className)}>
+      <h3 className="text-sm font-medium text-gray-400 mb-4">
         Import Email Subscribers
       </h3>
 
-      <p className="text-sm text-vault-muted mb-4">
+      <p className="text-sm text-gray-500 mb-4">
         Upload a CSV export from Mailchimp, ConvertKit, Klaviyo, or other email providers.
         We'll automatically detect the format and import your subscribers.
       </p>
@@ -187,10 +187,10 @@ export function EmailImportDropzone({ onImportComplete, className }: EmailImport
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={cn(
-          'border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer',
+          'border-2 border-dashed p-8 text-center transition-colors cursor-pointer',
           isDragging
-            ? 'border-gold bg-gold/5'
-            : 'border-vault-gray hover:border-vault-muted',
+            ? 'border-accent bg-accent/5'
+            : 'border-[#1a1a1a] hover:border-[#333]',
           file && 'border-status-success bg-status-success/5'
         )}
         onClick={() => document.getElementById('email-csv-input')?.click()}
@@ -207,19 +207,19 @@ export function EmailImportDropzone({ onImportComplete, className }: EmailImport
           <div className="flex items-center justify-center gap-3">
             <FileText className="w-8 h-8 text-status-success" />
             <div className="text-left">
-              <p className="font-medium text-warm-white">{file.name}</p>
-              <p className="text-sm text-vault-muted">
+              <p className="font-medium text-white">{file.name}</p>
+              <p className="text-sm text-gray-500">
                 {(file.size / 1024).toFixed(1)} KB
               </p>
             </div>
           </div>
         ) : (
           <>
-            <Upload className="w-12 h-12 text-vault-muted mx-auto mb-4" />
-            <p className="text-warm-white mb-1">
+            <Upload className="w-12 h-12 text-gray-500 mx-auto mb-4" />
+            <p className="text-white mb-1">
               Drag and drop your CSV file here
             </p>
-            <p className="text-sm text-vault-muted">
+            <p className="text-sm text-gray-500">
               or click to browse
             </p>
           </>
@@ -253,14 +253,14 @@ export function EmailImportDropzone({ onImportComplete, className }: EmailImport
       )}
 
       {/* Supported Formats */}
-      <div className="mt-6 pt-6 border-t border-vault-gray">
-        <p className="text-xs text-vault-muted mb-2">Supported formats:</p>
+      <div className="mt-6 pt-6 border-t border-[#1a1a1a]">
+        <p className="text-xs text-gray-500 mb-2">Supported formats:</p>
         <div className="flex flex-wrap gap-2">
           {['Mailchimp', 'ConvertKit', 'Klaviyo', 'ActiveCampaign', 'Drip', 'HubSpot'].map(
             (provider) => (
               <span
                 key={provider}
-                className="px-2 py-1 bg-vault-darker rounded text-xs text-vault-muted"
+                className="px-2 py-1 bg-black text-xs text-gray-500"
               >
                 {provider}
               </span>

@@ -1,8 +1,8 @@
 'use client'
 
-import { Card, Button, Badge } from '@/components/ui'
+import { Button } from '@/components/ui'
 import { formatDate, formatNumber } from '@/lib/utils'
-import { Music, Instagram, Youtube, Twitter, Mail, RefreshCw, Trash2, Check, AlertCircle, XCircle } from 'lucide-react'
+import { Music, Instagram, Youtube, Twitter, Mail, Heart, RefreshCw, Trash2, Headphones, Radio, MessageCircle } from 'lucide-react'
 
 interface ConnectionCardProps {
   platform: string
@@ -14,19 +14,18 @@ interface ConnectionCardProps {
   isSyncing?: boolean
 }
 
-const platformConfig: Record<string, { icon: typeof Music; color: string; name: string }> = {
-  SPOTIFY: { icon: Music, color: '#1DB954', name: 'Spotify' },
-  INSTAGRAM: { icon: Instagram, color: '#E4405F', name: 'Instagram' },
-  YOUTUBE: { icon: Youtube, color: '#FF0000', name: 'YouTube' },
-  TIKTOK: { icon: Music, color: '#000000', name: 'TikTok' },
-  TWITTER: { icon: Twitter, color: '#1DA1F2', name: 'Twitter' },
-  EMAIL: { icon: Mail, color: '#C9A227', name: 'Email List' },
-}
-
-const statusConfig: Record<string, { icon: typeof Check; variant: 'success' | 'warning' | 'error' }> = {
-  CONNECTED: { icon: Check, variant: 'success' },
-  EXPIRED: { icon: AlertCircle, variant: 'warning' },
-  ERROR: { icon: XCircle, variant: 'error' },
+const platformConfig: Record<string, { icon: typeof Music; name: string }> = {
+  SPOTIFY: { icon: Music, name: 'Spotify' },
+  INSTAGRAM: { icon: Instagram, name: 'Instagram' },
+  YOUTUBE: { icon: Youtube, name: 'YouTube' },
+  TIKTOK: { icon: Music, name: 'TikTok' },
+  TWITTER: { icon: Twitter, name: 'Twitter' },
+  EMAIL: { icon: Mail, name: 'Email List' },
+  DASHAM: { icon: Heart, name: 'Oryx' },
+  APPLE_MUSIC: { icon: Music, name: 'Apple Music' },
+  AUDIOMACK: { icon: Headphones, name: 'Audiomack' },
+  BOOMPLAY: { icon: Radio, name: 'Boomplay' },
+  DISCORD: { icon: MessageCircle, name: 'Discord' },
 }
 
 export function ConnectionCard({
@@ -39,66 +38,54 @@ export function ConnectionCard({
   isSyncing,
 }: ConnectionCardProps) {
   const config = platformConfig[platform]
-  const statusInfo = statusConfig[status] || statusConfig.CONNECTED
-
   if (!config) return null
 
   const Icon = config.icon
-  const StatusIcon = statusInfo.icon
+  const isHealthy = status === 'CONNECTED'
 
   return (
-    <Card className="p-6">
-      <div className="flex items-start justify-between mb-4">
+    <div className="bg-[#0a0a0a] border border-[#1a1a1a] p-5">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div
-            className="w-12 h-12 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: `${config.color}20` }}
-          >
-            <Icon className="w-6 h-6" style={{ color: config.color }} />
-          </div>
-          <div>
-            <h3 className="font-medium text-warm-white">{config.name}</h3>
-            <Badge variant={statusInfo.variant} className="mt-1">
-              <StatusIcon className="w-3 h-3 mr-1" />
-              {status.charAt(0) + status.slice(1).toLowerCase()}
-            </Badge>
-          </div>
+          <Icon className="w-4 h-4 text-gray-500" />
+          <span className="text-body-sm font-medium text-white">{config.name}</span>
         </div>
+        <span className={`text-caption ${isHealthy ? 'text-gray-400' : 'text-gray-600'}`}>
+          {status.charAt(0) + status.slice(1).toLowerCase()}
+        </span>
       </div>
 
-      <div className="space-y-2 mb-4">
-        <div className="flex justify-between text-sm">
-          <span className="text-vault-muted">Fans synced</span>
-          <span className="text-warm-white font-mono">{formatNumber(fanCount)}</span>
+      <div className="space-y-1.5 mb-5">
+        <div className="flex justify-between text-caption">
+          <span className="text-gray-500">Fans</span>
+          <span className="text-gray-300 tabular-nums">{formatNumber(fanCount)}</span>
         </div>
         {lastSyncAt && (
-          <div className="flex justify-between text-sm">
-            <span className="text-vault-muted">Last synced</span>
-            <span className="text-warm-white">{formatDate(lastSyncAt)}</span>
+          <div className="flex justify-between text-caption">
+            <span className="text-gray-500">Synced</span>
+            <span className="text-gray-400">{formatDate(lastSyncAt)}</span>
           </div>
         )}
       </div>
 
-      <div className="flex gap-2">
-        <Button
-          variant="secondary"
-          size="sm"
-          className="flex-1"
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
           onClick={onSync}
-          isLoading={isSyncing}
+          disabled={isSyncing}
+          className="flex items-center gap-1.5 text-caption text-gray-500 hover:text-white transition-colors disabled:opacity-40"
         >
-          <RefreshCw className="w-4 h-4 mr-1" />
+          <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin' : ''}`} />
           Sync
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
+        </button>
+        <button
+          type="button"
           onClick={onDisconnect}
-          className="text-status-error hover:text-status-error hover:bg-status-error/10"
+          className="text-caption text-gray-600 hover:text-gray-400 transition-colors"
         >
-          <Trash2 className="w-4 h-4" />
-        </Button>
+          <Trash2 className="w-3 h-3" />
+        </button>
       </div>
-    </Card>
+    </div>
   )
 }

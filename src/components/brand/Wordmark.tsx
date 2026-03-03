@@ -17,7 +17,7 @@ const sizes = {
 
 /**
  * Standalone Wordmark Component
- * "STANVAULT" in Futura Bold, tracked out
+ * "IMPRINT" in Futura Bold, tracked out
  * Optionally includes tagline
  */
 export function Wordmark({ size = "md", tagline = false, className }: WordmarkProps) {
@@ -29,7 +29,7 @@ export function Wordmark({ size = "md", tagline = false, className }: WordmarkPr
           sizes[size]
         )}
       >
-        STANVAULT
+        IMPRINT
       </span>
       {tagline && (
         <span className="font-display font-medium text-xs uppercase tracking-brand text-vault-muted mt-1">

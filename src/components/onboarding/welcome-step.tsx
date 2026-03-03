@@ -27,13 +27,13 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
         <Sparkles className="w-10 h-10 text-gold" />
       </div>
 
-      <h1 className="text-4xl font-display font-bold text-warm-white mb-4">
-        Welcome to <span className="text-gold">Stanvault</span>
+      <h1 className="text-2xl font-medium text-warm-white mb-4" style={{ fontFamily: 'Canela, serif' }}>
+        Welcome to <span className="text-gold">Imprint</span>
       </h1>
 
       <p className="text-lg text-vault-muted mb-8 max-w-md mx-auto">
         Your fan intelligence platform. Connect your platforms and discover who
-        your real stans are.
+        your real fans are.
       </p>
 
       <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto mb-8">

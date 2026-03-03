@@ -2,42 +2,6 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 
-const plans = [
-  {
-    name: 'Private Circle',
-    price: '$1,500/mo',
-    fit: 'For focused independent teams',
-    features: [
-      'Fan intelligence dashboard',
-      'Tier and score segmentation',
-      'Campaign workspace',
-      'Live delivery allocation',
-    ],
-  },
-  {
-    name: 'Patron Growth',
-    price: '$4,000/mo',
-    fit: 'For scaling artist operations',
-    features: [
-      'Expanded live delivery',
-      'Advanced personalization variables',
-      'Preset libraries and campaign history',
-      'Priority routing',
-    ],
-  },
-  {
-    name: 'Sovereign',
-    price: '$10,000+/mo',
-    fit: 'For enterprise artist portfolios',
-    features: [
-      'Dedicated infrastructure',
-      'Custom orchestration',
-      'High-volume delivery',
-      'Strategic support',
-    ],
-  },
-]
-
 export default async function Home() {
   const session = await auth()
   if (session?.user?.id) {
@@ -45,131 +9,103 @@ export default async function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white">
-      <section className="max-w-6xl mx-auto px-6 pt-16 pb-12">
-        <p className="text-caption uppercase tracking-widest text-gray-500">
-          Stanvault x Echoniq
+    <main className="min-h-screen bg-black text-white flex flex-col relative overflow-hidden">
+      {/* Ambient glow — gives the void depth */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/3 w-[800px] h-[600px] bg-accent/[0.03] rounded-full blur-[120px] pointer-events-none" />
+
+      {/* Brand */}
+      <header className="relative max-w-5xl w-full mx-auto px-8 pt-12 flex items-baseline justify-between">
+        <p className="text-caption uppercase tracking-[0.3em] text-gray-400 font-medium">
+          Imprint
         </p>
-        <h1 className="mt-4 text-4xl md:text-6xl font-bold leading-tight">
-          Fan relationship infrastructure for artist-led businesses.
+        <p className="text-caption text-gray-600 font-light tracking-wide">
+          Fan Intelligence
+        </p>
+      </header>
+
+      {/* Hero — the statement */}
+      <section className="relative max-w-5xl w-full mx-auto px-8 pt-32 md:pt-44 pb-6">
+        <h1 className="text-4xl md:text-5xl font-bold leading-[1.1] tracking-tight">
+          Not all fans
+          <br />
+          are <span className="text-accent">equal</span>.
         </h1>
-        <p className="mt-6 max-w-3xl text-body text-gray-300">
-          Stanvault structures fan intelligence. Echoniq activates it through precise outreach.
-          Built for teams that value long-term audience quality over short-term volume.
+        <p className="mt-5 text-body-sm text-gray-500 font-light max-w-xs">
+          The ones who matter already know who they are.
         </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/register"
-            className="px-6 py-3 bg-white text-black font-medium hover:bg-gray-200 transition-colors"
-          >
-            Get Started
-          </Link>
-          <Link
-            href="/pricing"
-            className="px-6 py-3 border border-gray-700 text-white hover:border-white transition-colors"
-          >
-            View Pricing
-          </Link>
-          <Link
-            href="/login"
-            className="px-6 py-3 border border-gray-700 text-white hover:border-white transition-colors"
-          >
-            Sign In
-          </Link>
-        </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-6">
-        <div className="border border-gray-800 p-6">
-          <h2 className="text-xl font-semibold">Who This Is For</h2>
-          <ul className="mt-4 space-y-2 text-gray-300">
-            <li>Artists building direct, durable fan revenue.</li>
-            <li>Managers running repeatable retention and conversion workflows.</li>
-            <li>Teams optimizing for audience quality and lifetime value.</li>
-          </ul>
-        </div>
-        <div className="border border-gray-800 p-6">
-          <h2 className="text-xl font-semibold">Who This Is Not For</h2>
-          <ul className="mt-4 space-y-2 text-gray-300">
-            <li>Teams focused only on top-of-funnel volume.</li>
-            <li>One-off campaign operators without continuity.</li>
-            <li>Businesses that do not need structured fan operations.</li>
-          </ul>
-        </div>
-      </section>
+      {/* Divider */}
+      <div className="relative max-w-5xl w-full mx-auto px-8 py-16 md:py-24">
+        <div className="w-12 h-px bg-gray-700" />
+      </div>
 
-      <section className="max-w-6xl mx-auto px-6 py-10">
-        <h2 className="text-2xl md:text-3xl font-bold">Psychographic Profile</h2>
-        <div className="mt-6 grid md:grid-cols-3 gap-4">
-          <div className="border border-gray-800 p-5">
-            <p className="text-caption uppercase tracking-widest text-gray-500">Identity</p>
-            <p className="mt-2 text-gray-200">
-              Disciplined operators, selective about access and positioning.
-            </p>
-          </div>
-          <div className="border border-gray-800 p-5">
-            <p className="text-caption uppercase tracking-widest text-gray-500">Motivation</p>
-            <p className="mt-2 text-gray-200">
-              Durable fan equity and measurable recurring revenue.
-            </p>
-          </div>
-          <div className="border border-gray-800 p-5">
-            <p className="text-caption uppercase tracking-widest text-gray-500">Behavior</p>
-            <p className="mt-2 text-gray-200">
-              Invests in systems, measures by conversion and retention.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="max-w-6xl mx-auto px-6 py-10">
-        <h2 className="text-2xl md:text-3xl font-bold">Pricing</h2>
-        <p className="mt-2 text-gray-400">
-          Clear tiers for teams with increasing operational depth.
+      {/* Use cases — beyond music */}
+      <section className="relative max-w-5xl w-full mx-auto px-8 pb-16 md:pb-24">
+        <p className="text-caption uppercase tracking-widest text-gray-500 mb-6">
+          Built for every kind of fandom
         </p>
-        <div className="mt-6 grid md:grid-cols-3 gap-5">
-          {plans.map((plan) => (
-            <article key={plan.name} className="border border-gray-800 p-6 bg-gray-950/40">
-              <p className="text-caption uppercase tracking-widest text-gray-500">{plan.fit}</p>
-              <h3 className="mt-2 text-xl font-semibold">{plan.name}</h3>
-              <p className="mt-3 text-3xl font-bold">{plan.price}</p>
-              <ul className="mt-4 space-y-2 text-gray-300 text-body-sm">
-                {plan.features.map((feature) => (
-                  <li key={feature}>{feature}</li>
-                ))}
-              </ul>
-            </article>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {[
+            { label: 'Indie Music', desc: 'Artists, labels, managers' },
+            { label: 'K-pop Communities', desc: 'Fan clubs, group orders' },
+            { label: 'Sports Fan Clubs', desc: 'Season ticket holders, ultras' },
+            { label: 'Nollywood & Film', desc: 'Creators, cast communities' },
+            { label: 'Gaming & Streaming', desc: 'Streamers, esports teams' },
+          ].map((item) => (
+            <div key={item.label} className="border border-gray-800 p-4 hover:border-gray-600 transition-colors">
+              <p className="text-body-sm text-white font-medium">{item.label}</p>
+              <p className="text-caption text-gray-500 mt-1">{item.desc}</p>
+            </div>
           ))}
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-6 py-14">
-        <div className="border border-gray-800 p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-bold">Build a disciplined fan system.</h2>
-            <p className="mt-2 text-gray-400">
-              Start with segmentation. Scale activation as your operation matures.
+      {/* Two doors — asymmetric, each has its own character */}
+      <section className="relative max-w-5xl w-full mx-auto px-8 pb-16 md:pb-24">
+        <div className="grid md:grid-cols-2 gap-5">
+          {/* Creators & Teams — monochrome authority */}
+          <div className="group border border-gray-800 p-8 md:p-10 flex flex-col hover:border-gray-500 transition-all duration-500">
+            <p className="text-caption uppercase tracking-widest text-gray-500">
+              Creators & Teams
             </p>
+            <h2 className="mt-5 text-2xl font-bold text-white leading-tight">
+              See who&apos;s real.
+            </h2>
+            <p className="mt-3 text-body-sm text-gray-400 font-light leading-relaxed">
+              Conviction over vanity. Tier intelligence that pierces the veil between casual listeners and real devotion.
+            </p>
+            <div className="mt-10 flex items-center gap-5">
+              <Link href="/register" className="px-6 py-3 text-body-sm font-medium text-black bg-white hover:bg-gray-200 transition-colors duration-300">
+                Enter
+              </Link>
+              <Link href="/login" className="text-body-sm text-gray-500 hover:text-white transition-colors duration-300">
+                Sign in
+              </Link>
+            </div>
           </div>
-          <div className="flex gap-3">
-            <Link
-              href="/register"
-              className="px-6 py-3 bg-white text-black font-medium hover:bg-gray-200 transition-colors"
-            >
-              Get Started
-            </Link>
-            <Link
-              href="/pricing"
-              className="px-6 py-3 border border-gray-700 hover:border-white transition-colors"
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/login"
-              className="px-6 py-3 border border-gray-700 hover:border-white transition-colors"
-            >
-              Sign In
-            </Link>
+
+          {/* Fans — the pink flash */}
+          <div className="group border border-accent/20 p-8 md:p-10 flex flex-col hover:border-accent/60 transition-all duration-500">
+            <p className="text-caption uppercase tracking-widest text-accent/60">
+              Fans
+            </p>
+            <h2 className="mt-5 text-2xl font-bold text-white leading-tight">
+              Prove it.
+            </h2>
+            <p className="mt-3 text-body-sm text-gray-400 font-light leading-relaxed">
+              10,000 streams. Every album. 6 shows. Still invisible.
+              <br />
+              Your devotion, unveiled.
+            </p>
+            <div className="mt-10 flex items-center gap-5">
+              <Link href="/fan/register" className="px-6 py-3 text-body-sm font-medium text-black bg-accent hover:bg-accent-bright transition-colors duration-300">
+                Enter
+              </Link>
+              <Link href="/fan/login" className="text-body-sm text-gray-500 hover:text-white transition-colors duration-300">
+                Sign in
+              </Link>
+            </div>
           </div>
         </div>
       </section>

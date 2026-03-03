@@ -48,7 +48,7 @@ export function FanNotes({ initialNotes, onSave }: FanNotesProps) {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Add notes about this fan..."
-              className="w-full h-32 px-4 py-3 bg-vault-darker border border-vault-gray rounded-lg text-warm-white placeholder:text-vault-muted resize-none focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
+              className="w-full h-32 px-4 py-3 bg-black border border-[#1a1a1a] text-white placeholder:text-gray-500 resize-none focus:outline-none focus:border-[#333]"
             />
             <div className="flex justify-end gap-2 mt-3">
               <Button variant="ghost" size="sm" onClick={handleCancel}>
@@ -62,7 +62,7 @@ export function FanNotes({ initialNotes, onSave }: FanNotesProps) {
             </div>
           </div>
         ) : (
-          <p className={notes ? 'text-warm-white whitespace-pre-wrap' : 'text-vault-muted italic'}>
+          <p className={notes ? 'text-white whitespace-pre-wrap' : 'text-gray-500 italic'}>
             {notes || 'No notes yet. Click edit to add notes about this fan.'}
           </p>
         )}

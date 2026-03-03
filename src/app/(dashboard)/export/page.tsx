@@ -10,7 +10,7 @@ const fields = [
   { id: 'displayName', label: 'Name' },
   { id: 'email', label: 'Email' },
   { id: 'location', label: 'Location' },
-  { id: 'stanScore', label: 'Stan Score' },
+  { id: 'stanScore', label: 'Pulse Score' },
   { id: 'tier', label: 'Tier' },
   { id: 'platforms', label: 'Platforms' },
   { id: 'firstSeenAt', label: 'First Seen' },
@@ -19,10 +19,10 @@ const fields = [
 
 const tierOptions = [
   { value: 'ALL', label: 'All Fans' },
-  { value: 'SUPERFAN', label: 'Superfans Only' },
-  { value: 'DEDICATED', label: 'Dedicated Only' },
-  { value: 'ENGAGED', label: 'Engaged Only' },
-  { value: 'CASUAL', label: 'Casual Only' },
+  { value: 'SUPERFAN', label: 'Core Only' },
+  { value: 'DEDICATED', label: 'Strong Only' },
+  { value: 'ENGAGED', label: 'Steady Only' },
+  { value: 'CASUAL', label: 'Faint Only' },
 ]
 
 export default function ExportPage() {
@@ -97,31 +97,31 @@ export default function ExportPage() {
               <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={() => setFormat('csv')}
-                  className={`p-4 rounded-lg border-2 transition-all ${
+                  className={`p-4 border-2 transition-all ${
                     format === 'csv'
-                      ? 'border-gold bg-gold/10'
-                      : 'border-vault-gray hover:border-vault-muted'
+                      ? 'border-accent bg-accent/10'
+                      : 'border-[#1a1a1a] hover:border-[#333]'
                   }`}
                 >
                   <FileText className={`w-8 h-8 mx-auto mb-2 ${
-                    format === 'csv' ? 'text-gold' : 'text-vault-muted'
+                    format === 'csv' ? 'text-accent' : 'text-gray-500'
                   }`} />
-                  <p className="font-medium text-warm-white">CSV</p>
-                  <p className="text-xs text-vault-muted">Excel compatible</p>
+                  <p className="font-medium text-white">CSV</p>
+                  <p className="text-xs text-gray-500">Excel compatible</p>
                 </button>
                 <button
                   onClick={() => setFormat('json')}
-                  className={`p-4 rounded-lg border-2 transition-all ${
+                  className={`p-4 border-2 transition-all ${
                     format === 'json'
-                      ? 'border-gold bg-gold/10'
-                      : 'border-vault-gray hover:border-vault-muted'
+                      ? 'border-accent bg-accent/10'
+                      : 'border-[#1a1a1a] hover:border-[#333]'
                   }`}
                 >
                   <FileJson className={`w-8 h-8 mx-auto mb-2 ${
-                    format === 'json' ? 'text-gold' : 'text-vault-muted'
+                    format === 'json' ? 'text-accent' : 'text-gray-500'
                   }`} />
-                  <p className="font-medium text-warm-white">JSON</p>
-                  <p className="text-xs text-vault-muted">Developer friendly</p>
+                  <p className="font-medium text-white">JSON</p>
+                  <p className="text-xs text-gray-500">Developer friendly</p>
                 </button>
               </div>
             </CardContent>
@@ -151,10 +151,10 @@ export default function ExportPage() {
                 {fields.map((field) => (
                   <label
                     key={field.id}
-                    className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-all ${
+                    className={`flex items-center gap-2 p-3 border cursor-pointer transition-all ${
                       selectedFields.includes(field.id)
-                        ? 'border-gold bg-gold/10'
-                        : 'border-vault-gray hover:border-vault-muted'
+                        ? 'border-accent bg-accent/10'
+                        : 'border-[#1a1a1a] hover:border-[#333]'
                     }`}
                   >
                     <input
@@ -164,14 +164,14 @@ export default function ExportPage() {
                       className="sr-only"
                     />
                     <div
-                      className={`w-4 h-4 rounded border flex items-center justify-center ${
+                      className={`w-4 h-4 border flex items-center justify-center ${
                         selectedFields.includes(field.id)
-                          ? 'bg-gold border-gold'
-                          : 'border-vault-muted'
+                          ? 'bg-accent border-accent'
+                          : 'border-gray-500'
                       }`}
                     >
                       {selectedFields.includes(field.id) && (
-                        <svg className="w-3 h-3 text-vault-black" viewBox="0 0 12 12">
+                        <svg className="w-3 h-3 text-black" viewBox="0 0 12 12">
                           <path
                             fill="currentColor"
                             d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"
@@ -179,7 +179,7 @@ export default function ExportPage() {
                         </svg>
                       )}
                     </div>
-                    <span className="text-sm text-warm-white">{field.label}</span>
+                    <span className="text-sm text-white">{field.label}</span>
                   </label>
                 ))}
               </div>
@@ -196,27 +196,27 @@ export default function ExportPage() {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex justify-between text-sm">
-                  <span className="text-vault-muted">Format</span>
-                  <span className="text-warm-white uppercase">{format}</span>
+                  <span className="text-gray-500">Format</span>
+                  <span className="text-white uppercase">{format}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-vault-muted">Tier</span>
-                  <span className="text-warm-white">
+                  <span className="text-gray-500">Tier</span>
+                  <span className="text-white">
                     {tierOptions.find((t) => t.value === tier)?.label}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-vault-muted">Fields</span>
-                  <span className="text-warm-white">{selectedFields.length} selected</span>
+                  <span className="text-gray-500">Fields</span>
+                  <span className="text-white">{selectedFields.length} selected</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-vault-muted">Total Fans</span>
-                  <span className="text-warm-white font-mono">
+                  <span className="text-gray-500">Total Fans</span>
+                  <span className="text-white font-mono">
                     {metricsData?.totalFans?.toLocaleString() || 0}
                   </span>
                 </div>
 
-                <hr className="border-vault-gray" />
+                <hr className="border-[#1a1a1a]" />
 
                 <Button
                   className="w-full"

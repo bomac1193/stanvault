@@ -21,6 +21,11 @@ const genreOptions = [
   { value: 'jazz', label: 'Jazz' },
   { value: 'classical', label: 'Classical' },
   { value: 'metal', label: 'Metal' },
+  { value: 'k-pop', label: 'K-pop Community' },
+  { value: 'sports', label: 'Sports' },
+  { value: 'film-tv', label: 'Film / TV' },
+  { value: 'gaming', label: 'Gaming / Streaming' },
+  { value: 'podcast', label: 'Podcast' },
   { value: 'other', label: 'Other' },
 ]
 
@@ -72,7 +77,7 @@ export function ProfileStep({ onNext, onBack }: ProfileStepProps) {
       exit={{ opacity: 0, y: -20 }}
       className="w-full max-w-md mx-auto"
     >
-      <h2 className="text-2xl font-display font-bold text-warm-white mb-2 text-center">
+      <h2 className="text-2xl font-medium text-warm-white mb-2 text-center" style={{ fontFamily: 'Canela, serif' }}>
         Tell us about yourself
       </h2>
       <p className="text-vault-muted mb-8 text-center">
@@ -81,10 +86,10 @@ export function ProfileStep({ onNext, onBack }: ProfileStepProps) {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Input
-          label="Artist / Band Name"
+          label="Creator Name"
           value={profileData.artistName}
           onChange={(e) => setProfileData({ artistName: e.target.value })}
-          placeholder="Your artist name"
+          placeholder="Your name or brand"
           required
         />
 

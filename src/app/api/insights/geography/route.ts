@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { geocodeCity } from '@/lib/geocoding'
 
 export async function GET() {
   try {
@@ -44,7 +45,41 @@ export async function GET() {
       count: stat._count.city,
     }))
 
-    return NextResponse.json({ countries, cities })
+    // Build geoPoints for heatmap (only when Mapbox is configured)
+    let geoPoints: Array<{ city: string; country: string; lat: number; lng: number; fanCount: number; avgPulse: number }> = []
+
+    if (process.env.NEXT_PUBLIC_MAPBOX_TOKEN) {
+      const cityAvgScores = await prisma.fan.groupBy({
+        by: ['city', 'country'],
+        where: {
+          userId: session.user.id,
+          city: { not: null },
+        },
+        _count: { city: true },
+        _avg: { stanScore: true },
+        orderBy: { _count: { city: 'desc' } },
+        take: 50,
+      })
+
+      const geoPromises = cityAvgScores.map(async (stat) => {
+        if (!stat.city || !stat.country) return null
+        const geo = await geocodeCity(stat.city, stat.country)
+        if (!geo) return null
+        return {
+          city: stat.city,
+          country: stat.country,
+          lat: geo.latitude,
+          lng: geo.longitude,
+          fanCount: stat._count.city,
+          avgPulse: Math.round(stat._avg.stanScore || 0),
+        }
+      })
+
+      const results = await Promise.all(geoPromises)
+      geoPoints = results.filter(Boolean) as typeof geoPoints
+    }
+
+    return NextResponse.json({ countries, cities, geoPoints })
   } catch (error) {
     console.error('Geography insights error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

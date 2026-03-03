@@ -112,7 +112,7 @@ export default function DropPage() {
       <div className="min-h-screen bg-black flex items-center justify-center p-6">
         <div className="text-center">
           <LogoMark size="lg" className="mb-8" />
-          <h1 className="text-display-sm font-bold text-white mb-4">Drop Not Found</h1>
+          <h1 className="text-2xl font-medium text-white mb-4" style={{ fontFamily: 'Canela, serif' }}>Drop Not Found</h1>
           <p className="text-gray-500">{error || 'This drop does not exist.'}</p>
         </div>
       </div>
@@ -155,7 +155,7 @@ export default function DropPage() {
         </div>
 
         {/* Drop Title */}
-        <h1 className="text-display-md font-bold text-white mb-4">{drop.title}</h1>
+        <h1 className="text-2xl font-medium text-white mb-4" style={{ fontFamily: 'Canela, serif' }}>{drop.title}</h1>
 
         {/* Description */}
         {drop.description && (
@@ -229,7 +229,7 @@ export default function DropPage() {
                     href={claimResult.content}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-medium hover:bg-gray-200 transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-gray-200 font-medium border border-gray-700 hover:border-gray-500 hover:text-white transition-colors"
                   >
                     <Download className="w-4 h-4" />
                     Download
@@ -241,7 +241,7 @@ export default function DropPage() {
                     href={claimResult.content}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-medium hover:bg-gray-200 transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-gray-200 font-medium border border-gray-700 hover:border-gray-500 hover:text-white transition-colors"
                   >
                     <ExternalLink className="w-4 h-4" />
                     Access Link

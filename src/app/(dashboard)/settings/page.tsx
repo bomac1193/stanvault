@@ -5,11 +5,13 @@ import { useSession } from 'next-auth/react'
 import { PageHeader } from '@/components/layout'
 import { Card, CardHeader, CardTitle, CardContent, Input, Button, Select } from '@/components/ui'
 import { User, Lock, Bell, Palette, Music, Check, Loader2, ExternalLink } from 'lucide-react'
+import ProfilePhotoUpload from '@/components/profile/ProfilePhotoUpload'
 
 export default function SettingsPage() {
   const { data: session, update } = useSession()
 
   const [artistName, setArtistName] = useState('')
+  const [email, setEmail] = useState('')
   const [spotifyArtistId, setSpotifyArtistId] = useState('')
   const [pricingTier, setPricingTier] = useState('PRIVATE_CIRCLE')
   const [canOverrideTier, setCanOverrideTier] = useState(false)
@@ -19,6 +21,7 @@ export default function SettingsPage() {
   useEffect(() => {
     if (session?.user) {
       setArtistName(session.user.artistName || '')
+      setEmail(session.user.email || '')
       setSpotifyArtistId(session.user.spotifyArtistId || '')
     }
   }, [session])
@@ -49,6 +52,7 @@ export default function SettingsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           artistName,
+          email,
           spotifyArtistId,
           ...(canOverrideTier ? { pricingTier } : {}),
         }),
@@ -87,19 +91,37 @@ export default function SettingsPage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
+            <div className="flex items-center gap-6 pb-2">
+              <ProfilePhotoUpload
+                currentPhoto={session?.user?.image}
+                onPhotoChange={async (dataUrl) => {
+                  const res = await fetch('/api/settings/profile', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: dataUrl }),
+                  })
+                  if (!res.ok) throw new Error('Failed to upload')
+                  await update()
+                }}
+                size="md"
+              />
+              <p className="text-body-sm text-gray-500 font-light">
+                Hover to change photo
+              </p>
+            </div>
             <Input
               label="Email"
               type="email"
-              value={session?.user?.email || ''}
-              disabled
-              hint="Email cannot be changed"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
             />
             <Input
-              label="Artist Name"
+              label="Creator Name"
               type="text"
               value={artistName}
               onChange={(e) => setArtistName(e.target.value)}
-              placeholder="Your artist or band name"
+              placeholder="Your name or brand"
             />
             <Button
               variant="outline"
@@ -128,7 +150,7 @@ export default function SettingsPage() {
           <CardHeader>
             <div className="flex items-center gap-3">
               <Music className="w-5 h-5 text-accent" />
-              <CardTitle>Spotify Artist ID</CardTitle>
+              <CardTitle>Spotify ID (Optional)</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -264,7 +286,7 @@ export default function SettingsPage() {
           <CardContent>
             <div className="space-y-4">
               {[
-                { label: 'New superfan alerts', description: 'Get notified when a fan reaches superfan status' },
+                { label: 'New Core fan alerts', description: 'Get notified when a fan reaches Core status' },
                 { label: 'Weekly digest', description: 'Receive a weekly summary of your fan growth' },
                 { label: 'Platform sync alerts', description: 'Notifications when platform connections need attention' },
               ].map((item, index) => (
@@ -275,7 +297,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="relative">
                     <input type="checkbox" defaultChecked className="sr-only peer" />
-                    <div className="w-10 h-6 bg-gray-800 rounded-full peer peer-checked:bg-accent transition-colors" />
+                    <div className="w-10 h-6 bg-[#1a1a1a] rounded-full peer peer-checked:bg-accent transition-colors" />
                     <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-4 transition-transform" />
                   </div>
                 </label>
@@ -294,7 +316,7 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent>
             <p className="text-body-sm text-gray-500 font-light">
-              Stanvault uses a dark theme optimized for long sessions. More themes coming soon.
+              Imprint uses a dark theme optimized for long sessions. More themes coming soon.
             </p>
           </CardContent>
         </Card>

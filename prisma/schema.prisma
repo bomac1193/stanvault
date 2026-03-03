@@ -79,6 +79,7 @@ model User {
   campaignVariablePresets CampaignVariablePreset[] // Saved campaign variable presets
   savedVoiceModels     SavedVoiceModel[]
   ctaCompletions       CtaActionCompletion[]
+  apiKeys              ApiKey[]             // B2B API access keys
 }
 
 enum CareerStage {
@@ -160,6 +161,10 @@ enum Platform {
   KOFI
   PATREON
   MERCH
+  AUDIOMACK
+  BOOMPLAY
+  APPLE_MUSIC
+  DISCORD
 }
 
 enum ConnectionStatus {
@@ -198,6 +203,7 @@ model Fan {
   snapshots     FanSnapshot[]
   listeningEvents ListeningEvent[]
   fanUserLink   FanUserArtistLink?  // Link to fan portal user if claimed
+  proofs        FanProof[]
 
   @@index([userId, stanScore])
   @@index([userId, tier])
@@ -735,4 +741,65 @@ model BetaInvite {
   @@index([wave, isActive])
   @@index([artistCohort])
   @@index([fanCohort])
+}
+
+// ============================================
+// IMPRINT OVERHAUL — New models
+// ============================================
+
+// FanProof - Self-reported proof of fandom (concert tickets, merch receipts, etc.)
+model FanProof {
+  id                  String    @id @default(cuid())
+  fanId               String
+  proofType           ProofType
+  proofUrl            String?   // URL to image/screenshot
+  description         String?   // Fan-provided context
+  verifiedByCreator   Boolean   @default(false)
+  rejectedByCreator   Boolean   @default(false)
+  convictionPoints    Int       @default(0) // Bonus points awarded (max 15 total across all proofs)
+  reviewedAt          DateTime?
+  reviewNote          String?   // Creator's note on review
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  fan Fan @relation(fields: [fanId], references: [id], onDelete: Cascade)
+
+  @@index([fanId])
+}
+
+enum ProofType {
+  CONCERT_TICKET
+  MERCH_RECEIPT
+  ALBUM_PURCHASE
+  SCREENSHOT
+  OTHER
+}
+
+// CityGeocode - Cache for Mapbox geocoding results
+model CityGeocode {
+  id        String   @id @default(cuid())
+  city      String
+  country   String
+  latitude  Float
+  longitude Float
+  createdAt DateTime @default(now())
+
+  @@unique([city, country])
+}
+
+// ApiKey - B2B API access for integrations
+model ApiKey {
+  id         String    @id @default(cuid())
+  userId     String
+  key        String    @unique
+  name       String    // Human-readable label
+  lastUsedAt DateTime?
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([key])
 }

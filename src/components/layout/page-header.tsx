@@ -10,7 +10,7 @@ export function PageHeader({ title, description, actions }: PageHeaderProps) {
   return (
     <div className="flex items-start justify-between mb-8">
       <div>
-        <h1 className="text-2xl font-display font-bold text-warm-white">
+        <h1 className="text-2xl font-medium text-warm-white" style={{ fontFamily: 'Canela, serif' }}>
           {title}
         </h1>
         {description && (

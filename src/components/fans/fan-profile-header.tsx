@@ -16,19 +16,19 @@ interface FanProfileHeaderProps {
 
 export function FanProfileHeader({ fan }: FanProfileHeaderProps) {
   return (
-    <div className="bg-vault-dark border border-vault-gray rounded-lg p-6">
+    <div className="bg-[#0a0a0a] border border-[#1a1a1a] p-6">
       <div className="flex items-start gap-6">
         <Avatar src={fan.avatarUrl} name={fan.displayName} size="xl" />
 
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-2xl font-display font-bold text-warm-white">
+            <h1 className="text-2xl font-medium text-warm-white" style={{ fontFamily: 'Canela, serif' }}>
               {fan.displayName}
             </h1>
             <TierBadge tier={fan.tier} />
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 text-sm text-vault-muted mb-4">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-4">
             {fan.email && (
               <div className="flex items-center gap-1.5">
                 <Mail className="w-4 h-4" />

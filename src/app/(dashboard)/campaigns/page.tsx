@@ -3,13 +3,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Loader2, Mic, Send, Square, TestTube2, Upload } from 'lucide-react'
 import { PageHeader } from '@/components/layout/page-header'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
-import ShaderBackground from '@/components/voice-studio/ShaderBackground'
-import ColorPanel from '@/components/voice-studio/ColorPanel'
-import Frame2147241533 from '@/imports/Frame2147241533'
 
 const suggestedVariableFields = [
   {
@@ -27,7 +23,7 @@ const suggestedVariableFields = [
   {
     key: 'campaign_theme',
     label: 'Campaign Theme',
-    placeholder: 'Superfan Summer',
+    placeholder: 'Core Fan Summer',
     hint: 'Token: {campaign_theme}',
   },
   {
@@ -47,9 +43,9 @@ const suggestedVariableFields = [
 const messageTemplateSuggestions = [
   {
     id: 'welcome',
-    label: 'Welcome Superfan',
+    label: 'Welcome Core Fan',
     subject: 'You are officially in my inner circle',
-    body: 'Hey {fan_name} - I see you. Welcome to the {stan_club_name}. Your stan score is {stan_score}, and that support means everything to me.',
+    body: 'Hey {fan_name} - I see you. Welcome to the {stan_club_name}. Your pulse score is {stan_score}, and that support means everything to me.',
   },
   {
     id: 'propagation',
@@ -265,7 +261,6 @@ export default function CampaignsPage() {
   const [voiceStyle, setVoiceStyle] = useState<'natural' | 'whisper' | 'singing' | 'shouting'>('natural')
   const [voiceEmotion, setVoiceEmotion] = useState<'neutral' | 'grateful' | 'excited' | 'playful' | 'heartfelt'>('grateful')
   const [voiceCtaLabel, setVoiceCtaLabel] = useState('Your personal voice note')
-  const [shaderColors, setShaderColors] = useState<[string, string, string]>(['#0000ff', '#ff00ff', '#ffffff'])
   const [voiceName, setVoiceName] = useState('Main Artist Voice')
   const [isRecordingVoice, setIsRecordingVoice] = useState(false)
   const [voiceDurationMs, setVoiceDurationMs] = useState(0)
@@ -305,8 +300,6 @@ export default function CampaignsPage() {
   const recordingChunksRef = useRef<Blob[]>([])
   const recordingStartRef = useRef<number | null>(null)
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null)
-  const voiceViewportWidth = 600
-  const voiceViewportHeight = 760
 
   const allowedVoiceProviders = useMemo(
     () => entitlements?.allowedVoiceProviders || defaultVoiceProviders,
@@ -1062,69 +1055,25 @@ export default function CampaignsPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader
-        title="Fan Campaigns"
-        description="Compose and send superfan-targeted campaigns via Echoniq directly from Stanvault."
+        title="Campaigns"
+        description="Compose and send fan-targeted campaigns via Echoniq."
       />
 
-      <Card variant="elevated">
-        <CardHeader>
-          <CardTitle>Campaign Composer</CardTitle>
-          <CardDescription>
-            Use Stanvault segments and Echoniq delivery in one workflow.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+      <div className="bg-[#0a0a0a] border border-[#1a1a1a]">
+        <div className="px-6 py-5 border-b border-[#1a1a1a]">
+          <h3 className="text-sm font-medium text-gray-400">Compose</h3>
+        </div>
+        <div className="px-6 py-5 space-y-6">
           {entitlements && (
-            <div className="border border-gray-800 p-4 bg-gray-950/40">
-              <p className="text-caption uppercase tracking-widest text-gray-500">Tier Entitlements</p>
-              <div className="mt-2 grid grid-cols-1 md:grid-cols-4 lg:grid-cols-8 gap-3">
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">Tier</p>
-                  <p className="text-body-sm text-gray-200 break-words">{entitlements.pricingTier}</p>
-                </div>
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">Monthly Limit</p>
-                  <p className="text-body-sm text-gray-200">
-                    {entitlements.monthlyLiveSendLimit === null
-                      ? 'Unlimited'
-                      : entitlements.monthlyLiveSendLimit.toLocaleString()}
-                  </p>
-                </div>
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">Used This Month</p>
-                  <p className="text-body-sm text-gray-200">{entitlements.monthSentSoFar.toLocaleString()}</p>
-                </div>
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">Remaining</p>
-                  <p className="text-body-sm text-gray-200">
-                    {entitlements.remaining === null ? 'Unlimited' : entitlements.remaining.toLocaleString()}
-                  </p>
-                </div>
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">Voice Campaigns</p>
-                  <p className="text-body-sm text-gray-200">
-                    {entitlements.allowVoiceCampaigns ? 'Included' : 'Not included'}
-                  </p>
-                </div>
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">Voice Used</p>
-                  <p className="text-body-sm text-gray-200">{entitlements.monthVoiceSentSoFar.toLocaleString()}</p>
-                </div>
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">Voice Remaining</p>
-                  <p className="text-body-sm text-gray-200">
-                    {entitlements.voiceRemaining === null ? 'Unlimited' : entitlements.voiceRemaining.toLocaleString()}
-                  </p>
-                </div>
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">Voice Setup</p>
-                  <p className="text-body-sm text-gray-200">
-                    {entitlements.allowAdvancedVoiceConfig ? 'Simple + Advanced' : 'Simple only'}
-                  </p>
-                </div>
-              </div>
+            <div className="flex items-center gap-6 text-caption text-gray-500 border-b border-[#1a1a1a] pb-4">
+              <span className="text-gray-300 font-medium">{entitlements.pricingTier}</span>
+              <span>{entitlements.monthSentSoFar.toLocaleString()} / {entitlements.monthlyLiveSendLimit === null ? '\u221E' : entitlements.monthlyLiveSendLimit.toLocaleString()} sent</span>
+              {entitlements.allowVoiceCampaigns && (
+                <span>Voice: {entitlements.monthVoiceSentSoFar.toLocaleString()} / {entitlements.monthlyVoiceSendLimit === null ? '\u221E' : entitlements.monthlyVoiceSendLimit.toLocaleString()}</span>
+              )}
+              {!entitlements.allowVoiceCampaigns && <span className="text-gray-600">Voice not included</span>}
             </div>
           )}
 
@@ -1141,10 +1090,10 @@ export default function CampaignsPage() {
               value={minTier}
               onChange={(e) => setMinTier(e.target.value)}
               options={[
-                { value: 'CASUAL', label: 'Casual+' },
-                { value: 'ENGAGED', label: 'Engaged+' },
-                { value: 'DEDICATED', label: 'Dedicated+' },
-                { value: 'SUPERFAN', label: 'Superfan only' },
+                { value: 'CASUAL', label: 'Faint+' },
+                { value: 'ENGAGED', label: 'Steady+' },
+                { value: 'DEDICATED', label: 'Strong+' },
+                { value: 'SUPERFAN', label: 'Core only' },
               ]}
               variant="boxed"
             />
@@ -1169,7 +1118,7 @@ export default function CampaignsPage() {
               placeholder="team@yourdomain.com"
             />
             <Input
-              label="Min Stan Score"
+              label="Min Pulse Score"
               type="number"
               value={minStanScore}
               onChange={(e) => setMinStanScore(e.target.value)}
@@ -1214,133 +1163,107 @@ export default function CampaignsPage() {
               variant="boxed"
             />
             {deliveryMode === 'VOICE' && (
-              <div className="lg:col-span-2 relative">
-                <div className="absolute top-3 left-3 z-10 hidden xl:block">
-                  <ColorPanel colors={shaderColors} onColorsChange={setShaderColors} />
-                </div>
-                <div className="relative bg-black overflow-hidden border border-gray-800 min-h-[520px]">
-                  <ShaderBackground
-                    width={voiceViewportWidth}
-                    height={voiceViewportHeight}
-                    colors={shaderColors}
-                  />
-                  <div className="absolute inset-0">
-                    <Frame2147241533>
-                      <div className="space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-caption uppercase tracking-widest text-gray-400">Voice Guide</p>
-                  <div className="flex items-center gap-2">
-                    <Button
+              <div className="lg:col-span-2 border-t border-[#1a1a1a] pt-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-caption uppercase tracking-widest text-gray-500">Voice</p>
+                  <div className="flex items-center gap-1">
+                    <button
                       type="button"
-                      variant={voiceSetupMode === 'simple' ? 'outline' : 'ghost'}
                       onClick={() => setVoiceSetupMode('simple')}
+                      className={`px-3 py-1.5 text-caption transition-colors ${voiceSetupMode === 'simple' ? 'text-gray-200' : 'text-gray-600 hover:text-gray-400'}`}
                     >
                       Simple
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       type="button"
-                      variant={voiceSetupMode === 'advanced' ? 'outline' : 'ghost'}
                       onClick={() => {
                         if (entitlements && !entitlements.allowAdvancedVoiceConfig) {
-                          setError(
-                            `Advanced voice setup is available on Patron Growth and Sovereign. Current tier: ${entitlements.pricingTier}.`
-                          )
+                          setError(`Advanced voice setup requires Patron Growth or Sovereign.`)
                           return
                         }
                         setVoiceSetupMode('advanced')
                       }}
+                      className={`px-3 py-1.5 text-caption transition-colors ${voiceSetupMode === 'advanced' ? 'text-gray-200' : 'text-gray-600 hover:text-gray-400'}`}
                     >
                       Advanced
-                      {entitlements && !entitlements.allowAdvancedVoiceConfig ? ' (Locked)' : ''}
-                    </Button>
+                    </button>
                   </div>
                 </div>
 
                 {voiceSetupMode === 'simple' ? (
-                  <div className="space-y-3">
-                    <div className="border border-gray-800 p-3 bg-black/20">
-                      <p className="text-body-sm text-gray-200">Record one or more clean takes, then clone from your best take.</p>
-                      <p className="text-caption text-gray-500 mt-1">Recommended: 90-180 seconds, minimal background noise.</p>
-                    </div>
-                    <Input
-                      label="Voice Name"
-                      value={voiceName}
-                      onChange={(e) => setVoiceName(e.target.value)}
-                      variant="boxed"
-                      placeholder="Main Artist Voice"
-                    />
-                    {savedVoices.length > 0 && (
-                      <Select
-                        label="Saved Voices"
-                        value={
-                          savedVoices.find((voice) => voice.externalId === voiceModelId)?.id || ''
-                        }
-                        onChange={(e) => {
-                          const selected = savedVoices.find((voice) => voice.id === e.target.value)
-                          if (!selected) return
-                          setVoiceModelId(selected.externalId)
-                          if (allowedVoiceProviders.includes(selected.provider)) {
-                            setVoiceProvider(selected.provider)
-                          }
-                          void activateSavedVoice(selected.id)
-                        }}
-                        options={[
-                          { value: '', label: 'Select saved voice' },
-                          ...savedVoices.map((voice) => ({
-                            value: voice.id,
-                            label: `${voice.name}${voice.isActive ? ' (Active)' : ''}`,
-                          })),
-                        ]}
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      <Input
+                        label="Voice Name"
+                        value={voiceName}
+                        onChange={(e) => setVoiceName(e.target.value)}
                         variant="boxed"
+                        placeholder="Main Artist Voice"
                       />
-                    )}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                      <div className="border border-gray-800 bg-black/20 p-3 space-y-3">
-                        <p className="text-caption text-gray-400 uppercase tracking-widest">Record</p>
-                        <p className="text-caption text-gray-500">Best quality: 90-180 seconds, clear speech.</p>
-                        <p className="text-caption text-gray-300">
-                          Duration: {formatVoiceDuration(isRecordingVoice ? recordingElapsedMs : voiceDurationMs)}
-                        </p>
-                        <p className={`text-caption ${getVoiceDurationGuidance(isRecordingVoice ? recordingElapsedMs : voiceDurationMs).tone}`}>
-                          {getVoiceDurationGuidance(isRecordingVoice ? recordingElapsedMs : voiceDurationMs).label}
-                        </p>
-                        <div className="flex items-end gap-1 h-6">
-                          {[0, 1, 2, 3, 4].map((bar) => (
-                            <span
-                              key={bar}
-                              className={`w-1 rounded-sm ${isRecordingVoice ? 'bg-gray-300 animate-pulse' : 'bg-gray-700'}`}
-                              style={{ height: `${30 + ((bar % 3) * 20)}%`, animationDelay: `${bar * 120}ms` }}
-                            />
-                          ))}
+                      {savedVoices.length > 0 && (
+                        <Select
+                          label="Saved Voices"
+                          value={
+                            savedVoices.find((voice) => voice.externalId === voiceModelId)?.id || ''
+                          }
+                          onChange={(e) => {
+                            const selected = savedVoices.find((voice) => voice.id === e.target.value)
+                            if (!selected) return
+                            setVoiceModelId(selected.externalId)
+                            if (allowedVoiceProviders.includes(selected.provider)) {
+                              setVoiceProvider(selected.provider)
+                            }
+                            void activateSavedVoice(selected.id)
+                          }}
+                          options={[
+                            { value: '', label: 'Select saved voice' },
+                            ...savedVoices.map((voice) => ({
+                              value: voice.id,
+                              label: `${voice.name}${voice.isActive ? ' (Active)' : ''}`,
+                            })),
+                          ]}
+                          variant="boxed"
+                        />
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <p className="text-caption text-gray-400">Record</p>
+                          <p className="text-caption text-gray-500 tabular-nums">
+                            {formatVoiceDuration(isRecordingVoice ? recordingElapsedMs : voiceDurationMs)}
+                          </p>
                         </div>
-                        <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                        <div className="h-1 bg-[#141414] overflow-hidden">
                           <div
-                            className="h-full bg-gray-300 transition-all"
+                            className="h-full bg-gray-500 transition-all"
                             style={{
                               width: `${Math.min(((isRecordingVoice ? recordingElapsedMs : voiceDurationMs) / 180000) * 100, 100)}%`,
                             }}
                           />
                         </div>
-                        <div className="flex flex-wrap gap-2">
-                          {!isRecordingVoice ? (
-                            <Button type="button" variant="outline" onClick={startVoiceRecording}>
-                              <Mic className="w-4 h-4 mr-2" />
-                              Start Recording
-                            </Button>
-                          ) : (
-                            <Button type="button" variant="outline" onClick={stopVoiceRecording}>
-                              <Square className="w-4 h-4 mr-2" />
-                              Stop
-                            </Button>
-                          )}
-                        </div>
+                        <p className={`text-caption ${getVoiceDurationGuidance(isRecordingVoice ? recordingElapsedMs : voiceDurationMs).tone}`}>
+                          {getVoiceDurationGuidance(isRecordingVoice ? recordingElapsedMs : voiceDurationMs).label}
+                        </p>
+                        {!isRecordingVoice ? (
+                          <Button type="button" variant="outline" size="sm" onClick={startVoiceRecording}>
+                            <Mic className="w-3.5 h-3.5 mr-1.5" />
+                            Record
+                          </Button>
+                        ) : (
+                          <Button type="button" variant="outline" size="sm" onClick={stopVoiceRecording}>
+                            <Square className="w-3.5 h-3.5 mr-1.5" />
+                            Stop
+                          </Button>
+                        )}
                       </div>
 
-                      <div className="border border-gray-800 bg-black/20 p-3 space-y-3">
-                        <p className="text-caption text-gray-400 uppercase tracking-widest">Or Upload</p>
-                        <label className="inline-flex items-center px-3 py-2 border border-gray-700 text-body-sm text-gray-200 cursor-pointer hover:border-gray-500 transition-colors">
-                          <Upload className="w-4 h-4 mr-2" />
-                          Choose Audio File
+                      <div className="space-y-3">
+                        <p className="text-caption text-gray-400">Upload</p>
+                        <label className="inline-flex items-center px-3 py-1.5 border border-[#222] text-caption text-gray-300 cursor-pointer hover:border-[#333] transition-colors">
+                          <Upload className="w-3.5 h-3.5 mr-1.5" />
+                          Choose File
                           <input
                             type="file"
                             accept="audio/webm,audio/wav,audio/mp3,audio/mpeg,audio/ogg"
@@ -1348,87 +1271,69 @@ export default function CampaignsPage() {
                             onChange={(e) => onVoiceFilePicked(e.target.files?.[0] || null)}
                           />
                         </label>
-                        <p className="text-caption text-gray-500">
-                          Supported: webm, wav, mp3, ogg.
-                        </p>
+                        <p className="text-caption text-gray-600">webm, wav, mp3, ogg</p>
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3">
+                    {voiceTakes.length > 0 && (
+                      <div className="space-y-1.5">
+                        <p className="text-caption text-gray-500">Takes</p>
+                        {voiceTakes.map((take, idx) => (
+                          <div
+                            key={take.id}
+                            className={`flex items-center justify-between py-1.5 px-2 ${selectedVoiceTakeId === take.id ? 'bg-[#14141499]' : ''} transition-colors`}
+                          >
+                            <span className="text-caption text-gray-300">
+                              {voiceTakes.length - idx}. {take.source === 'recorded' ? 'Rec' : 'File'} {take.durationMs > 0 ? `· ${formatVoiceDuration(take.durationMs)}` : ''}
+                            </span>
+                            <span className="flex items-center gap-2">
+                              <button type="button" onClick={() => selectVoiceTake(take)} className="text-caption text-gray-500 hover:text-white transition-colors">Use</button>
+                              <button type="button" onClick={() => removeVoiceTake(take.id)} className="text-caption text-gray-600 hover:text-gray-400 transition-colors">Remove</button>
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-3 pt-1">
                       <Button
                         type="button"
                         variant="outline"
+                        size="sm"
                         onClick={cloneVoiceFromSample}
                         disabled={voiceCloneLoading}
                       >
                         {voiceCloneLoading ? (
                           <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Cloning Voice...
+                            <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                            Cloning...
                           </>
                         ) : (
-                          'Create Voice Clone'
+                          'Clone Voice'
                         )}
                       </Button>
-                      <p className="text-caption text-gray-500">
-                        Provider auto-selected for your tier: {effectiveVoiceProvider}
-                      </p>
+                      <span className="text-caption text-gray-600">{effectiveVoiceProvider}</span>
                     </div>
 
                     {voiceCloneError && <p className="text-caption text-status-error">{voiceCloneError}</p>}
                     {voiceCloneMessage && <p className="text-caption text-gray-500">{voiceCloneMessage}</p>}
 
-                    <div className="border border-gray-800 bg-black/20 p-3 space-y-2">
-                      <p className="text-caption uppercase tracking-widest text-gray-400">Saved Takes</p>
-                      {voiceTakes.length === 0 ? (
-                        <p className="text-caption text-gray-500">No takes yet. Record or upload to add one.</p>
-                      ) : (
-                        <div className="space-y-2">
-                          {voiceTakes.map((take, idx) => (
-                            <div
-                              key={take.id}
-                              className={`p-2 border ${selectedVoiceTakeId === take.id ? 'border-gray-500 bg-gray-800/40' : 'border-gray-800'} flex items-center justify-between gap-2`}
-                            >
-                              <div className="min-w-0">
-                                <p className="text-body-sm text-gray-200 break-words">
-                                  Take {voiceTakes.length - idx} · {take.source === 'recorded' ? 'Recorded' : 'Uploaded'}
-                                </p>
-                                <p className="text-caption text-gray-300">
-                                  {take.durationMs > 0 ? formatVoiceDuration(take.durationMs) : 'Duration unknown'}
-                                </p>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Button type="button" variant="ghost" onClick={() => selectVoiceTake(take)}>
-                                  Use
-                                </Button>
-                                <Button type="button" variant="ghost" onClick={() => removeVoiceTake(take.id)}>
-                                  Remove
-                                </Button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
                     <Input
-                      label="Connected Voice"
+                      label="Connected Voice ID"
                       value={voiceModelId}
                       onChange={(e) => setVoiceModelId(e.target.value)}
                       variant="boxed"
-                      placeholder="Will auto-fill after clone"
-                      hint="You can still paste an existing Echoniq voice ID."
+                      placeholder="Auto-fills after clone"
                     />
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <Input
                       label="Voice Model ID"
                       value={voiceModelId}
                       onChange={(e) => setVoiceModelId(e.target.value)}
                       variant="boxed"
                       placeholder="voice_xxx"
-                      hint="Raw Echoniq model ID."
                     />
                     <Select
                       label="Voice Provider"
@@ -1449,20 +1354,6 @@ export default function CampaignsPage() {
                     />
                   </div>
                 )}
-
-                <p className="text-caption text-gray-500">
-                  Tier access: {entitlements?.pricingTier || '...'} · Providers:{' '}
-                  {allowedVoiceProviders.join(', ')}
-                </p>
-                {entitlements && !entitlements.allowAdvancedVoiceConfig && (
-                  <p className="text-caption text-gray-500">
-                    Advanced mode unlocks on Patron Growth and Sovereign tiers.
-                  </p>
-                )}
-                      </div>
-                    </Frame2147241533>
-                  </div>
-                </div>
               </div>
             )}
           </div>
@@ -1509,225 +1400,163 @@ export default function CampaignsPage() {
             />
           )}
 
-          <div className="space-y-2">
-            <label className="block text-caption uppercase tracking-widest text-gray-400">
-              Starter Templates
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {messageTemplateSuggestions.map((template) => (
-                <Button
-                  key={template.id}
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => applyMessageTemplateSuggestion(template.id)}
-                >
-                  {template.label}
-                </Button>
-              ))}
-            </div>
-            <p className="text-caption text-gray-600">
-              Pick one, then customize it below.
-            </p>
-          </div>
-
-          <div className="space-y-2 border border-gray-800 p-3">
-            <label className="block text-caption uppercase tracking-widest text-gray-400">
-              Action CTAs (Post-Vanity)
-            </label>
-            <p className="text-caption text-gray-600">
-              Recommended for {entitlements?.pricingTier || 'your tier'}:
-            </p>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-              {recommendedActionCtaPresets.map((preset) => (
-                <button
-                  key={preset.id}
-                  type="button"
-                  onClick={() => applyActionCtaPreset(preset.id)}
-                  className="text-left border border-gray-800 p-3 hover:border-gray-600 transition-colors"
-                >
-                  <p className="text-body-sm text-gray-100">{preset.label}</p>
-                  <p className="mt-1 text-caption text-gray-500">{preset.action}</p>
-                </button>
-              ))}
-            </div>
-            {additionalActionCtaPresets.length > 0 && (
-              <div className="space-y-2">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => setShowAllActionCtas((prev) => !prev)}
-                >
-                  {showAllActionCtas ? 'Hide More Actions' : 'More Actions'}
-                </Button>
-                {showAllActionCtas && (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                    {additionalActionCtaPresets.map((preset) => (
-                      <button
-                        key={preset.id}
-                        type="button"
-                        onClick={() => applyActionCtaPreset(preset.id)}
-                        className="text-left border border-gray-800 p-3 hover:border-gray-600 transition-colors"
-                      >
-                        <p className="text-body-sm text-gray-100">{preset.label}</p>
-                        <p className="mt-1 text-caption text-gray-500">{preset.action}</p>
-                      </button>
-                    ))}
-                  </div>
-                )}
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <p className="text-caption uppercase tracking-widest text-gray-400">Templates</p>
+              <div className="flex flex-wrap gap-1.5">
+                {messageTemplateSuggestions.map((template) => (
+                  <button
+                    key={template.id}
+                    type="button"
+                    onClick={() => applyMessageTemplateSuggestion(template.id)}
+                    className="px-2.5 py-1 text-caption text-gray-400 border border-[#1a1a1a] hover:text-white hover:border-[#2a2a2a] transition-colors"
+                  >
+                    {template.label}
+                  </button>
+                ))}
               </div>
-            )}
-            <p className="text-caption text-gray-600">
-              Click one to set `{`{call_to_action}`}` and auto-pair voice tone for the action.
-            </p>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-              <Input
-                label="CTA Deadline (optional)"
-                value={ctaDeadline}
-                onChange={(e) => setCtaDeadline(e.target.value)}
-                variant="boxed"
-                placeholder="By Friday 8PM"
-              />
-              <Input
-                label="Proof Instruction (optional)"
-                value={ctaProofInstruction}
-                onChange={(e) => setCtaProofInstruction(e.target.value)}
-                variant="boxed"
-                placeholder="Reply with screenshot link"
-              />
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-caption uppercase tracking-widest text-gray-400">Actions</p>
+              <div className="flex flex-wrap gap-1.5">
+                {recommendedActionCtaPresets.map((preset) => (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    onClick={() => applyActionCtaPreset(preset.id)}
+                    className={`px-3 py-1.5 text-caption border transition-colors ${getSelectedActionCtaPresetId() === preset.id ? 'text-white border-[#333] bg-[#14141480]' : 'text-gray-400 border-[#1a1a1a] hover:text-white hover:border-[#2a2a2a]'}`}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+                {additionalActionCtaPresets.length > 0 && !showAllActionCtas && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllActionCtas(true)}
+                    className="px-3 py-1.5 text-caption text-gray-600 hover:text-gray-400 transition-colors"
+                  >
+                    +{additionalActionCtaPresets.length} more
+                  </button>
+                )}
+                {showAllActionCtas && additionalActionCtaPresets.map((preset) => (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    onClick={() => applyActionCtaPreset(preset.id)}
+                    className={`px-3 py-1.5 text-caption border transition-colors ${getSelectedActionCtaPresetId() === preset.id ? 'text-white border-[#333] bg-[#14141480]' : 'text-gray-400 border-[#1a1a1a] hover:text-white hover:border-[#2a2a2a]'}`}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
+              {getSelectedActionCtaPresetId() && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                  <Input
+                    label="Deadline"
+                    value={ctaDeadline}
+                    onChange={(e) => setCtaDeadline(e.target.value)}
+                    variant="boxed"
+                    placeholder="By Friday 8PM"
+                  />
+                  <Input
+                    label="Proof Instruction"
+                    value={ctaProofInstruction}
+                    onChange={(e) => setCtaProofInstruction(e.target.value)}
+                    variant="boxed"
+                    placeholder="Reply with screenshot link"
+                  />
+                </div>
+              )}
             </div>
           </div>
 
           <div className="space-y-2">
             <label className="block text-caption uppercase tracking-widest text-gray-400">
-              Message Template
+              Message
             </label>
             <textarea
               ref={messageTemplateRef}
-              className="w-full bg-gray-900 border border-gray-800 px-4 py-3 text-white font-light focus:outline-none focus:border-accent transition-colors min-h-[130px]"
+              className="w-full bg-[#0d0d0d] border border-[#1a1a1a] px-4 py-3 text-white font-light text-body-sm focus:outline-none focus:border-[#2a2a2a] transition-colors min-h-[100px] resize-y"
               value={messageTemplate}
               onChange={(e) => setMessageTemplate(e.target.value)}
             />
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1">
               {tokenPreview.map((token) => (
                 <button
                   type="button"
                   key={token}
                   onClick={() => insertTokenIntoMessage(token)}
-                  className="px-2 py-1 border border-gray-800 text-caption text-gray-500 break-all hover:text-white hover:border-gray-600 transition-colors"
+                  className="px-1.5 py-0.5 text-caption text-gray-600 hover:text-gray-300 transition-colors"
                 >
                   {token}
                 </button>
               ))}
             </div>
-            <p className="text-caption text-gray-600">
-              Click any variable to insert it at your cursor.
-            </p>
           </div>
 
-          <div className="space-y-4 border border-gray-800 p-4">
-            <p className="text-caption uppercase tracking-widest text-gray-400">Variables</p>
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <p className="text-caption uppercase tracking-widest text-gray-400">Variables</p>
+              {presets.length > 0 && (
+                <select
+                  value={selectedPresetId}
+                  onChange={(e) => {
+                    const presetId = e.target.value
+                    setSelectedPresetId(presetId)
+                    const selected = presets.find((preset) => preset.id === presetId)
+                    if (selected) applyPreset(selected)
+                  }}
+                  className="bg-transparent border-b border-[#1a1a1a] text-caption text-gray-400 py-1 focus:outline-none focus:border-[#2a2a2a]"
+                >
+                  <option value="">Presets</option>
+                  {presets.map((preset) => (
+                    <option key={preset.id} value={preset.id}>{preset.name}</option>
+                  ))}
+                </select>
+              )}
+              <div className="flex items-center gap-2 ml-auto">
+                <input
+                  type="text"
+                  value={presetName}
+                  onChange={(e) => setPresetName(e.target.value)}
+                  placeholder="Save as..."
+                  className="bg-transparent border-b border-[#1a1a1a] text-caption text-gray-400 py-1 w-28 focus:outline-none focus:border-[#2a2a2a] placeholder:text-gray-700"
+                />
+                <button type="button" onClick={savePreset} disabled={presetActionLoading} className="text-caption text-gray-500 hover:text-white transition-colors disabled:opacity-40">Save</button>
+                {selectedPresetId && (
+                  <button type="button" onClick={deletePreset} disabled={presetActionLoading} className="text-caption text-gray-600 hover:text-gray-400 transition-colors disabled:opacity-40">Del</button>
+                )}
+              </div>
+            </div>
+            {presetError && <p className="text-caption text-status-error">{presetError}</p>}
+            {presetMessage && <p className="text-caption text-gray-500">{presetMessage}</p>}
+
             <Input
-              label="Stan Club Name"
+              label="Fan Club Name"
               value={fanClubName}
               onChange={(e) => setFanClubName(e.target.value)}
               variant="boxed"
               placeholder="Cherubs, Furies, Harpies, Sphinxes..."
             />
 
-            <div className="border border-gray-800 p-3 space-y-3">
-              <p className="text-caption uppercase tracking-widest text-gray-500">Variable Presets</p>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
-                <div className="lg:col-span-5">
-                  <Select
-                    label="Saved Presets"
-                    value={selectedPresetId}
-                    onChange={(e) => {
-                      const presetId = e.target.value
-                      setSelectedPresetId(presetId)
-                      const selected = presets.find((preset) => preset.id === presetId)
-                      if (selected) applyPreset(selected)
-                    }}
-                    options={[
-                      { value: '', label: presetsLoading ? 'Loading presets...' : 'Select a preset' },
-                      ...presets.map((preset) => ({
-                        value: preset.id,
-                        label: preset.name,
-                      })),
-                    ]}
-                    variant="boxed"
-                  />
-                </div>
-                <div className="lg:col-span-5">
-                  <Input
-                    label="Preset Name"
-                    value={presetName}
-                    onChange={(e) => setPresetName(e.target.value)}
-                    variant="boxed"
-                    placeholder="Sphinxes Core Vars"
-                  />
-                </div>
-                <div className="lg:col-span-2 flex items-end gap-2">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={savePreset}
-                    disabled={presetActionLoading}
-                  >
-                    Save
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={deletePreset}
-                    disabled={presetActionLoading || !selectedPresetId}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
-              {presetError && <p className="text-caption text-status-error">{presetError}</p>}
-              {presetMessage && <p className="text-caption text-gray-500">{presetMessage}</p>}
-              <p className="text-caption text-gray-600">
-                Saving with an existing name updates that preset.
-              </p>
-            </div>
-
             <div className="space-y-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <Button
+              <div className="flex items-center gap-1">
+                <button
                   type="button"
-                  variant={variableMode === 'simple' ? 'outline' : 'ghost'}
                   onClick={() => setVariableMode('simple')}
+                  className={`px-2.5 py-1 text-caption transition-colors ${variableMode === 'simple' ? 'text-white bg-[#141414]' : 'text-gray-500 hover:text-gray-300'}`}
                 >
-                  Simple Mode
-                </Button>
-                <Button
+                  Simple
+                </button>
+                <button
                   type="button"
-                  variant={variableMode === 'advanced' ? 'outline' : 'ghost'}
                   onClick={() => setVariableMode('advanced')}
+                  className={`px-2.5 py-1 text-caption transition-colors ${variableMode === 'advanced' ? 'text-white bg-[#141414]' : 'text-gray-500 hover:text-gray-300'}`}
                 >
-                  Advanced Mode
-                </Button>
+                  Advanced
+                </button>
               </div>
-
-              <Select
-                label="Set Call To Action"
-                value={getSelectedActionCtaPresetId()}
-                onChange={(e) => {
-                  const presetId = e.target.value
-                  if (!presetId) return
-                  applyActionCtaPreset(presetId)
-                }}
-                options={[
-                  { value: '', label: 'Choose a CTA action preset' },
-                  ...tieredActionCtaPresets.map((preset) => ({
-                    value: preset.id,
-                    label: preset.label,
-                  })),
-                ]}
-                variant="boxed"
-              />
 
               {variableMode === 'simple' ? (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -1744,332 +1573,208 @@ export default function CampaignsPage() {
                       }
                       variant="boxed"
                       placeholder={field.placeholder}
-                      hint={field.hint}
                     />
                   ))}
                 </div>
               ) : (
-                <>
-                  {entitlements && (
-                    <p className="text-caption text-gray-600">
-                      Max custom variables for {entitlements.pricingTier}: {entitlements.maxCustomVariables}
-                    </p>
-                  )}
-                  <p className="text-caption uppercase tracking-widest text-gray-500">Custom Variables</p>
+                <div className="space-y-2">
                   {customVariables.map((item, index) => (
-                    <div key={`custom-var-${index}`} className="grid grid-cols-1 lg:grid-cols-12 gap-3">
-                      <div className="lg:col-span-5">
-                        <Input
-                          label={`Key ${index + 1}`}
-                          value={item.key}
-                          onChange={(e) => updateCustomVariable(index, 'key', e.target.value)}
-                          variant="boxed"
-                          placeholder="oryx_variable_name"
-                        />
-                      </div>
-                      <div className="lg:col-span-5">
-                        <Input
-                          label={`Value ${index + 1}`}
-                          value={item.value}
-                          onChange={(e) => updateCustomVariable(index, 'value', e.target.value)}
-                          variant="boxed"
-                          placeholder="42"
-                        />
-                      </div>
-                      <div className="lg:col-span-2 flex items-end">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          onClick={() => removeCustomVariable(index)}
-                          disabled={customVariables.length === 1}
-                        >
-                          Remove
-                        </Button>
-                      </div>
+                    <div key={`custom-var-${index}`} className="flex items-center gap-2">
+                      <input
+                        value={item.key}
+                        onChange={(e) => updateCustomVariable(index, 'key', e.target.value)}
+                        placeholder="key"
+                        className="flex-1 bg-transparent border-b border-[#1a1a1a] text-body-sm text-white py-1.5 focus:outline-none focus:border-[#2a2a2a] placeholder:text-gray-700"
+                      />
+                      <input
+                        value={item.value}
+                        onChange={(e) => updateCustomVariable(index, 'value', e.target.value)}
+                        placeholder="value"
+                        className="flex-1 bg-transparent border-b border-[#1a1a1a] text-body-sm text-white py-1.5 focus:outline-none focus:border-[#2a2a2a] placeholder:text-gray-700"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeCustomVariable(index)}
+                        disabled={customVariables.length === 1}
+                        className="text-caption text-gray-600 hover:text-gray-400 transition-colors disabled:opacity-30"
+                      >
+                        &times;
+                      </button>
                     </div>
                   ))}
-                  <Button type="button" variant="ghost" onClick={addCustomVariable}>
-                    Add Variable
-                  </Button>
-                </>
+                  <button type="button" onClick={addCustomVariable} className="text-caption text-gray-500 hover:text-white transition-colors">
+                    + Add variable
+                  </button>
+                </div>
               )}
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              id="dry-run"
-              type="button"
-              role="checkbox"
-              aria-checked={dryRun}
-              onClick={() => setDryRun((prev) => !prev)}
-              className="h-5 w-5 rounded-sm border border-gray-600 bg-gray-900 flex items-center justify-center focus:outline-none focus:ring-1 focus:ring-accent"
-            >
-              {dryRun ? <span className="h-2.5 w-2.5 bg-accent block rounded-[1px]" /> : null}
-            </button>
-            <label htmlFor="dry-run" className="text-body-sm text-gray-300 select-none">
-              Dry run (no live emails sent)
+          <div className="flex items-center gap-4 pt-2 border-t border-[#1a1a1a]">
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <button
+                type="button"
+                role="checkbox"
+                aria-checked={dryRun}
+                onClick={() => setDryRun((prev) => !prev)}
+                className="h-4 w-4 border border-[#2a2a2a] bg-[#0d0d0d] flex items-center justify-center focus:outline-none"
+              >
+                {dryRun ? <span className="h-2 w-2 bg-white block" /> : null}
+              </button>
+              <span className="text-caption text-gray-400">Dry run</span>
             </label>
-          </div>
 
-          <div className="flex items-center gap-3">
             <Button
               variant="outline"
+              size="sm"
               onClick={submitCampaign}
               disabled={loading || !messageTemplate.trim()}
             >
               {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Running...
-                </>
+                <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />Running...</>
               ) : dryRun ? (
-                <>
-                  <TestTube2 className="w-4 h-4 mr-2" />
-                  Run Preview
-                </>
+                <><TestTube2 className="w-3.5 h-3.5 mr-1.5" />Preview</>
               ) : (
-                <>
-                  <Send className="w-4 h-4 mr-2" />
-                  Send Campaign
-                </>
+                <><Send className="w-3.5 h-3.5 mr-1.5" />Send</>
               )}
             </Button>
             {deliveryMode === 'VOICE' && (
-              <Button
-                variant="ghost"
+              <button
+                type="button"
                 onClick={sendTestVoiceToMe}
-                disabled={
-                  testSending ||
-                  loading ||
-                  !messageTemplate.trim() ||
-                  (entitlements ? !entitlements.allowVoiceCampaigns : false)
-                }
+                disabled={testSending || loading || !messageTemplate.trim() || (entitlements ? !entitlements.allowVoiceCampaigns : false)}
+                className="text-caption text-gray-500 hover:text-white transition-colors disabled:opacity-40"
               >
-                {testSending ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Sending Test...
-                  </>
-                ) : (
-                  'Test Voice to Me'
-                )}
-              </Button>
+                {testSending ? 'Sending...' : 'Test Voice'}
+              </button>
             )}
-            {error && <p className="text-caption text-status-error">{error}</p>}
+            {error && <p className="text-caption text-status-error ml-2">{error}</p>}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {result && (
-        <Card variant="default">
-          <CardHeader>
-            <CardTitle>Campaign Result</CardTitle>
-            <CardDescription>
-              Campaign ID: {result.campaignId} · Status: {result.status}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {result.dispatch && (
-              <p className="text-body-sm text-gray-300">
-                Dispatch: {result.dispatch.mode} via {result.dispatch.provider} (
-                {result.dispatch.deliveryMode || 'TEXT'}
-                {result.dispatch.voiceProvider ? ` · ${result.dispatch.voiceProvider}` : ''}) ({result.dispatch.fromEmail})
-              </p>
-            )}
-
+        <div className="bg-[#0a0a0a] border border-[#1a1a1a]">
+          <div className="px-6 py-4 border-b border-[#1a1a1a]">
+            <h3 className="text-sm font-medium text-gray-400">Result</h3>
+            <p className="text-caption text-gray-500 mt-0.5">
+              {result.campaignId} · {result.status}
+              {result.dispatch ? ` · ${result.dispatch.deliveryMode || 'TEXT'} via ${result.dispatch.provider}` : ''}
+            </p>
+          </div>
+          <div className="px-6 py-5 space-y-3">
             {result.totals && (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">Segment</p>
-                  <p className="text-body-lg text-white">{result.totals.segmentCount}</p>
-                </div>
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">Queued</p>
-                  <p className="text-body-lg text-white">{result.totals.queuedRecipients}</p>
-                </div>
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">Sent</p>
-                  <p className="text-body-lg text-white">{result.totals.sent}</p>
-                </div>
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">Failed</p>
-                  <p className="text-body-lg text-white">{result.totals.failed}</p>
-                </div>
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">Preview Only</p>
-                  <p className="text-body-lg text-white">{result.totals.previewOnly}</p>
-                </div>
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption text-gray-500">No Email</p>
-                  <p className="text-body-lg text-white">{result.totals.skippedNoEmail}</p>
-                </div>
+              <div className="flex items-center gap-6 text-body-sm">
+                <span className="text-gray-400">Segment <span className="text-white">{result.totals.segmentCount}</span></span>
+                <span className="text-gray-400">Sent <span className="text-white">{result.totals.sent}</span></span>
+                <span className="text-gray-400">Failed <span className="text-white">{result.totals.failed}</span></span>
+                <span className="text-gray-400">Preview <span className="text-white">{result.totals.previewOnly}</span></span>
               </div>
             )}
 
             {result.note && <p className="text-caption text-gray-500">{result.note}</p>}
-            {result.reliability && (
-              <p className="text-caption text-gray-500">
-                Reliability: retries {result.reliability.retries || 0} · timeouts{' '}
-                {result.reliability.timedOutAttempts || 0} · provider errors{' '}
-                {result.reliability.providerErrors || 0}
-              </p>
-            )}
-            {result.variables && (
-              <p className="text-caption text-gray-500">
-                Variables acknowledged: {result.variables.builtIn.length} built-in,{' '}
-                {result.variables.custom.length} custom.
-              </p>
-            )}
 
             {result.deliveryResultsPreview && result.deliveryResultsPreview.length > 0 && (
-              <div className="border border-gray-800 overflow-auto">
-                <table className="w-full table-fixed text-left">
-                  <thead className="bg-gray-900/70">
-                    <tr>
-                      <th className="px-4 py-3 text-caption uppercase tracking-widest text-gray-400 w-2/5">Email</th>
-                      <th className="px-4 py-3 text-caption uppercase tracking-widest text-gray-400 w-1/5">Status</th>
-                      <th className="px-4 py-3 text-caption uppercase tracking-widest text-gray-400 w-2/5">Message ID</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {result.deliveryResultsPreview.map((item) => (
-                      <tr key={`${item.fanId}-${item.email}`} className="border-t border-gray-800">
-                        <td className="px-4 py-3 text-body-sm text-gray-200 break-all">{item.email}</td>
-                        <td className="px-4 py-3 text-body-sm text-gray-200 break-words">{item.status}</td>
-                        <td className="px-4 py-3 text-body-sm text-gray-500 break-all">{item.messageId || '-'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="space-y-1 pt-2">
+                {result.deliveryResultsPreview.map((item) => (
+                  <div key={`${item.fanId}-${item.email}`} className="flex items-center gap-4 py-1 text-caption">
+                    <span className="text-gray-300 min-w-0 truncate">{item.email}</span>
+                    <span className="text-gray-500">{item.status}</span>
+                  </div>
+                ))}
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
-      <Card variant="default">
-        <CardHeader>
-          <CardTitle>CTA Analytics</CardTitle>
-          <CardDescription>Completion signals for post-vanity action missions.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <div className="bg-[#0a0a0a] border border-[#1a1a1a]">
+        <div className="px-6 py-4 border-b border-[#1a1a1a] flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-medium text-gray-400">Analytics</h3>
+            <p className="text-caption text-gray-500 mt-0.5">Action completion signals.</p>
+          </div>
+          <button type="button" onClick={() => { void fetchAnalytics(); void fetchSavedVoices() }} className="text-caption text-gray-600 hover:text-gray-300 transition-colors">Refresh</button>
+        </div>
+        <div className="px-6 py-5 space-y-4">
           {!analytics ? (
-            <p className="text-body-sm text-gray-500">No analytics yet.</p>
+            <p className="text-caption text-gray-500">No data yet.</p>
           ) : (
             <>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption uppercase tracking-widest text-gray-500">Top CTA Keys</p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <p className="text-caption text-gray-500">CTA Keys</p>
                   {analytics.ctaByKey.length === 0 ? (
-                    <p className="text-caption text-gray-600 mt-2">No CTA completions logged yet.</p>
+                    <p className="text-caption text-gray-600">None logged.</p>
                   ) : (
-                    <div className="mt-2 space-y-1">
-                      {analytics.ctaByKey.slice(0, 6).map((item) => (
-                        <p key={item.ctaKey} className="text-body-sm text-gray-200">
-                          {item.ctaKey}: {item.count}
-                        </p>
-                      ))}
-                    </div>
+                    analytics.ctaByKey.slice(0, 6).map((item) => (
+                      <div key={item.ctaKey} className="flex items-center justify-between text-caption">
+                        <span className="text-gray-300">{item.ctaKey}</span>
+                        <span className="text-gray-500 tabular-nums">{item.count}</span>
+                      </div>
+                    ))
                   )}
                 </div>
-                <div className="border border-gray-800 p-3">
-                  <p className="text-caption uppercase tracking-widest text-gray-500">Completion Status</p>
+                <div className="space-y-1">
+                  <p className="text-caption text-gray-500">Status</p>
                   {analytics.completionByStatus.length === 0 ? (
-                    <p className="text-caption text-gray-600 mt-2">No status data yet.</p>
+                    <p className="text-caption text-gray-600">None.</p>
                   ) : (
-                    <div className="mt-2 space-y-1">
-                      {analytics.completionByStatus.map((item) => (
-                        <p key={item.status} className="text-body-sm text-gray-200">
-                          {item.status}: {item.count}
-                        </p>
-                      ))}
-                    </div>
+                    analytics.completionByStatus.map((item) => (
+                      <div key={item.status} className="flex items-center justify-between text-caption">
+                        <span className="text-gray-300">{item.status}</span>
+                        <span className="text-gray-500 tabular-nums">{item.count}</span>
+                      </div>
+                    ))
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Button type="button" variant="ghost" onClick={() => void fetchAnalytics()}>
-                  Refresh Analytics
-                </Button>
-                <Button type="button" variant="ghost" onClick={() => void fetchSavedVoices()}>
-                  Refresh Voices
-                </Button>
+
+              <div className="flex items-center gap-2 pt-2 border-t border-[#1a1a1a]">
+                <input
+                  value={completionProofUrl}
+                  onChange={(e) => setCompletionProofUrl(e.target.value)}
+                  placeholder="Proof URL"
+                  className="flex-1 bg-transparent border-b border-[#1a1a1a] text-caption text-white py-1.5 focus:outline-none focus:border-[#2a2a2a] placeholder:text-gray-700"
+                />
+                <input
+                  value={completionProofNote}
+                  onChange={(e) => setCompletionProofNote(e.target.value)}
+                  placeholder="Note"
+                  className="flex-1 bg-transparent border-b border-[#1a1a1a] text-caption text-white py-1.5 focus:outline-none focus:border-[#2a2a2a] placeholder:text-gray-700"
+                />
+                <button type="button" onClick={logCtaCompletion} className="text-caption text-gray-500 hover:text-white transition-colors whitespace-nowrap">Log</button>
               </div>
-              <div className="border border-gray-800 p-3 space-y-3">
-                <p className="text-caption uppercase tracking-widest text-gray-500">Log CTA Completion</p>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                  <Input
-                    label="Proof URL"
-                    value={completionProofUrl}
-                    onChange={(e) => setCompletionProofUrl(e.target.value)}
-                    variant="boxed"
-                    placeholder="https://..."
-                  />
-                  <Input
-                    label="Proof Note"
-                    value={completionProofNote}
-                    onChange={(e) => setCompletionProofNote(e.target.value)}
-                    variant="boxed"
-                    placeholder="What was completed"
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button type="button" variant="outline" onClick={logCtaCompletion}>
-                    Log Completion
-                  </Button>
-                  {completionLogMessage && <p className="text-caption text-gray-500">{completionLogMessage}</p>}
-                </div>
-              </div>
+              {completionLogMessage && <p className="text-caption text-gray-500">{completionLogMessage}</p>}
             </>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card variant="default">
-        <CardHeader>
-          <CardTitle>Recent Runs</CardTitle>
-          <CardDescription>Latest campaign previews and sends stored in Stanvault.</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="bg-[#0a0a0a] border border-[#1a1a1a]">
+        <div className="px-6 py-4 border-b border-[#1a1a1a]">
+          <h3 className="text-sm font-medium text-gray-400">History</h3>
+        </div>
+        <div className="px-6 py-5">
           {historyLoading ? (
-            <p className="text-body-sm text-gray-500">Loading history...</p>
+            <p className="text-caption text-gray-500">Loading...</p>
           ) : history.length === 0 ? (
-            <p className="text-body-sm text-gray-500">No campaign runs yet.</p>
+            <p className="text-caption text-gray-500">No runs yet.</p>
           ) : (
-            <div className="border border-gray-800 overflow-auto">
-              <table className="w-full table-fixed text-left">
-                <thead className="bg-gray-900/70">
-                  <tr>
-                    <th className="px-4 py-3 text-caption uppercase tracking-widest text-gray-400 w-1/4">Time</th>
-                    <th className="px-4 py-3 text-caption uppercase tracking-widest text-gray-400 w-1/8">Status</th>
-                    <th className="px-4 py-3 text-caption uppercase tracking-widest text-gray-400 w-1/6">Mode</th>
-                    <th className="px-4 py-3 text-caption uppercase tracking-widest text-gray-400 w-1/4">Subject</th>
-                    <th className="px-4 py-3 text-caption uppercase tracking-widest text-gray-400 w-1/12">Sent</th>
-                    <th className="px-4 py-3 text-caption uppercase tracking-widest text-gray-400 w-1/12">Failed</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {history.map((run) => (
-                    <tr key={run.id} className="border-t border-gray-800">
-                      <td className="px-4 py-3 text-body-sm text-gray-300 break-words">
-                        {new Date(run.createdAt).toLocaleString()}
-                      </td>
-                      <td className="px-4 py-3 text-body-sm text-gray-200 break-words">{run.status}</td>
-                      <td className="px-4 py-3 text-body-sm text-gray-200 break-words">
-                        {run.dispatchMode || (run.dryRun ? 'preview_only' : '-')}
-                      </td>
-                      <td className="px-4 py-3 text-body-sm text-gray-200 break-words">{run.subject || '-'}</td>
-                      <td className="px-4 py-3 text-body-sm text-gray-200">{run.sentCount}</td>
-                      <td className="px-4 py-3 text-body-sm text-gray-200">{run.failedCount}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="space-y-0.5">
+              {history.map((run) => (
+                <div key={run.id} className="flex items-center gap-4 py-2 text-caption border-b border-[#111] last:border-0">
+                  <span className="text-gray-500 tabular-nums w-36 shrink-0">{new Date(run.createdAt).toLocaleString()}</span>
+                  <span className="text-gray-400 w-16 shrink-0">{run.status}</span>
+                  <span className="text-gray-300 truncate flex-1">{run.subject || '-'}</span>
+                  <span className="text-gray-400 tabular-nums">{run.sentCount} sent</span>
+                  {run.failedCount > 0 && <span className="text-status-error tabular-nums">{run.failedCount} failed</span>}
+                </div>
+              ))}
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

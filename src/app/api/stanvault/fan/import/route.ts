@@ -112,6 +112,28 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Auto-connect: ensure PlatformConnection exists for DASHAM
+    // When the first tip arrives from Oryx, auto-create the connection
+    const existingConnection = await prisma.platformConnection.findUnique({
+      where: {
+        userId_platform: { userId: artist.id, platform: Platform.DASHAM },
+      },
+    })
+
+    if (!existingConnection) {
+      await prisma.platformConnection.create({
+        data: {
+          userId: artist.id,
+          platform: Platform.DASHAM,
+          status: 'CONNECTED',
+          platformUserId: body.artistId, // Oryx artist ID
+          lastSyncAt: new Date(),
+          fanCount: 1,
+        },
+      })
+      console.log(`[Ecosystem] Auto-connected DASHAM for artist "${body.artistName}"`)
+    }
+
     // Find or create fan record
     const existingFan = await prisma.fan.findFirst({
       where: {
@@ -433,6 +455,15 @@ export async function POST(request: NextRequest) {
           })
         }
       }
+
+      // Update fan count on PlatformConnection
+      await prisma.platformConnection.updateMany({
+        where: { userId: artist.id, platform: Platform.DASHAM },
+        data: {
+          fanCount: { increment: 1 },
+          lastSyncAt: now,
+        },
+      })
 
       return NextResponse.json({
         imported: true,
