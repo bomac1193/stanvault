@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { PageHeader } from '@/components/layout'
 import { Button, Card, CardHeader, CardTitle, CardContent, Select } from '@/components/ui'
-import { Download, FileJson, FileText } from 'lucide-react'
 
 const fields = [
   { id: 'displayName', label: 'Name' },
@@ -103,11 +102,8 @@ export default function ExportPage() {
                       : 'border-[#1a1a1a] hover:border-[#333]'
                   }`}
                 >
-                  <FileText className={`w-8 h-8 mx-auto mb-2 ${
-                    format === 'csv' ? 'text-accent' : 'text-gray-500'
-                  }`} />
                   <p className="font-medium text-white">CSV</p>
-                  <p className="text-xs text-gray-500">Excel compatible</p>
+                  <p className="text-xs text-gray-500 mt-1">Excel compatible</p>
                 </button>
                 <button
                   onClick={() => setFormat('json')}
@@ -117,11 +113,8 @@ export default function ExportPage() {
                       : 'border-[#1a1a1a] hover:border-[#333]'
                   }`}
                 >
-                  <FileJson className={`w-8 h-8 mx-auto mb-2 ${
-                    format === 'json' ? 'text-accent' : 'text-gray-500'
-                  }`} />
                   <p className="font-medium text-white">JSON</p>
-                  <p className="text-xs text-gray-500">Developer friendly</p>
+                  <p className="text-xs text-gray-500 mt-1">Developer friendly</p>
                 </button>
               </div>
             </CardContent>
@@ -224,7 +217,6 @@ export default function ExportPage() {
                   disabled={selectedFields.length === 0}
                   isLoading={isExporting}
                 >
-                  <Download className="w-4 h-4 mr-2" />
                   Export {format.toUpperCase()}
                 </Button>
               </div>
