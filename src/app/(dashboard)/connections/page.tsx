@@ -62,20 +62,16 @@ export default function ConnectionsPage() {
     mutationFn: async (platform: string) => {
       setConnectingPlatform(platform)
 
-      // For Spotify, try real OAuth first
       if (platform === 'SPOTIFY') {
-        try {
-          const authRes = await fetch('/api/auth/spotify')
-          const authData = await authRes.json()
+        const authRes = await fetch('/api/auth/spotify')
+        const authData = await authRes.json().catch(() => ({}))
 
-          if (authData.authUrl) {
-            // Redirect to Spotify OAuth
-            window.location.href = authData.authUrl
-            return { redirecting: true }
-          }
-        } catch {
-          // Fall back to mock if Spotify not configured
+        if (!authRes.ok || !authData.authUrl) {
+          throw new Error(authData.error || 'Spotify integration not configured')
         }
+
+        window.location.href = authData.authUrl
+        return { redirecting: true }
       }
 
       if (platform === 'YOUTUBE') {
@@ -90,6 +86,10 @@ export default function ConnectionsPage() {
         return { redirecting: true }
       }
 
+      if (platform === 'EMAIL') {
+        return { emailImport: true }
+      }
+
       // Oryx: server-to-server pull (no OAuth redirect)
       if (platform === 'ORYX') {
         const res = await fetch('/api/platforms/oryx/connect', { method: 'POST' })
@@ -100,7 +100,7 @@ export default function ConnectionsPage() {
         return res.json()
       }
 
-      // Default mock connection for other platforms
+      // Unsupported platforms return a descriptive 501 until their real integration exists.
       const res = await fetch(`/api/platforms/${platform.toLowerCase()}/connect`, {
         method: 'POST',
       })
@@ -111,11 +111,25 @@ export default function ConnectionsPage() {
       return res.json()
     },
     onSuccess: (data) => {
-      if (!data?.redirecting) {
-        queryClient.invalidateQueries({ queryKey: ['platforms'] })
-        queryClient.invalidateQueries({ queryKey: ['dashboard'] })
-        queryClient.invalidateQueries({ queryKey: ['fans'] })
+      if (data?.redirecting) {
+        return
       }
+
+      if (data?.emailImport) {
+        document.getElementById('email-import')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        setNotification({ type: 'success', message: 'Upload a CSV below to import your email subscribers.' })
+        return
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['platforms'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      queryClient.invalidateQueries({ queryKey: ['fans'] })
+    },
+    onError: (error) => {
+      setNotification({
+        type: 'error',
+        message: error instanceof Error ? error.message : 'Failed to connect platform',
+      })
     },
     onSettled: (data) => {
       if (!data?.redirecting) {
@@ -229,7 +243,9 @@ export default function ConnectionsPage() {
           />
         </div>
 
-        <EmailImportDropzone onImportComplete={handleEmailImportComplete} />
+        <div id="email-import">
+          <EmailImportDropzone onImportComplete={handleEmailImportComplete} />
+        </div>
       </div>
     </div>
   )

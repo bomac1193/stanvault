@@ -23,6 +23,7 @@ interface OnboardingState {
   nextStep: () => void
   prevStep: () => void
   setProfileData: (data: Partial<ProfileData>) => void
+  setConnectedPlatforms: (platforms: ConnectedPlatform[]) => void
   addConnectedPlatform: (platform: ConnectedPlatform) => void
   removeConnectedPlatform: (platform: string) => void
   setIsConnecting: (isConnecting: boolean) => void
@@ -51,6 +52,7 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
     set((state) => ({
       profileData: { ...state.profileData, ...data },
     })),
+  setConnectedPlatforms: (connectedPlatforms) => set({ connectedPlatforms }),
   addConnectedPlatform: (platform) =>
     set((state) => ({
       connectedPlatforms: [...state.connectedPlatforms.filter((p) => p.platform !== platform.platform), platform],

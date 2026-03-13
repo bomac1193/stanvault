@@ -1,6 +1,7 @@
 'use client'
 
 import { AnimatePresence } from 'framer-motion'
+import { useEffect } from 'react'
 import { useOnboardingStore } from '@/stores/onboarding-store'
 import {
   WelcomeStep,
@@ -9,8 +10,88 @@ import {
   SuccessStep,
 } from '@/components/onboarding'
 
+interface OnboardingResponse {
+  artistName: string | null
+  genre: string | null
+  careerStage: string | null
+  location: string | null
+  onboardingStep: number
+  onboardingCompleted: boolean
+  platformConnections: Array<{
+    platform: string
+    fanCount: number
+    status: string
+  }>
+}
+
 export default function OnboardingPage() {
-  const { step, nextStep, prevStep } = useOnboardingStore()
+  const {
+    step,
+    nextStep,
+    prevStep,
+    setStep,
+    setProfileData,
+    setConnectedPlatforms,
+  } = useOnboardingStore()
+
+  useEffect(() => {
+    let isCancelled = false
+
+    const syncOnboardingState = async (options?: { hydrateProfile?: boolean }) => {
+      try {
+        const response = await fetch('/api/users/onboarding', { cache: 'no-store' })
+        if (!response.ok) {
+          return
+        }
+
+        const data = (await response.json()) as OnboardingResponse
+        if (isCancelled) {
+          return
+        }
+
+        if (options?.hydrateProfile) {
+          setProfileData({
+            artistName: data.artistName ?? '',
+            genre: data.genre ?? '',
+            careerStage: data.careerStage ?? '',
+            location: data.location ?? '',
+          })
+        }
+
+        setConnectedPlatforms(
+          data.platformConnections
+            .filter((connection) => connection.status === 'CONNECTED')
+            .map((connection) => ({
+              platform: connection.platform,
+              fanCount: connection.fanCount,
+            }))
+        )
+
+        if (data.onboardingCompleted) {
+          setStep(4)
+          return
+        }
+
+        if (data.onboardingStep >= 1 && data.onboardingStep <= 4) {
+          setStep(data.onboardingStep)
+        }
+      } catch (error) {
+        console.error('Failed to sync onboarding state:', error)
+      }
+    }
+
+    const handleFocus = () => {
+      void syncOnboardingState()
+    }
+
+    void syncOnboardingState({ hydrateProfile: true })
+    window.addEventListener('focus', handleFocus)
+
+    return () => {
+      isCancelled = true
+      window.removeEventListener('focus', handleFocus)
+    }
+  }, [setConnectedPlatforms, setProfileData, setStep])
 
   return (
     <div className="min-h-screen bg-vault-black flex items-center justify-center p-4">

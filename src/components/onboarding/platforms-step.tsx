@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Button, Card, Modal } from '@/components/ui'
+import { useRouter } from 'next/navigation'
+import { Button, Card } from '@/components/ui'
 import { useOnboardingStore } from '@/stores/onboarding-store'
 import {
   Music,
@@ -11,7 +11,6 @@ import {
   Twitter,
   Mail,
   Check,
-  Loader2,
 } from 'lucide-react'
 
 interface PlatformsStepProps {
@@ -20,52 +19,27 @@ interface PlatformsStepProps {
 }
 
 const platforms = [
-  { id: 'SPOTIFY', name: 'Spotify', icon: Music, color: '#1DB954' },
-  { id: 'INSTAGRAM', name: 'Instagram', icon: Instagram, color: '#E4405F' },
-  { id: 'YOUTUBE', name: 'YouTube', icon: Youtube, color: '#FF0000' },
-  { id: 'TIKTOK', name: 'TikTok', icon: Music, color: '#000000' },
-  { id: 'TWITTER', name: 'Twitter', icon: Twitter, color: '#1DA1F2' },
-  { id: 'EMAIL', name: 'Email List', icon: Mail, color: '#C9A227' },
+  { id: 'SPOTIFY', name: 'Spotify', icon: Music, color: '#1DB954', status: 'available' as const },
+  { id: 'INSTAGRAM', name: 'Instagram', icon: Instagram, color: '#E4405F', status: 'soon' as const },
+  { id: 'YOUTUBE', name: 'YouTube', icon: Youtube, color: '#FF0000', status: 'available' as const },
+  { id: 'TIKTOK', name: 'TikTok', icon: Music, color: '#000000', status: 'soon' as const },
+  { id: 'TWITTER', name: 'Twitter', icon: Twitter, color: '#1DA1F2', status: 'soon' as const },
+  { id: 'EMAIL', name: 'Email List', icon: Mail, color: '#C9A227', status: 'import' as const },
 ]
 
 export function PlatformsStep({ onNext, onBack }: PlatformsStepProps) {
-  const { connectedPlatforms, addConnectedPlatform, isConnecting, setIsConnecting } =
-    useOnboardingStore()
-  const [connectingPlatform, setConnectingPlatform] = useState<string | null>(null)
-  const [showModal, setShowModal] = useState(false)
+  const router = useRouter()
+  const { connectedPlatforms } = useOnboardingStore()
 
   const hasConnections = connectedPlatforms.length > 0
-
-  const handleConnect = async (platformId: string) => {
-    setConnectingPlatform(platformId)
-    setShowModal(true)
-    setIsConnecting(true)
-
-    // Simulate OAuth flow delay
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    try {
-      const res = await fetch(`/api/platforms/${platformId.toLowerCase()}/connect`, {
-        method: 'POST',
-      })
-
-      if (!res.ok) {
-        throw new Error('Connection failed')
-      }
-
-      const data = await res.json()
-      addConnectedPlatform({ platform: platformId, fanCount: data.fanCount })
-    } catch (error) {
-      console.error('Failed to connect platform:', error)
-    } finally {
-      setIsConnecting(false)
-      setShowModal(false)
-      setConnectingPlatform(null)
-    }
-  }
+  const totalAudience = connectedPlatforms.reduce((acc, platform) => acc + platform.fanCount, 0)
 
   const isConnected = (platformId: string) =>
-    connectedPlatforms.some((p) => p.platform === platformId)
+    connectedPlatforms.some((platform) => platform.platform === platformId)
+
+  const openConnections = () => {
+    router.push('/connections')
+  }
 
   return (
     <motion.div
@@ -78,24 +52,27 @@ export function PlatformsStep({ onNext, onBack }: PlatformsStepProps) {
         Connect your platforms
       </h2>
       <p className="text-vault-muted mb-8 text-center">
-        Connect at least one platform to start discovering your fans
+        Real connections now happen in Connections. This step reads back whatever you have already linked.
       </p>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
         {platforms.map((platform) => {
           const connected = isConnected(platform.id)
           const Icon = platform.icon
+          const isOpenable = platform.status !== 'soon'
 
           return (
             <Card
               key={platform.id}
               variant="outlined"
-              className={`p-4 cursor-pointer transition-all duration-200 ${
+              className={`p-4 transition-all duration-200 ${
                 connected
                   ? 'border-status-success bg-status-success/10'
-                  : 'hover:border-gold hover:bg-gold/5'
+                  : isOpenable
+                  ? 'cursor-pointer hover:border-gold hover:bg-gold/5'
+                  : 'opacity-60'
               }`}
-              onClick={() => !connected && !isConnecting && handleConnect(platform.id)}
+              onClick={() => !connected && isOpenable && openConnections()}
             >
               <div className="flex flex-col items-center gap-3">
                 <div
@@ -110,11 +87,17 @@ export function PlatformsStep({ onNext, onBack }: PlatformsStepProps) {
                 <span className="text-sm font-medium text-warm-white">
                   {platform.name}
                 </span>
-                {connected && (
+                {connected ? (
                   <div className="flex items-center gap-1 text-status-success text-xs">
                     <Check className="w-3 h-3" />
                     Connected
                   </div>
+                ) : platform.status === 'available' ? (
+                  <div className="text-xs text-gold">Open Connections</div>
+                ) : platform.status === 'import' ? (
+                  <div className="text-xs text-vault-muted">Import in Connections</div>
+                ) : (
+                  <div className="text-xs text-vault-muted">Coming soon</div>
                 )}
               </div>
             </Card>
@@ -133,15 +116,17 @@ export function PlatformsStep({ onNext, onBack }: PlatformsStepProps) {
             {connectedPlatforms.length > 1 ? 's' : ''} connected
           </p>
           <p className="text-sm text-vault-muted">
-            {connectedPlatforms.reduce((acc, p) => acc + p.fanCount, 0).toLocaleString()}{' '}
-            fans discovered
+            {totalAudience.toLocaleString()} audience synced across connected platforms
           </p>
         </motion.div>
       )}
 
       <div className="flex gap-3">
-        <Button type="button" variant="secondary" onClick={onBack}>
+        <Button type="button" variant="outline" onClick={onBack}>
           Back
+        </Button>
+        <Button type="button" variant="outline" onClick={openConnections}>
+          Open Connections
         </Button>
         <Button
           type="button"
@@ -151,23 +136,6 @@ export function PlatformsStep({ onNext, onBack }: PlatformsStepProps) {
           {hasConnections ? 'Continue' : 'Skip for now'}
         </Button>
       </div>
-
-      {/* Mock OAuth Modal */}
-      <Modal
-        isOpen={showModal}
-        onClose={() => {}}
-        size="sm"
-      >
-        <div className="text-center py-8">
-          <Loader2 className="w-12 h-12 text-gold animate-spin mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-warm-white mb-2">
-            Connecting to {connectingPlatform}...
-          </h3>
-          <p className="text-sm text-vault-muted">
-            Syncing your fan data. This may take a moment.
-          </p>
-        </div>
-      </Modal>
     </motion.div>
   )
 }

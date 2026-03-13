@@ -12,7 +12,7 @@ export function SuccessStep() {
   const { connectedPlatforms, profileData } = useOnboardingStore()
   const [isLoading, setIsLoading] = useState(false)
 
-  const totalFans = connectedPlatforms.reduce((acc, p) => acc + p.fanCount, 0)
+  const totalAudience = connectedPlatforms.reduce((acc, p) => acc + p.fanCount, 0)
 
   const handleComplete = async () => {
     setIsLoading(true)
@@ -38,8 +38,8 @@ export function SuccessStep() {
   const stats = [
     {
       icon: Users,
-      value: totalFans.toLocaleString(),
-      label: 'Fans Discovered',
+      value: totalAudience.toLocaleString(),
+      label: 'Audience Synced',
     },
     {
       icon: Star,
@@ -73,7 +73,7 @@ export function SuccessStep() {
       </h1>
 
       <p className="text-lg text-vault-muted mb-8 max-w-md mx-auto">
-        Your Imprint is ready. Let&apos;s discover who your biggest supporters are.
+        Your Imprint is ready. Keep connecting real platforms and importing CSVs to expand your actual fan graph.
       </p>
 
       <div className="grid grid-cols-3 gap-4 max-w-md mx-auto mb-8">
