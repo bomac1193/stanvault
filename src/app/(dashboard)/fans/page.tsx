@@ -8,6 +8,7 @@ import { TableSkeleton, Skeleton } from '@/components/ui'
 import { CsvImportModal } from '@/components/import/csv-import-modal'
 import { useFans } from '@/hooks/use-fans'
 import { useFanFiltersStore, TierFilter } from '@/stores/fan-filters-store'
+import { AdminPreviewBar } from '@/components/admin/admin-preview-bar'
 import { Upload } from 'lucide-react'
 
 const VALID_TIERS = new Set(['ALL', 'CASUAL', 'ENGAGED', 'DEDICATED', 'SUPERFAN'])
@@ -32,6 +33,8 @@ export default function FansPage() {
 
   return (
     <div>
+      <AdminPreviewBar />
+
       <div className="flex items-center justify-between mb-0">
         <PageHeader title="Fans" />
         <button
@@ -48,6 +51,15 @@ export default function FansPage() {
         onClose={() => setShowImport(false)}
         onSuccess={() => refetch()}
       />
+
+      {data?.previewMode === 'demo' && (
+        <div className="mb-6 border border-[#1a1a1a] bg-[#0a0a0a] px-4 py-3">
+          <p className="text-sm text-gray-300">
+            Beta stress test loaded. These 50 rows represent 30 ICPs, 10 non-customers, and 10
+            haters. Tier badges show fit strength, not real fan status.
+          </p>
+        </div>
+      )}
 
       {/* Filters */}
       {isLoading ? (
@@ -98,6 +110,7 @@ export default function FansPage() {
             sortField={sortField}
             sortOrder={sortOrder}
             onSort={handleSort}
+            disableLinks={data?.previewMode === 'demo'}
           />
 
           {data && data.pagination.totalPages > 1 && (

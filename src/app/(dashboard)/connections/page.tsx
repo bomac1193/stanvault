@@ -37,6 +37,10 @@ export default function ConnectionsPage() {
       setNotification({ type: 'success', message: 'YouTube connected successfully!' })
       queryClient.invalidateQueries({ queryKey: ['platforms'] })
       queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+    } else if (success === 'discord_connected') {
+      setNotification({ type: 'success', message: 'Discord connected successfully!' })
+      queryClient.invalidateQueries({ queryKey: ['platforms'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
     } else if (error) {
       setNotification({ type: 'error', message: `Connection failed: ${error}` })
     }
@@ -80,6 +84,18 @@ export default function ConnectionsPage() {
 
         if (!authRes.ok || !authData.authUrl) {
           throw new Error(authData.error || 'YouTube integration not configured')
+        }
+
+        window.location.href = authData.authUrl
+        return { redirecting: true }
+      }
+
+      if (platform === 'DISCORD') {
+        const authRes = await fetch('/api/auth/discord')
+        const authData = await authRes.json().catch(() => ({}))
+
+        if (!authRes.ok || !authData.authUrl) {
+          throw new Error(authData.error || 'Discord integration not configured')
         }
 
         window.location.href = authData.authUrl
@@ -234,7 +250,10 @@ export default function ConnectionsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-[#0a0a0a] border border-[#1a1a1a]">
           <div className="px-5 py-4 border-b border-[#1a1a1a]">
-            <h3 className="text-sm font-medium text-gray-400">Add Platform</h3>
+            <h3 className="text-sm font-medium text-gray-400">Connect Sources & Channels</h3>
+            <p className="text-caption text-gray-600 mt-1">
+              Imprint owns audience sources and reach channels. Payment rails stay inside Oryx.
+            </p>
           </div>
           <PlatformGrid
             connectedPlatforms={connectedPlatforms}

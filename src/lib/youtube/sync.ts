@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { calculateStanScore } from '@/lib/scoring/stan-score'
 import { recordFanEvent } from '@/lib/events'
+import { normalizeAvatarSource } from '@/lib/avatar-url'
 import { EventType, Platform } from '@prisma/client'
 import { YOUTUBE_CONFIG } from './config'
 
@@ -35,7 +36,9 @@ interface ImportedSubscriberResult {
 }
 
 function getThumbnailUrl(thumbnails?: YouTubeThumbnailMap): string | null {
-  return thumbnails?.high?.url || thumbnails?.medium?.url || thumbnails?.default?.url || null
+  return normalizeAvatarSource(
+    thumbnails?.high?.url || thumbnails?.medium?.url || thumbnails?.default?.url || null
+  )
 }
 
 function mapLinksForScoring(

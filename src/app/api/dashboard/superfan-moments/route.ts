@@ -1,12 +1,26 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { ADMIN_PREVIEW_COOKIE, isAdminEmail, resolveAdminPreviewMode } from '@/lib/admin'
+import { buildDemoMoments } from '@/lib/admin-preview/demo-data'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const previewMode = resolveAdminPreviewMode(
+      req.cookies.get(ADMIN_PREVIEW_COOKIE)?.value,
+      isAdminEmail(session.user.email)
+    )
+
+    if (previewMode === 'demo') {
+      return NextResponse.json({
+        previewMode,
+        moments: buildDemoMoments(),
+      })
     }
 
     // Single query: Core fans + fans becoming Core + Strong fans approaching Core
@@ -81,7 +95,7 @@ export async function GET() {
       }
     })
 
-    return NextResponse.json({ moments })
+    return NextResponse.json({ previewMode, moments })
   } catch (error) {
     console.error('Superfan moments error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

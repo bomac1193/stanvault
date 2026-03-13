@@ -1,14 +1,28 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { calculateSCR, getSCRHistory } from '@/lib/scoring/scr'
-import { startOfDay, subDays } from 'date-fns'
+import { startOfDay } from 'date-fns'
+import { ADMIN_PREVIEW_COOKIE, isAdminEmail, resolveAdminPreviewMode } from '@/lib/admin'
+import { buildDemoSCR } from '@/lib/admin-preview/demo-data'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const previewMode = resolveAdminPreviewMode(
+      req.cookies.get(ADMIN_PREVIEW_COOKIE)?.value,
+      isAdminEmail(session.user.email)
+    )
+
+    if (previewMode === 'demo') {
+      return NextResponse.json({
+        previewMode,
+        ...buildDemoSCR(),
+      })
     }
 
     const userId = session.user.id
@@ -69,6 +83,7 @@ export async function GET() {
     }
 
     return NextResponse.json({
+      previewMode,
       scr,
       components,
       interpretation,

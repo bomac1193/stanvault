@@ -7,13 +7,41 @@ interface TierDistribution {
   [key: string]: string | number
 }
 
+interface RegionSimulationSummary {
+  region: string
+  icpCount: number
+  avgFit: number
+  coreCount: number
+  verdict: string
+}
+
+interface SimulationSummary {
+  totalParticipants: number
+  icpCount: number
+  nonCustomerCount: number
+  haterCount: number
+  coreAudienceCount: number
+  expansionCount: number
+  thesis: string
+  recommendedRollout: string[]
+  regionBreakdown: RegionSimulationSummary[]
+  apiPriorities: {
+    connect: string[]
+    reach: string[]
+    rails: string[]
+  }
+  blindspots: string[]
+}
+
 interface DashboardMetrics {
+  previewMode?: 'real' | 'demo'
   totalFans: number
   superfans: number
   risingFans: number
   avgStanScore: number
   newFansThisMonth: number
   tierDistribution: TierDistribution[]
+  simulationSummary?: SimulationSummary
 }
 
 interface Moment {
@@ -45,7 +73,7 @@ export function useDashboardMetrics() {
 }
 
 export function useSuperfanMoments() {
-  return useQuery<{ moments: Moment[] }>({
+  return useQuery<{ moments: Moment[]; previewMode?: 'real' | 'demo' }>({
     queryKey: ['dashboard', 'superfan-moments'],
     queryFn: async () => {
       const res = await fetch('/api/dashboard/superfan-moments')

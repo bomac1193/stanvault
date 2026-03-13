@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { FanTier, Prisma } from '@prisma/client'
+import { ADMIN_PREVIEW_COOKIE, isAdminEmail, resolveAdminPreviewMode } from '@/lib/admin'
+import { buildDemoFansResponse } from '@/lib/admin-preview/demo-data'
 
 export async function GET(req: NextRequest) {
   try {
@@ -17,6 +19,24 @@ export async function GET(req: NextRequest) {
     const sortOrder = searchParams.get('sortOrder') || 'desc'
     const page = parseInt(searchParams.get('page') || '1')
     const pageSize = parseInt(searchParams.get('pageSize') || '20')
+    const previewMode = resolveAdminPreviewMode(
+      req.cookies.get(ADMIN_PREVIEW_COOKIE)?.value,
+      isAdminEmail(session.user.email)
+    )
+
+    if (previewMode === 'demo') {
+      return NextResponse.json({
+        previewMode,
+        ...buildDemoFansResponse({
+          tier,
+          search,
+          sortField,
+          sortOrder,
+          page,
+          pageSize,
+        }),
+      })
+    }
 
     // Build where clause
     const where: Prisma.FanWhereInput = {
@@ -73,6 +93,7 @@ export async function GET(req: NextRequest) {
     }, {} as Record<string, number>)
 
     return NextResponse.json({
+      previewMode,
       fans,
       pagination: {
         page,

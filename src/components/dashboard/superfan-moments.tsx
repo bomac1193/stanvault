@@ -25,6 +25,7 @@ interface Moment {
 
 interface SuperfanMomentsProps {
   moments: Moment[]
+  disableLinks?: boolean
 }
 
 const eventDotColor: Record<string, string> = {
@@ -34,91 +35,72 @@ const eventDotColor: Record<string, string> = {
   MILESTONE_ENGAGEMENT: '#737373',
 }
 
-const SAMPLE_MOMENTS: Moment[] = [
-  {
-    id: 'sample-1',
-    type: 'BECAME_SUPERFAN',
-    description: '',
-    reason: '3,400 spotify streams, 89 saves',
-    occurredAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    fan: { id: 'sample', name: 'Amara Osei', tier: 'SUPERFAN', score: 94 },
-  },
-  {
-    id: 'sample-2',
-    type: 'TIER_UPGRADE',
-    description: '',
-    reason: 'Shared 3 drops, tipped twice ($18)',
-    occurredAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-    fan: { id: 'sample', name: 'Kofi Mensah', tier: 'DEDICATED', score: 71 },
-  },
-  {
-    id: 'sample-3',
-    type: 'TIER_UPGRADE',
-    description: '',
-    reason: '12 shares, active across 3 platforms',
-    occurredAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    fan: { id: 'sample', name: 'Priya Sharma', tier: 'DEDICATED', score: 66 },
-  },
-  {
-    id: 'sample-4',
-    type: 'MILESTONE_STREAMS',
-    description: '',
-    reason: '1,200 spotify streams this month',
-    occurredAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    fan: { id: 'sample', name: 'Ezra Williams', tier: 'ENGAGED', score: 52 },
-  },
-  {
-    id: 'sample-5',
-    type: 'TIER_UPGRADE',
-    description: '',
-    reason: 'Opened every campaign email, 340 streams',
-    occurredAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    fan: { id: 'sample', name: 'Lena Dubois', tier: 'ENGAGED', score: 48 },
-  },
-]
-
-export function SuperfanMoments({ moments }: SuperfanMomentsProps) {
-  // Show sample data when no real moments exist so the layout is always visible
-  const useSample = moments.length < 3
-  const displayMoments = useSample ? SAMPLE_MOMENTS : moments
+export function SuperfanMoments({ moments, disableLinks = false }: SuperfanMomentsProps) {
+  if (moments.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Moments</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-gray-500">No recent fan moments yet. Connect a platform or import fans to populate this feed.</p>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>Recent Moments</CardTitle>
-          {useSample && (
-            <span className="text-[11px] text-gray-600 uppercase tracking-wider">Sample data</span>
-          )}
-        </div>
+        <CardTitle>Recent Moments</CardTitle>
       </CardHeader>
       <CardContent className="p-0 overflow-x-auto">
         <table className="w-full">
           <tbody className="divide-y divide-[#1a1a1a]">
-            {displayMoments.map((moment) => {
+            {moments.map((moment) => {
               const dotColor = eventDotColor[moment.type] || '#525252'
 
               return (
                 <tr key={moment.id} className="group">
                   <td className="w-[52px] py-3 pl-6 pr-2">
-                    <Link href={`/fans/${moment.fan.id}`} className="block relative">
-                      <Avatar
-                        src={moment.fan.avatar}
-                        name={moment.fan.name}
-                        size="md"
-                      />
-                      <div
-                        className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0a0a0a]"
-                        style={{ backgroundColor: dotColor }}
-                      />
-                    </Link>
+                    {disableLinks ? (
+                      <div className="block relative">
+                        <Avatar
+                          src={moment.fan.avatar}
+                          name={moment.fan.name}
+                          size="md"
+                        />
+                        <div
+                          className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0a0a0a]"
+                          style={{ backgroundColor: dotColor }}
+                        />
+                      </div>
+                    ) : (
+                      <Link href={`/fans/${moment.fan.id}`} className="block relative">
+                        <Avatar
+                          src={moment.fan.avatar}
+                          name={moment.fan.name}
+                          size="md"
+                        />
+                        <div
+                          className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0a0a0a]"
+                          style={{ backgroundColor: dotColor }}
+                        />
+                      </Link>
+                    )}
                   </td>
                   <td className="py-3 pr-3 max-w-[140px]">
-                    <Link href={`/fans/${moment.fan.id}`} className="block">
-                      <span className="font-medium text-white truncate block group-hover:text-gray-300 transition-colors">
+                    {disableLinks ? (
+                      <span className="font-medium text-white truncate block">
                         {moment.fan.name}
                       </span>
-                    </Link>
+                    ) : (
+                      <Link href={`/fans/${moment.fan.id}`} className="block">
+                        <span className="font-medium text-white truncate block group-hover:text-gray-300 transition-colors">
+                          {moment.fan.name}
+                        </span>
+                      </Link>
+                    )}
                   </td>
                   <td className="py-3 px-3 w-[80px]">
                     <TierBadge tier={moment.fan.tier} />

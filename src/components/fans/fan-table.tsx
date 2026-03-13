@@ -26,6 +26,7 @@ interface FanTableProps {
   sortField: string
   sortOrder: string
   onSort: (field: string, order?: string) => void
+  disableLinks?: boolean
 }
 
 const platformIcons: Record<string, typeof Music> = {
@@ -46,7 +47,7 @@ function SortIcon({ field, sortField, sortOrder }: { field: string; sortField: s
   )
 }
 
-export function FanTable({ fans, sortField, sortOrder, onSort }: FanTableProps) {
+export function FanTable({ fans, sortField, sortOrder, onSort, disableLinks = false }: FanTableProps) {
   return (
     <div className="bg-[#0a0a0a] border border-[#1a1a1a] overflow-hidden">
       {/* Header */}
@@ -85,58 +86,107 @@ export function FanTable({ fans, sortField, sortOrder, onSort }: FanTableProps) 
       {/* Rows */}
       <div className="divide-y divide-[#1a1a1a]">
         {fans.map((fan) => (
-          <Link
-            key={fan.id}
-            href={`/fans/${fan.id}`}
-            className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-[#111] transition-colors items-center"
-          >
-            {/* Fan info */}
-            <div className="col-span-4 flex items-center gap-3">
-              <Avatar src={fan.avatarUrl} name={fan.displayName} size="md" />
-              <div className="min-w-0">
-                <p className="font-medium text-white truncate">{fan.displayName}</p>
-                <p className="text-sm text-gray-500 truncate">{fan.location || fan.email}</p>
+          disableLinks ? (
+            <div
+              key={fan.id}
+              className="grid grid-cols-12 gap-4 px-6 py-4 bg-[#0a0a0a] items-center"
+            >
+              <div className="col-span-4 flex items-center gap-3">
+                <Avatar src={fan.avatarUrl} name={fan.displayName} size="md" />
+                <div className="min-w-0">
+                  <p className="font-medium text-white truncate">{fan.displayName}</p>
+                  <p className="text-sm text-gray-500 truncate">{fan.location || fan.email}</p>
+                </div>
+              </div>
+
+              <div className="col-span-2">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-accent/10 border border-accent/20">
+                  <span className="text-accent font-mono font-semibold">{fan.stanScore}</span>
+                </div>
+              </div>
+
+              <div className="col-span-2">
+                <TierBadge tier={fan.tier} />
+              </div>
+
+              <div className="col-span-2 flex items-center gap-1">
+                {fan.platformLinks.slice(0, 3).map((link) => {
+                  const Icon = platformIcons[link.platform] || Music
+                  return (
+                    <div
+                      key={link.platform}
+                      className="w-6 h-6 bg-[#1a1a1a] flex items-center justify-center"
+                      title={link.platform}
+                    >
+                      <Icon className="w-3 h-3 text-gray-500" />
+                    </div>
+                  )
+                })}
+                {fan.platformLinks.length > 3 && (
+                  <span className="text-xs text-gray-500">
+                    +{fan.platformLinks.length - 3}
+                  </span>
+                )}
+              </div>
+
+              <div className="col-span-2 text-sm text-gray-500">
+                {formatRelativeTime(fan.lastActiveAt)}
               </div>
             </div>
-
-            {/* Stan Score */}
-            <div className="col-span-2">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-accent/10 border border-accent/20">
-                <span className="text-accent font-mono font-semibold">{fan.stanScore}</span>
+          ) : (
+            <Link
+              key={fan.id}
+              href={`/fans/${fan.id}`}
+              className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-[#111] transition-colors items-center"
+            >
+              {/* Fan info */}
+              <div className="col-span-4 flex items-center gap-3">
+                <Avatar src={fan.avatarUrl} name={fan.displayName} size="md" />
+                <div className="min-w-0">
+                  <p className="font-medium text-white truncate">{fan.displayName}</p>
+                  <p className="text-sm text-gray-500 truncate">{fan.location || fan.email}</p>
+                </div>
               </div>
-            </div>
 
-            {/* Tier */}
-            <div className="col-span-2">
-              <TierBadge tier={fan.tier} />
-            </div>
+              {/* Stan Score */}
+              <div className="col-span-2">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-accent/10 border border-accent/20">
+                  <span className="text-accent font-mono font-semibold">{fan.stanScore}</span>
+                </div>
+              </div>
 
-            {/* Platforms */}
-            <div className="col-span-2 flex items-center gap-1">
-              {fan.platformLinks.slice(0, 3).map((link) => {
-                const Icon = platformIcons[link.platform] || Music
-                return (
-                  <div
-                    key={link.platform}
-                    className="w-6 h-6 bg-[#1a1a1a] flex items-center justify-center"
-                    title={link.platform}
-                  >
-                    <Icon className="w-3 h-3 text-gray-500" />
-                  </div>
-                )
-              })}
-              {fan.platformLinks.length > 3 && (
-                <span className="text-xs text-gray-500">
-                  +{fan.platformLinks.length - 3}
-                </span>
-              )}
-            </div>
+              {/* Tier */}
+              <div className="col-span-2">
+                <TierBadge tier={fan.tier} />
+              </div>
 
-            {/* Last Active */}
-            <div className="col-span-2 text-sm text-gray-500">
-              {formatRelativeTime(fan.lastActiveAt)}
-            </div>
-          </Link>
+              {/* Platforms */}
+              <div className="col-span-2 flex items-center gap-1">
+                {fan.platformLinks.slice(0, 3).map((link) => {
+                  const Icon = platformIcons[link.platform] || Music
+                  return (
+                    <div
+                      key={link.platform}
+                      className="w-6 h-6 bg-[#1a1a1a] flex items-center justify-center"
+                      title={link.platform}
+                    >
+                      <Icon className="w-3 h-3 text-gray-500" />
+                    </div>
+                  )
+                })}
+                {fan.platformLinks.length > 3 && (
+                  <span className="text-xs text-gray-500">
+                    +{fan.platformLinks.length - 3}
+                  </span>
+                )}
+              </div>
+
+              {/* Last Active */}
+              <div className="col-span-2 text-sm text-gray-500">
+                {formatRelativeTime(fan.lastActiveAt)}
+              </div>
+            </Link>
+          )
         ))}
       </div>
     </div>

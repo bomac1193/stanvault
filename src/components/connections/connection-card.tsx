@@ -29,7 +29,7 @@ const platformConfig: Record<string, PlatformDisplayConfig> = {
   APPLE_MUSIC: { name: 'Apple Music' },
   AUDIOMACK: { name: 'Audiomack' },
   BOOMPLAY: { name: 'Boomplay' },
-  DISCORD: { name: 'Discord' },
+  DISCORD: { name: 'Discord', countLabel: 'Members' },
 }
 
 export function ConnectionCard({
@@ -48,15 +48,15 @@ export function ConnectionCard({
   const countLabel = config.countLabel || 'Fans'
 
   return (
-    <div className="bg-[#0a0a0a] border border-[#1a1a1a] p-5">
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-body-sm font-medium text-white">{config.name}</span>
+    <div className="bg-[#0a0a0a] border border-[#1a1a1a] p-5 min-h-[144px] flex flex-col">
+      <div className="flex items-center justify-between mb-4 min-h-[20px]">
+        <span className="text-body-sm font-medium text-white whitespace-nowrap">{config.name}</span>
         <span className={`text-caption ${isHealthy ? 'text-gray-400' : 'text-gray-600'}`}>
           {status.charAt(0) + status.slice(1).toLowerCase()}
         </span>
       </div>
 
-      <div className="space-y-1.5 mb-5">
+      <div className="space-y-1.5 mb-5 flex-1">
         <div className="flex justify-between text-caption">
           <span className="text-gray-500">{countLabel}</span>
           <span className="text-gray-300 tabular-nums">{formatNumber(fanCount)}</span>

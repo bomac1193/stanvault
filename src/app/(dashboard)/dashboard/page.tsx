@@ -1,9 +1,17 @@
 'use client'
 
 import { PageHeader } from '@/components/layout'
-import { MetricCard, TierChart, SuperfanMoments, SCRCard, GettingStarted } from '@/components/dashboard'
+import {
+  MetricCard,
+  TierChart,
+  SuperfanMoments,
+  SCRCard,
+  GettingStarted,
+  BetaSimulationCard,
+} from '@/components/dashboard'
 import { MetricCardSkeleton, Skeleton } from '@/components/ui'
 import { useDashboardMetrics, useSuperfanMoments, useSCR } from '@/hooks/use-dashboard'
+import { AdminPreviewBar } from '@/components/admin/admin-preview-bar'
 
 export default function DashboardPage() {
   const { data: metrics, isLoading: metricsLoading } = useDashboardMetrics()
@@ -13,8 +21,13 @@ export default function DashboardPage() {
   return (
     <div>
       <PageHeader title="Overview" />
+      <AdminPreviewBar />
 
-      <GettingStarted />
+      {metrics?.previewMode === 'demo' && metrics.simulationSummary ? (
+        <BetaSimulationCard summary={metrics.simulationSummary} />
+      ) : (
+        <GettingStarted />
+      )}
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -105,7 +118,10 @@ export default function DashboardPage() {
             </div>
           </div>
         ) : (
-          <SuperfanMoments moments={momentsData?.moments || []} />
+          <SuperfanMoments
+            moments={momentsData?.moments || []}
+            disableLinks={momentsData?.previewMode === 'demo'}
+          />
         )}
       </div>
     </div>

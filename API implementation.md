@@ -7,14 +7,35 @@ Make `imprint` on `http://localhost:3003` the source of truth for:
 - Artist and manager platform connections
 - Fan-side verification connections
 - Server-to-server revenue and conviction imports
+- Reach-channel orchestration for campaigns
 - Future provider adapters without adding one-off schema debt
 
 ## Current State
 
 - Real now: Spotify artist auth, Spotify fan auth/sync, Oryx server-to-server import, email import.
-- Partially real now: YouTube artist auth and sync.
-- Placeholder now: Twitch, Discord, Apple Music, Bandcamp, Boomplay.
+- Partially real now: YouTube artist auth and sync, Discord artist auth and sync.
+- Placeholder now: Twitch, Apple Music, Bandcamp, Boomplay.
 - Current blocker: only Spotify has a fan-side verification flow wired through the new generic connection model.
+
+## Product Split
+
+### Imprint Owns
+
+- Audience-source connections: Spotify, YouTube, Discord, Email List, Oryx, future Bandcamp imports.
+- Reach-channel setup: WhatsApp, SMS, LINE, Kakao.
+- Fan identity graph, consent, segmentation, campaigns, and CTA tracking.
+
+### Oryx Owns
+
+- Conviction and payment rails.
+- Paystack, Flutterwave, M-Pesa, MTN MoMo, and future mobile-money verification.
+- Revenue events, referrals, and proof-backed fan actions that feed Imprint.
+
+### Do Not Put In Imprint Connect
+
+- Raw payment processors as artist-facing buttons.
+- Mobile-money rails as standalone artist OAuth cards.
+- Market rails that are purely infrastructure for Oryx.
 
 ## Implementation Order
 
@@ -26,10 +47,11 @@ Make `imprint` on `http://localhost:3003` the source of truth for:
 6. Implement real provider adapters in this order:
    - YouTube
    - Discord
-   - Twitch
+   - WhatsApp / SMS campaign delivery
    - Apple Music
-   - Bandcamp
-   - Boomplay
+   - Bandcamp import path
+   - Boomplay partner or manual import
+   - Twitch only if a real customer segment justifies it
 
 ## Environment Variables
 
@@ -104,6 +126,7 @@ This replaces future provider-specific token columns on `FanUser`.
 - Match by shared artist email.
 - Import historical backers and ongoing conviction events.
 - Status in repo: implemented.
+- Keep payment rails and mobile-money verification behind Oryx.
 
 ### YouTube
 
@@ -115,11 +138,18 @@ This replaces future provider-specific token columns on `FanUser`.
 
 - Use for identity, guild joins, roles, and activity.
 - Do not treat it as a substitute for streaming analytics.
+- Status in repo: artist-side OAuth and guild/member-count sync implemented.
+
+### WhatsApp / SMS
+
+- These belong to campaign delivery, not audience analytics.
+- WhatsApp and SMS matter more than another DSP connector in phone-first markets.
+- Build them as reach channels on top of Imprint consent and segmentation.
 
 ### Twitch
 
 - Use Helix/EventSub for follows, subs, bits, and live activity.
-- UI should stay disabled until real backend support exists.
+- Only build if a real music-adjacent cohort proves it matters.
 
 ### Apple Music
 
@@ -135,6 +165,30 @@ This replaces future provider-specific token columns on `FanUser`.
 
 - Treat as partner/export/manual import until official access is secured.
 
+## Market Priority
+
+### Africa
+
+- Core market now.
+- Highest product fit for Afrohouse, Afrobeats, Amapiano, and manager-led teams.
+- API priority: YouTube, Spotify, Email List, Oryx, WhatsApp, SMS.
+
+### Europe
+
+- Expand next through diaspora artist-managers and community-led collectives.
+- API priority: YouTube, Spotify, Email List, Discord, WhatsApp.
+
+### America
+
+- Expand after Europe through diaspora teams that already capture owned contact paths.
+- API priority: YouTube, Spotify, Email List, Discord, WhatsApp, SMS.
+
+### Asia
+
+- Selective only until LINE and Kakao exist.
+- Best fit is fan-club-heavy micro-label or street-team workflows, not broad rollout.
+- API priority: YouTube, LINE, Kakao, Email List.
+
 ## Immediate Deliverables In This Pass
 
 - `3003` URL normalization
@@ -142,4 +196,7 @@ This replaces future provider-specific token columns on `FanUser`.
 - Generic fan platform connections
 - Spotify fan flow migrated onto the generic connection layer
 - YouTube artist OAuth callback and sync wiring
+- Discord artist OAuth callback and sync wiring
+- Admin beta stress-test preview with 30 ICPs, 10 non-customers, and 10 haters
+- Connections UI split into audience sources and reach channels
 - UI corrected so unsupported platforms are not shown as ready

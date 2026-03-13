@@ -19,6 +19,7 @@ interface Fan {
 }
 
 interface FansResponse {
+  previewMode?: 'real' | 'demo'
   fans: Fan[]
   pagination: {
     page: number
