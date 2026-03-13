@@ -201,7 +201,7 @@ npx prisma db push
 npm run dev
 
 # Open
-http://localhost:3000
+http://localhost:3003
 ```
 
 ### Environment Variables
@@ -210,7 +210,8 @@ DATABASE_URL="file:./dev.db"
 AUTH_SECRET="your-secret"
 SPOTIFY_CLIENT_ID="..."
 SPOTIFY_CLIENT_SECRET="..."
-SPOTIFY_REDIRECT_URI="http://localhost:3000/api/auth/spotify/callback"
+SPOTIFY_ARTIST_REDIRECT_URI="http://localhost:3003/api/auth/spotify/callback"
+SPOTIFY_FAN_REDIRECT_URI="http://localhost:3003/api/fan/auth/spotify/callback"
 ```
 
 ---

@@ -15,7 +15,7 @@ export async function GET() {
         email: user.email,
         displayName: user.displayName,
         avatarUrl: user.avatarUrl,
-        spotifyConnected: !!user.spotifyUserId,
+        spotifyConnected: user.spotifyConnected,
         onboardingCompleted: user.onboardingCompleted,
       },
     })

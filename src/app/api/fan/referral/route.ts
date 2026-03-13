@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getFanUser } from '@/lib/fan-auth'
 import { createReferralLink, trackReferralClick, trackReferralConversion } from '@/lib/referrals/tracking'
+import { getAppUrl } from '@/lib/app-url'
 
-const BASE_URL = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+const BASE_URL = getAppUrl()
 
 // POST - Generate or track referral
 export async function POST(request: NextRequest) {

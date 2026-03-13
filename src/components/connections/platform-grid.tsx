@@ -13,13 +13,13 @@ const PLATFORM_ALIAS: Record<string, string> = {
 
 const platforms = [
   { id: 'SPOTIFY', name: 'Spotify', signal: 'Streams, saves, repeats', ready: true },
-  { id: 'TWITCH', name: 'Twitch', signal: 'Bits, subs, gift subs', ready: true },
+  { id: 'TWITCH', name: 'Twitch', signal: 'Bits, subs, gift subs', ready: false },
   { id: 'EMAIL', name: 'Email List', signal: 'Import existing fans', ready: true },
   { id: 'ORYX', name: 'Oryx', signal: 'Tips, conviction', ready: true },
   { id: 'APPLE_MUSIC', name: 'Apple Music', signal: 'Streams, library adds', ready: false },
   { id: 'AUDIOMACK', name: 'Audiomack', signal: 'Streams, favorites, reposts', ready: false },
   { id: 'BOOMPLAY', name: 'Boomplay', signal: 'Streams, downloads', ready: false },
-  { id: 'YOUTUBE', name: 'YouTube', signal: 'Views, subs, comments', ready: false },
+  { id: 'YOUTUBE', name: 'YouTube', signal: 'Views, subs, comments', ready: true },
   { id: 'DISCORD', name: 'Discord', signal: 'Roles, activity, reactions', ready: false },
   { id: 'BANDCAMP', name: 'Bandcamp', signal: 'Purchases, tips', ready: false },
 ]

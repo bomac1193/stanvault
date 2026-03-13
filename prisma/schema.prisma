@@ -470,7 +470,7 @@ model FanUser {
   displayName           String
   avatarUrl             String?
 
-  // Spotify connection for verification
+  // Legacy Spotify fields retained while fan-side auth migrates to FanPlatformConnection.
   spotifyUserId         String?   @unique
   spotifyAccessToken    String?
   spotifyRefreshToken   String?
@@ -493,6 +493,7 @@ model FanUser {
   updatedAt             DateTime  @updatedAt
 
   // Relations
+  platformConnections   FanPlatformConnection[]
   artistRelationships   FanUserArtistLink[]
   verificationTokens    FanUserVerificationToken[]
   sessions              FanUserSession[]
@@ -512,6 +513,28 @@ model FanUserSession {
   fanUser FanUser @relation(fields: [fanUserId], references: [id], onDelete: Cascade)
 
   @@index([fanUserId])
+}
+
+model FanPlatformConnection {
+  id              String           @id @default(cuid())
+  fanUserId       String
+  platform        Platform
+  accessToken     String?
+  refreshToken    String?
+  tokenExpiresAt  DateTime?
+  platformUserId  String?
+  platformScope   String?
+  status          ConnectionStatus @default(CONNECTED)
+  lastSyncAt      DateTime?
+  syncError       String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  fanUser FanUser @relation(fields: [fanUserId], references: [id], onDelete: Cascade)
+
+  @@unique([fanUserId, platform])
+  @@index([platformUserId])
+  @@index([fanUserId, platformUserId])
 }
 
 // FanUserArtistLink - The relationship between a fan and an artist

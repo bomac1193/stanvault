@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { getSpotifyAuthUrl, isSpotifyConfigured } from '@/lib/spotify'
+import { getYouTubeAuthUrl, isYouTubeConfigured } from '@/lib/youtube'
 import { randomBytes } from 'crypto'
 
-// Initiate Spotify OAuth flow
 export async function GET() {
   try {
     const session = await auth()
@@ -11,14 +10,13 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    if (!isSpotifyConfigured()) {
+    if (!isYouTubeConfigured()) {
       return NextResponse.json(
-        { error: 'Spotify integration not configured' },
+        { error: 'YouTube integration not configured' },
         { status: 503 }
       )
     }
 
-    // Generate state with user ID for verification
     const state = Buffer.from(
       JSON.stringify({
         userId: session.user.id,
@@ -27,11 +25,11 @@ export async function GET() {
       })
     ).toString('base64url')
 
-    const authUrl = getSpotifyAuthUrl(state, 'artist')
+    const authUrl = getYouTubeAuthUrl(state, 'artist')
 
     return NextResponse.json({ authUrl })
   } catch (error) {
-    console.error('Spotify auth initiation error:', error)
+    console.error('YouTube auth initiation error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

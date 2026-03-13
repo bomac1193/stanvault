@@ -29,7 +29,6 @@ export async function GET() {
     const fanUser = await prisma.fanUser.findUnique({
       where: { id: user.id },
       select: {
-        spotifyUserId: true,
         displayName: true,
         avatarUrl: true,
         createdAt: true,
@@ -47,7 +46,7 @@ export async function GET() {
         id: user.id,
         displayName: fanUser?.displayName,
         avatarUrl: fanUser?.avatarUrl,
-        spotifyConnected: !!fanUser?.spotifyUserId,
+        spotifyConnected: user.spotifyConnected,
         memberSince: fanUser?.createdAt,
       },
       stats: {

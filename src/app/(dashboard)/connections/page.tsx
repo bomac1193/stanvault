@@ -33,6 +33,10 @@ export default function ConnectionsPage() {
       setNotification({ type: 'success', message: 'Spotify connected successfully!' })
       queryClient.invalidateQueries({ queryKey: ['platforms'] })
       queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+    } else if (success === 'youtube_connected') {
+      setNotification({ type: 'success', message: 'YouTube connected successfully!' })
+      queryClient.invalidateQueries({ queryKey: ['platforms'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] })
     } else if (error) {
       setNotification({ type: 'error', message: `Connection failed: ${error}` })
     }
@@ -74,6 +78,18 @@ export default function ConnectionsPage() {
         }
       }
 
+      if (platform === 'YOUTUBE') {
+        const authRes = await fetch('/api/auth/youtube')
+        const authData = await authRes.json().catch(() => ({}))
+
+        if (!authRes.ok || !authData.authUrl) {
+          throw new Error(authData.error || 'YouTube integration not configured')
+        }
+
+        window.location.href = authData.authUrl
+        return { redirecting: true }
+      }
+
       // Oryx: server-to-server pull (no OAuth redirect)
       if (platform === 'ORYX') {
         const res = await fetch('/api/platforms/oryx/connect', { method: 'POST' })
@@ -88,7 +104,10 @@ export default function ConnectionsPage() {
       const res = await fetch(`/api/platforms/${platform.toLowerCase()}/connect`, {
         method: 'POST',
       })
-      if (!res.ok) throw new Error('Failed to connect platform')
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({ error: 'Failed to connect platform' }))
+        throw new Error(data.error || 'Failed to connect platform')
+      }
       return res.json()
     },
     onSuccess: (data) => {

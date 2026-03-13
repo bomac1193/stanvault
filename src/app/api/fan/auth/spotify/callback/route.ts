@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { updateFanUserSpotify } from '@/lib/fan-auth'
-import { getSpotifyCredentials } from '@/lib/spotify/config'
+import { getSpotifyCredentials, getSpotifyRedirectUri } from '@/lib/spotify/config'
 
 // Handle Spotify OAuth callback for fan portal
 export async function GET(request: NextRequest) {
@@ -42,8 +42,8 @@ export async function GET(request: NextRequest) {
     }
 
     const fanUserId = stateData.fanUserId
-    const { clientId, clientSecret } = getSpotifyCredentials()
-    const redirectUri = process.env.SPOTIFY_REDIRECT_URI || 'http://127.0.0.1:3000/api/fan/auth/spotify/callback'
+    const { clientId, clientSecret } = getSpotifyCredentials('fan')
+    const redirectUri = getSpotifyRedirectUri('fan')
 
     // Exchange code for tokens
     const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {

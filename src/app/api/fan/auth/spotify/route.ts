@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getFanUser, FAN_SPOTIFY_SCOPES } from '@/lib/fan-auth'
-import { getSpotifyCredentials, isSpotifyConfigured } from '@/lib/spotify/config'
+import { getSpotifyCredentials, getSpotifyRedirectUri, isSpotifyConfigured } from '@/lib/spotify/config'
 import { randomBytes } from 'crypto'
 
 // Initiate Spotify OAuth for fan portal
@@ -18,8 +18,8 @@ export async function GET() {
       )
     }
 
-    const { clientId } = getSpotifyCredentials()
-    const redirectUri = process.env.SPOTIFY_REDIRECT_URI || 'http://127.0.0.1:3000/api/fan/auth/spotify/callback'
+    const { clientId } = getSpotifyCredentials('fan')
+    const redirectUri = getSpotifyRedirectUri('fan')
 
     // Generate state with fan user ID
     const state = Buffer.from(

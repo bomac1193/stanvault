@@ -1,8 +1,12 @@
 'use client'
 
-import { Button } from '@/components/ui'
 import { formatDate, formatNumber } from '@/lib/utils'
 import { RefreshCw, Trash2 } from 'lucide-react'
+
+interface PlatformDisplayConfig {
+  name: string
+  countLabel?: string
+}
 
 interface ConnectionCardProps {
   platform: string
@@ -14,10 +18,10 @@ interface ConnectionCardProps {
   isSyncing?: boolean
 }
 
-const platformConfig: Record<string, { name: string }> = {
+const platformConfig: Record<string, PlatformDisplayConfig> = {
   SPOTIFY: { name: 'Spotify' },
   INSTAGRAM: { name: 'Instagram' },
-  YOUTUBE: { name: 'YouTube' },
+  YOUTUBE: { name: 'YouTube', countLabel: 'Subscribers' },
   TIKTOK: { name: 'TikTok' },
   TWITTER: { name: 'Twitter' },
   EMAIL: { name: 'Email List' },
@@ -41,6 +45,7 @@ export function ConnectionCard({
   if (!config) return null
 
   const isHealthy = status === 'CONNECTED'
+  const countLabel = config.countLabel || 'Fans'
 
   return (
     <div className="bg-[#0a0a0a] border border-[#1a1a1a] p-5">
@@ -53,7 +58,7 @@ export function ConnectionCard({
 
       <div className="space-y-1.5 mb-5">
         <div className="flex justify-between text-caption">
-          <span className="text-gray-500">Fans</span>
+          <span className="text-gray-500">{countLabel}</span>
           <span className="text-gray-300 tabular-nums">{formatNumber(fanCount)}</span>
         </div>
         {lastSyncAt && (

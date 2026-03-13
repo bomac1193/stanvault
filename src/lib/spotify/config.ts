@@ -1,3 +1,5 @@
+import { buildAppUrl } from '@/lib/app-url'
+
 // Spotify API Configuration
 
 export const SPOTIFY_CONFIG = {
@@ -27,10 +29,23 @@ export const SPOTIFY_CONFIG = {
   maxLimit: 50,
 } as const
 
-export function getSpotifyCredentials() {
+export type SpotifyOAuthFlow = 'artist' | 'fan'
+
+export function getSpotifyRedirectUri(flow: SpotifyOAuthFlow = 'artist'): string {
+  if (flow === 'artist') {
+    return (
+      process.env.SPOTIFY_ARTIST_REDIRECT_URI ||
+      process.env.SPOTIFY_REDIRECT_URI ||
+      buildAppUrl('/api/auth/spotify/callback')
+    )
+  }
+
+  return process.env.SPOTIFY_FAN_REDIRECT_URI || buildAppUrl('/api/fan/auth/spotify/callback')
+}
+
+export function getSpotifyCredentials(flow: SpotifyOAuthFlow = 'artist') {
   const clientId = process.env.SPOTIFY_CLIENT_ID
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET
-  const appUrl = process.env.APP_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000'
 
   if (!clientId || !clientSecret) {
     throw new Error('Missing Spotify credentials. Set SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET.')
@@ -39,7 +54,7 @@ export function getSpotifyCredentials() {
   return {
     clientId,
     clientSecret,
-    redirectUri: process.env.SPOTIFY_REDIRECT_URI || `${appUrl}/api/fan/auth/spotify/callback`,
+    redirectUri: getSpotifyRedirectUri(flow),
   }
 }
 

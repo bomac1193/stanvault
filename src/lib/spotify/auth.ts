@@ -1,6 +1,7 @@
 import { SPOTIFY_CONFIG, getSpotifyCredentials } from './config'
 import { prisma } from '@/lib/prisma'
 import { Platform } from '@prisma/client'
+import type { SpotifyOAuthFlow } from './config'
 
 interface TokenResponse {
   access_token: string
@@ -22,8 +23,8 @@ interface SpotifyUser {
 /**
  * Generate the Spotify OAuth authorization URL
  */
-export function getSpotifyAuthUrl(state: string): string {
-  const { clientId, redirectUri } = getSpotifyCredentials()
+export function getSpotifyAuthUrl(state: string, flow: SpotifyOAuthFlow = 'artist'): string {
+  const { clientId, redirectUri } = getSpotifyCredentials(flow)
 
   const params = new URLSearchParams({
     client_id: clientId,
@@ -40,8 +41,11 @@ export function getSpotifyAuthUrl(state: string): string {
 /**
  * Exchange authorization code for tokens
  */
-export async function exchangeCodeForTokens(code: string): Promise<TokenResponse> {
-  const { clientId, clientSecret, redirectUri } = getSpotifyCredentials()
+export async function exchangeCodeForTokens(
+  code: string,
+  flow: SpotifyOAuthFlow = 'artist'
+): Promise<TokenResponse> {
+  const { clientId, clientSecret, redirectUri } = getSpotifyCredentials(flow)
 
   const response = await fetch(SPOTIFY_CONFIG.tokenUrl, {
     method: 'POST',
@@ -68,7 +72,7 @@ export async function exchangeCodeForTokens(code: string): Promise<TokenResponse
  * Refresh an expired access token
  */
 export async function refreshAccessToken(refreshToken: string): Promise<TokenResponse> {
-  const { clientId, clientSecret } = getSpotifyCredentials()
+  const { clientId, clientSecret } = getSpotifyCredentials('artist')
 
   const response = await fetch(SPOTIFY_CONFIG.tokenUrl, {
     method: 'POST',

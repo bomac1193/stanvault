@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
-import { getFanUser } from '@/lib/fan-auth/service'
+import { getFanPlatformConnection, getFanUser, upsertFanPlatformConnection } from '@/lib/fan-auth/service'
 import { prisma } from '@/lib/prisma'
-import { FanTier } from '@prisma/client'
+import { ConnectionStatus, FanTier, Platform } from '@prisma/client'
 
 // Tier thresholds
 const TIER_THRESHOLDS = {
@@ -42,28 +42,31 @@ export async function POST() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Get full fan user with Spotify tokens
-  const fullUser = await prisma.fanUser.findUnique({
-    where: { id: fanUser.id },
-  })
+  const spotifyConnection = await getFanPlatformConnection(fanUser.id, Platform.SPOTIFY)
 
-  if (!fullUser?.spotifyAccessToken) {
+  if (!spotifyConnection?.accessToken) {
     return NextResponse.json({ error: 'Spotify not connected' }, { status: 400 })
   }
 
   // Check if token needs refresh
-  let accessToken = fullUser.spotifyAccessToken
-  if (fullUser.spotifyTokenExpiresAt && fullUser.spotifyTokenExpiresAt < new Date()) {
+  let accessToken = spotifyConnection.accessToken
+  if (spotifyConnection.tokenExpiresAt && spotifyConnection.tokenExpiresAt < new Date()) {
+    if (!spotifyConnection.refreshToken) {
+      return NextResponse.json({ error: 'Spotify refresh token missing' }, { status: 401 })
+    }
+
     // Refresh token
-    const refreshed = await refreshSpotifyToken(fullUser.spotifyRefreshToken!)
+    const refreshed = await refreshSpotifyToken(spotifyConnection.refreshToken)
     if (refreshed) {
       accessToken = refreshed.accessToken
-      await prisma.fanUser.update({
-        where: { id: fanUser.id },
-        data: {
-          spotifyAccessToken: refreshed.accessToken,
-          spotifyTokenExpiresAt: refreshed.expiresAt,
-        },
+      await upsertFanPlatformConnection(fanUser.id, Platform.SPOTIFY, {
+        platformUserId: spotifyConnection.platformUserId,
+        accessToken: refreshed.accessToken,
+        refreshToken: spotifyConnection.refreshToken,
+        expiresAt: refreshed.expiresAt,
+        status: ConnectionStatus.CONNECTED,
+        lastSyncAt: new Date(),
+        syncError: null,
       })
     } else {
       return NextResponse.json({ error: 'Token refresh failed' }, { status: 401 })
@@ -142,7 +145,7 @@ export async function POST() {
     const tier = calculateTier(stats.streams, stats.saves)
     const stanScore = calculateStanScore(stats.streams, stats.saves, stats.following)
 
-    const relationship = await prisma.fanUserArtistLink.upsert({
+    await prisma.fanUserArtistLink.upsert({
       where: {
         fanUserId_artistId: {
           fanUserId: fanUser.id,

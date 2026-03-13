@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
 import { FAN_AUTH_CONFIG } from './config'
-import { FanBetaCohort, AcquisitionChannel } from '@prisma/client'
+import { FanBetaCohort, AcquisitionChannel, ConnectionStatus, Platform } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { randomBytes, createHmac } from 'crypto'
 
@@ -13,7 +13,97 @@ interface FanUserSession {
   displayName: string
   avatarUrl?: string | null
   spotifyUserId?: string | null
+  spotifyConnected: boolean
+  connectedPlatforms: Platform[]
   onboardingCompleted: boolean
+}
+
+type SessionPlatformConnection = {
+  platform: Platform
+  platformUserId: string | null
+  status: ConnectionStatus
+}
+
+type FanSessionSource = {
+  id: string
+  email: string
+  displayName: string
+  avatarUrl?: string | null
+  spotifyUserId?: string | null
+  onboardingCompleted: boolean
+  platformConnections?: SessionPlatformConnection[]
+}
+
+interface FanPlatformConnectionInput {
+  platformUserId?: string | null
+  accessToken?: string | null
+  refreshToken?: string | null
+  expiresAt?: Date | null
+  scope?: string | null
+  status?: ConnectionStatus
+  lastSyncAt?: Date | null
+  syncError?: string | null
+}
+
+interface FanPlatformCredentials {
+  platform: Platform
+  platformUserId: string | null
+  accessToken: string | null
+  refreshToken: string | null
+  tokenExpiresAt: Date | null
+  platformScope: string | null
+  status: ConnectionStatus
+  lastSyncAt: Date | null
+  syncError: string | null
+}
+
+function getConnectedPlatforms(
+  platformConnections: SessionPlatformConnection[] = [],
+  legacySpotifyUserId?: string | null
+): Platform[] {
+  const connected = new Set<Platform>()
+
+  for (const connection of platformConnections) {
+    if (connection.status === ConnectionStatus.CONNECTED) {
+      connected.add(connection.platform)
+    }
+  }
+
+  if (legacySpotifyUserId) {
+    connected.add(Platform.SPOTIFY)
+  }
+
+  return Array.from(connected)
+}
+
+function getSpotifyPlatformUserId(
+  platformConnections: SessionPlatformConnection[] = [],
+  legacySpotifyUserId?: string | null
+): string | null {
+  const spotifyConnection = platformConnections.find(
+    (connection) =>
+      connection.platform === Platform.SPOTIFY &&
+      connection.status === ConnectionStatus.CONNECTED &&
+      connection.platformUserId
+  )
+
+  return spotifyConnection?.platformUserId || legacySpotifyUserId || null
+}
+
+function buildFanUserSession(user: FanSessionSource): FanUserSession {
+  const connectedPlatforms = getConnectedPlatforms(user.platformConnections, user.spotifyUserId)
+  const spotifyUserId = getSpotifyPlatformUserId(user.platformConnections, user.spotifyUserId)
+
+  return {
+    id: user.id,
+    email: user.email,
+    displayName: user.displayName,
+    avatarUrl: user.avatarUrl,
+    spotifyUserId,
+    spotifyConnected: connectedPlatforms.includes(Platform.SPOTIFY),
+    connectedPlatforms,
+    onboardingCompleted: user.onboardingCompleted,
+  }
 }
 
 /**
@@ -72,6 +162,15 @@ export async function authenticateFanUser(
   try {
     const user = await prisma.fanUser.findUnique({
       where: { email },
+      include: {
+        platformConnections: {
+          select: {
+            platform: true,
+            platformUserId: true,
+            status: true,
+          },
+        },
+      },
     })
 
     if (!user || !user.password) {
@@ -85,14 +184,7 @@ export async function authenticateFanUser(
 
     return {
       success: true,
-      user: {
-        id: user.id,
-        email: user.email,
-        displayName: user.displayName,
-        avatarUrl: user.avatarUrl,
-        spotifyUserId: user.spotifyUserId,
-        onboardingCompleted: user.onboardingCompleted,
-      },
+      user: buildFanUserSession(user),
     }
   } catch (error) {
     console.error('Authenticate fan user error:', error)
@@ -162,7 +254,19 @@ export async function getFanUser(): Promise<FanUserSession | null> {
     // Get session
     const session = await prisma.fanUserSession.findUnique({
       where: { sessionToken: token },
-      include: { fanUser: true },
+      include: {
+        fanUser: {
+          include: {
+            platformConnections: {
+              select: {
+                platform: true,
+                platformUserId: true,
+                status: true,
+              },
+            },
+          },
+        },
+      },
     })
 
     if (!session || session.expires < new Date()) {
@@ -175,14 +279,7 @@ export async function getFanUser(): Promise<FanUserSession | null> {
       return null
     }
 
-    return {
-      id: session.fanUser.id,
-      email: session.fanUser.email,
-      displayName: session.fanUser.displayName,
-      avatarUrl: session.fanUser.avatarUrl,
-      spotifyUserId: session.fanUser.spotifyUserId,
-      onboardingCompleted: session.fanUser.onboardingCompleted,
-    }
+    return buildFanUserSession(session.fanUser)
   } catch (error) {
     console.error('Get fan user error:', error)
     return null
@@ -213,6 +310,119 @@ export async function logoutFanUser() {
   }
 }
 
+export async function upsertFanPlatformConnection(
+  fanUserId: string,
+  platform: Platform,
+  connection: FanPlatformConnectionInput
+) {
+  const connectionData = {
+    accessToken: connection.accessToken ?? null,
+    refreshToken: connection.refreshToken ?? null,
+    tokenExpiresAt: connection.expiresAt ?? null,
+    platformUserId: connection.platformUserId ?? null,
+    platformScope: connection.scope ?? null,
+    status: connection.status ?? ConnectionStatus.CONNECTED,
+    lastSyncAt: connection.lastSyncAt ?? new Date(),
+    syncError: connection.syncError ?? null,
+  }
+
+  return prisma.$transaction(async (tx) => {
+    const platformConnection = await tx.fanPlatformConnection.upsert({
+      where: {
+        fanUserId_platform: {
+          fanUserId,
+          platform,
+        },
+      },
+      update: connectionData,
+      create: {
+        fanUserId,
+        platform,
+        ...connectionData,
+      },
+    })
+
+    if (platform === Platform.SPOTIFY) {
+      await tx.fanUser.update({
+        where: { id: fanUserId },
+        data: {
+          spotifyUserId: connectionData.platformUserId,
+          spotifyAccessToken: connectionData.accessToken,
+          spotifyRefreshToken: connectionData.refreshToken,
+          spotifyTokenExpiresAt: connectionData.tokenExpiresAt,
+        },
+      })
+    }
+
+    return platformConnection
+  })
+}
+
+export async function getFanPlatformConnection(
+  fanUserId: string,
+  platform: Platform
+): Promise<FanPlatformCredentials | null> {
+  const connection = await prisma.fanPlatformConnection.findUnique({
+    where: {
+      fanUserId_platform: {
+        fanUserId,
+        platform,
+      },
+    },
+  })
+
+  if (connection) {
+    return {
+      platform: connection.platform,
+      platformUserId: connection.platformUserId,
+      accessToken: connection.accessToken,
+      refreshToken: connection.refreshToken,
+      tokenExpiresAt: connection.tokenExpiresAt,
+      platformScope: connection.platformScope,
+      status: connection.status,
+      lastSyncAt: connection.lastSyncAt,
+      syncError: connection.syncError,
+    }
+  }
+
+  if (platform !== Platform.SPOTIFY) {
+    return null
+  }
+
+  const legacySpotifyConnection = await prisma.fanUser.findUnique({
+    where: { id: fanUserId },
+    select: {
+      spotifyUserId: true,
+      spotifyAccessToken: true,
+      spotifyRefreshToken: true,
+      spotifyTokenExpiresAt: true,
+    },
+  })
+
+  if (!legacySpotifyConnection) {
+    return null
+  }
+
+  const hasLegacySpotifyData =
+    !!legacySpotifyConnection.spotifyUserId || !!legacySpotifyConnection.spotifyAccessToken
+
+  if (!hasLegacySpotifyData) {
+    return null
+  }
+
+  return {
+    platform,
+    platformUserId: legacySpotifyConnection.spotifyUserId,
+    accessToken: legacySpotifyConnection.spotifyAccessToken,
+    refreshToken: legacySpotifyConnection.spotifyRefreshToken,
+    tokenExpiresAt: legacySpotifyConnection.spotifyTokenExpiresAt,
+    platformScope: null,
+    status: ConnectionStatus.CONNECTED,
+    lastSyncAt: null,
+    syncError: null,
+  }
+}
+
 /**
  * Update fan user Spotify connection
  */
@@ -225,14 +435,14 @@ export async function updateFanUserSpotify(
     expiresAt: Date
   }
 ) {
-  await prisma.fanUser.update({
-    where: { id: fanUserId },
-    data: {
-      spotifyUserId: spotifyData.spotifyUserId,
-      spotifyAccessToken: spotifyData.accessToken,
-      spotifyRefreshToken: spotifyData.refreshToken,
-      spotifyTokenExpiresAt: spotifyData.expiresAt,
-    },
+  await upsertFanPlatformConnection(fanUserId, Platform.SPOTIFY, {
+    platformUserId: spotifyData.spotifyUserId,
+    accessToken: spotifyData.accessToken,
+    refreshToken: spotifyData.refreshToken,
+    expiresAt: spotifyData.expiresAt,
+    status: ConnectionStatus.CONNECTED,
+    lastSyncAt: new Date(),
+    syncError: null,
   })
 }
 

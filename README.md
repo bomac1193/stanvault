@@ -86,9 +86,9 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3003](http://localhost:3003)
 
-**Fan Portal:** [http://localhost:3000/fan/register](http://localhost:3000/fan/register)
+**Fan Portal:** [http://localhost:3003/fan/register](http://localhost:3003/fan/register)
 
 ---
 

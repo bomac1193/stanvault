@@ -80,6 +80,13 @@ export async function GET(request: NextRequest) {
       betaJoinedAt: true,
       updatedAt: true,
       spotifyUserId: true,
+      platformConnections: {
+        where: {
+          platform: 'SPOTIFY',
+          status: 'CONNECTED',
+        },
+        select: { id: true },
+      },
       _count: { select: { artistRelationships: true, dropClaims: true } },
     },
   })
@@ -119,7 +126,9 @@ export async function GET(request: NextRequest) {
   const totalDrops = retainedArtists.reduce((sum, a) => sum + a._count.drops, 0)
 
   // --- Metric 5: Fan Spotify verification rate ---
-  const fansWithSpotify = betaFans.filter((f) => f.spotifyUserId)
+  const fansWithSpotify = betaFans.filter(
+    (f) => f.spotifyUserId || f.platformConnections.length > 0
+  )
 
   // --- Metric 6: Fan drop claim rate ---
   const fansWhoClaimed = betaFans.filter((f) => f._count.dropClaims > 0)
